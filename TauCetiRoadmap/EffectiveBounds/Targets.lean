@@ -12,8 +12,11 @@ This file holds the **Layer 1** targets — the explicit discriminant, class-num
 unit-square-index bounds over an arbitrary number field. They elaborate against the pinned
 Mathlib and are stated with `sorry` (allowed in this human-owned roadmap library). As
 later layers make their types expressible in `TauCeti/`, add their milestones here: the
-measure-free packing/doubling engine (Layer 0, after its `ZLattice` reconciliation), and
-Minkowski's lower bound with Hermite–Minkowski finiteness (Layer 2, the summit).
+explicit ideal count `#{I ≠ ⊥ : N(I) ≤ X} ≤ X²·2ⁿ` (the input to the class number bound),
+the measure-free packing/doubling engine (Layer 0, after its `ZLattice` reconciliation),
+and the effective Hermite–Minkowski count (Layer 2, the summit — Mathlib already has the
+qualitative finiteness, `NumberField.finite_of_discr_bdd`, and the lower bound
+`NumberField.abs_discr_ge`; the target is an explicit bound on the number of fields).
 
 The Layer-1 bounds are migrated from
 [kim-em/erdos-unit-distance](https://github.com/kim-em/erdos-unit-distance); credit it in
@@ -30,9 +33,12 @@ example {K : Type*} [Field K] [NumberField K] {ι : Type*} [Fintype ι] [Decidab
     |(NumberField.discr K : ℚ)| ≤ |Algebra.discr ℚ (b : ι → K)| :=
   sorry
 
-/-- **Layer 1 — class number bound.** `h_F ≤ |d_F| · 4^[F:ℚ]`. By Minkowski's bound every
-ideal class contains an integral ideal of norm `≤ √|d_F|`, and the classes inject into the
-ideals of norm `≤ √|d_F|`, counted (reconciling with `Ideal/Asymptotics`) as `≤ |d_F|·2ⁿ`. -/
+/-- **Layer 1 — class number bound.** `h_F ≤ |d_F| · 4^[F:ℚ]`. By Mathlib's
+`NumberField.exists_ideal_in_class_of_norm_le` every ideal class contains an integral
+ideal of norm `≤ (4/π)^r₂ · (n!/nⁿ) · √|d_F|` (the Minkowski constant, `≤ √|d_F|`), and
+the classes inject into the ideals of that norm, counted by the explicit Rankin-style
+lemma (erdos `card_ideal_absNorm_le`, not derivable from `Ideal/Asymptotics`) as
+`≤ |d_F|·2ⁿ`. -/
 example (F : Type*) [Field F] [NumberField F] :
     (NumberField.classNumber F : ℝ) ≤
       |(NumberField.discr F : ℝ)| * 4 ^ Module.finrank ℚ F :=
