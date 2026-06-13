@@ -9,12 +9,11 @@ reciprocity, and the class group, but nothing on multiquadratic extensions
 `ℚ(√d₁, …, √dₙ)` or the genus theory they encode; we build that here in `TauCeti/`.
 
 This file holds the **Layer 0** targets — the degree and Galois group of a multiquadratic
-field under square-class independence — together with a non-vacuity worked example. They
-elaborate against the pinned Mathlib and are stated with `sorry` (allowed in this
-human-owned roadmap library). As later layers make their types expressible in `TauCeti/`,
-add their milestones here with `sorry`: the prime-splitting law (Layer 1), the
-2-elementary quotient `Cl/Cl²` (Layer 2), and the genus field with the 2-rank theorem
-(Layer 3).
+field under square-class independence — a non-vacuity worked example, and the **Layer 1**
+prime-splitting law. They elaborate against the pinned Mathlib and are stated with `sorry`
+(allowed in this human-owned roadmap library). As later layers make their types expressible
+in `TauCeti/`, add their milestones here with `sorry`: the 2-elementary quotient `Cl/Cl²`
+(Layer 2), and the genus field with the 2-rank theorem (Layer 3).
 
 The Layer-0 square-class machinery is migrated from
 [kim-em/erdos-unit-distance](https://github.com/kim-em/erdos-unit-distance); credit it in
@@ -63,6 +62,22 @@ example {ι : Type*} [Fintype ι] [CharZero K] (d : ι → K) (r : ι → L)
     (hindep : ∀ S : Finset ι, S.Nonempty → ¬ IsSquare (∏ i ∈ S, d i)) :
     (↥(IntermediateField.adjoin K (Set.range r)) ≃ₐ[K]
         ↥(IntermediateField.adjoin K (Set.range r))) ≃* Multiplicative (ι → ZMod 2) :=
+  sorry
+
+/-- **Layer 1 — the prime-splitting law.** Let `K = ℚ(√d₁, …, √dₙ)` be a multiquadratic
+number field (`r i` a square root of the integer `d i`, the `r i` generating `K` over `ℚ`).
+For an odd prime `p` dividing none of the `d i`, `p` splits completely in `K` — there are
+`[K:ℚ]` primes of `𝓞 K` above `p` — if and only if every `d i` is a quadratic residue mod
+`p`, i.e. `legendreSym p (d i) = 1` for all `i`. More precisely the Frobenius at `p`, viewed
+in `Gal(K/ℚ) ≅ (ℤ/2)ⁿ`, is the sign vector `(legendreSym p (d i))ᵢ`; this is the
+splitting-completely specialization. -/
+example (K : Type*) [Field K] [NumberField K] {ι : Type*} [Fintype ι]
+    (d : ι → ℤ) (r : ι → K) (hr : ∀ i, r i ^ 2 = algebraMap ℤ K (d i))
+    (htop : IntermediateField.adjoin ℚ (Set.range r) = ⊤)
+    (p : ℕ) [Fact p.Prime] (hodd : p ≠ 2) (hcop : ∀ i, ¬ (p : ℤ) ∣ d i) :
+    Nat.card (Ideal.primesOver (Ideal.span {(p : ℤ)}) (NumberField.RingOfIntegers K))
+        = Module.finrank ℚ K ↔
+      ∀ i, legendreSym p (d i) = 1 :=
   sorry
 
 end TauCetiRoadmap.Multiquadratic
