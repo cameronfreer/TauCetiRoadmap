@@ -122,7 +122,7 @@ original authors and source PR in each file.
    - *Alternative lens:* phrase the classification of connected covers via transitive
      `π₁(X)`-sets / the monodromy functor (`monodromyFunctor`,
      `Galois/IsFundamentalgroup`), with disconnected covers as functors out of the
-     fundamental groupoid. Worth paving as a second route.
+     fundamental groupoid. Worth building as a second route.
 
 ## Stage 3: higher homotopy
 

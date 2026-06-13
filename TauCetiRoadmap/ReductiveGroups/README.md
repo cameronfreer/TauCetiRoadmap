@@ -1,4 +1,4 @@
-# Roadmap: reductive algebraic groups (paved)
+# Roadmap: reductive algebraic groups
 
 The theory of reductive algebraic groups is the long game: it underpins the Langlands
 programme, automorphic forms, and much of FLT, and it is almost entirely absent from
@@ -30,7 +30,7 @@ Keep **two distinct notions**, and never make smoothness implicit:
 There will be **no** monolithic `LinearAlgebraicGroup`/`Variety` definition. Like
 Mathlib, we state exactly the hypotheses each result needs.
 
-## What "paved" means here
+## Three synchronized models
 
 Maintain **three equivalent views** of an affine algebraic group and the explicit
 equivalences between them, so any proof can work in whichever is most convenient:
@@ -199,7 +199,7 @@ faithfully-flat descent.
   `R(G)` (maximal connected normal solvable, geometric) trivial. Develop the radical,
   the centre `Z(G)`, the derived group `G_der`, **central isogenies**, and the simply
   connected and adjoint forms: these are not optional for the classification.
-- **Alternative paving, linearly reductive:** every f.d. representation is completely
+- **Alternative characterization, linearly reductive:** every f.d. representation is completely
   reducible. ⚠ Reductive groups are **not** linearly reductive in characteristic `p`
   (rational representations are generally not semisimple). State the equivalence precisely:
   for smooth connected affine groups in **characteristic 0**, reductive ⇔ linearly
@@ -246,15 +246,16 @@ the multiplicative-type examples. (Kevin's caution: don't *develop the general t
   to `k̄`.
 - **Don't bundle** typeclasses; **admit** non-smooth/non-reduced groups (`μ_p`) and make
   smoothness an explicit hypothesis where used.
-- **Pave**: keep the Hopf / group-object / functor-of-points views and the
-  representation ⇆ comodule dictionary synchronized via explicit equivalences.
+- **Keep views in sync**: maintain the Hopf / group-object / functor-of-points views and
+  the representation ⇆ comodule dictionary together via explicit equivalences.
 
 ## Downstream consumers (why this matters)
 
 `p`-adic representation theory of `G(K)` (smooth/admissible representations, Hecke
 algebras, Shurui Liu et al.), the Langlands programme, automorphic forms (Kevin
 Buzzard), and FLT. Several of these can start against a **BN-pair** or the dynamic
-parabolic API before the full root-data classification exists: another reason to pave.
+parabolic API before the full root-data classification exists: another reason to keep the
+three views in sync.
 
 ## References
 

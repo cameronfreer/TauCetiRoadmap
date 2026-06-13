@@ -3,7 +3,7 @@ import Mathlib
 /-!
 # Reductive algebraic groups: target signatures
 
-The narrative roadmap (the three "paved" models, the layer-by-layer build plan
+The narrative roadmap (the three synchronized models, the layer-by-layer build plan
 Layers 0–7, the worked examples, and the references) is in `README.md`. We build the
 whole tower here rather than waiting on Mathlib.
 
