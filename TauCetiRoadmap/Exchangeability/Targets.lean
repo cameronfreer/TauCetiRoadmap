@@ -119,7 +119,7 @@ example (hX : ∀ i, Measurable (X i)) (h : ConditionallyIID μ X) : Exchangeabl
 
 /-- **Layer 0 bridge, full exchangeability ⇒ shift-preservation** of the path law (the link
 from symmetry to the Koopman lane). -/
-example (hX : ∀ i, Measurable (X i)) (h : FullyExchangeable μ X) :
+example [IsProbabilityMeasure μ] (hX : ∀ i, Measurable (X i)) (h : FullyExchangeable μ X) :
     MeasurePreserving (shift α) (pathLaw μ X) (pathLaw μ X) := by
   sorry
 
