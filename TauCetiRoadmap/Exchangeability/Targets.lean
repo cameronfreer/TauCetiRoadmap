@@ -3,15 +3,17 @@ import Mathlib
 /-!
 # Exchangeability and de Finetti: target signatures
 
-The narrative roadmap, the library spine, the layer-by-layer build plan (Layers 0–7), the
+The narrative roadmap, the library spine, the layer-by-layer build plan (Layers 0–8), the
 worked examples, and the references are in `README.md`.
 
 This file holds the **Layer 0** target signatures: the core symmetry notions (sequence
 laws, finite and full exchangeability, contractability), the directing-measure object
 (`ConditionallyIID`, with `ν : Ω → ProbabilityMeasure α`), path-space data (`pathLaw`,
 `prefixProj`, `shift`), finite-dimensional marginal uniqueness, and the easy bridges among
-the symmetry classes. These elaborate against the pinned Mathlib and are stated with `sorry`
-(allowed in this human-owned roadmap library).
+the symmetry classes; the implication lattice and the adjacent-transposition and
+strictly-increasing-map characterizations are described in `README.md`. These elaborate
+against the pinned Mathlib and are stated with `sorry` (allowed in this human-owned roadmap
+library).
 
 Layer 0 needs only Mathlib, not any not-yet-chosen Tau Ceti API. Later layers add their
 milestones here as their types become expressible:
@@ -20,12 +22,18 @@ milestones here as their types become expressible:
   measurability and the common ending `conditional_iid_from_directing_measure`.
 * Layer 2 (process tails and path-space dynamics): `tailFamily`, `tailProcess`, and the
   shift-invariant σ-algebra.
-* Layer 3 (L² averaging library and real-valued de Finetti): `deFinetti_viaL2`.
+* Layer 3 (L² averaging and the standard-Borel de Finetti route, with the real-valued L²
+  convergence theorem as the intermediate analytic step): `deFinetti_viaL2`.
 * Layer 4 (reverse martingales and conditional-expectation limits): `condExp_tendsto_iInf`
   for antitone filtrations.
-* Layer 5 (Koopman operators and invariant σ-algebras): `deFinetti_viaKoopman`.
-* Layer 6 (directing measures and the de Finetti representation): the default `deFinetti`
-  and `deFinetti_RyllNardzewski_equivalence`.
+* Layer 5 (Koopman operators and invariant σ-algebras): the positive/unital Markov-operator
+  API, multiplicativity for deterministic Koopman operators, and `deFinetti_viaKoopman`.
+* Layer 6 (directing measures and the de Finetti representation): the default `deFinetti`,
+  `deFinetti_RyllNardzewski_equivalence`, the directing-measure API (a.e. uniqueness, the
+  factorization identity), and the empirical-measure and mixture forms.
+* Layer 8 (generalized exchangeability and representation theorems): finite de Finetti bounds,
+  other countable index types, ergodic decomposition, Markov exchangeability, and
+  Aldous–Hoover.
 
 These are roadmap-local target shapes; the implementation in `TauCeti/` may refine names and
 namespaces, but the statements below pin the intended early milestones and dependency order.

@@ -77,8 +77,9 @@ factorization proved separately. An extra `[StandardBorelSpace Ω]` would arise 
 statement.
 
 The default public theorem should eventually use the reverse-martingale proof. The L²
-route remains as a lighter real-valued theorem, and the Koopman route remains as the
-ergodic-theory route with reusable operator-theoretic infrastructure.
+route reaches the same standard-Borel theorem through the common ending, with its real-valued
+L² statement as an internal intermediate step, and the Koopman route is the ergodic-theory
+route with reusable operator-theoretic infrastructure.
 
 ## The library spine
 
@@ -267,6 +268,23 @@ Contractable.map_pair
 Contractable.comp
 ```
 
+Also build the implication lattice and the alternate characterizations as named API:
+
+* exchangeability via all finite permutations, and via adjacent transpositions (which
+  generate the finite permutations, stated finite-dimensionally over `Fin n`);
+* contractability/spreadability via the monoid of strictly increasing maps `ℕ → ℕ`;
+* closure of each symmetry class under coordinatewise pushforward `X ↦ (f ∘ Xᵢ)`;
+* mixtures of i.i.d. laws are exchangeable, and exchangeable laws are stationary;
+* the implication lattice among `ExchangeableAt n`, `Exchangeable`, `FullyExchangeable`,
+  `Contractable`, and `ConditionallyIID`, with every easy arrow named and the hard arrow
+  `Contractable → ConditionallyIID` isolated;
+* the process-level ↔ path-law bridges in both directions.
+
+State each equivalence with its hypotheses: finite ↔ full exchangeability needs a probability
+(or finite) measure and finite-marginal uniqueness, and the adjacent-transposition reduction
+is the finitary `Exchangeable`, not `FullyExchangeable`. Downstream users should be able to
+name the symmetry notion they mean and move between equivalent formulations by theorem.
+
 ⚠ **API warning.** Do not define exchangeability as a property of a measure on path space
 only, or as a property of a process only, without bridges. Both viewpoints are useful:
 the process-level statements are what users want, while the path-law statements make
@@ -348,7 +366,27 @@ shift-invariant σ-algebra. For one-sided sequences, the relationship runs throu
 invariance, almost invariance, and completions. State exactly the theorem each proof
 route needs.
 
-### Layer 3: L² averaging library and real-valued de Finetti
+Build the exchangeable σ-algebra and the directing-measure measurability API (the σ-algebra
+target Layer 6 consumes; `ν` itself is constructed in Layer 6, not here):
+
+```lean
+exchangeableSigma
+exchangeableSigma_le
+tail_le_exchangeableSigma
+hewittSavage_trivial_of_iIndep
+```
+
+* the exchangeable / symmetric σ-algebra on path space, and its relationship to the tail and
+  shift-invariant σ-algebras (and their completions and a.e. versions) under the de Finetti
+  hypotheses;
+* the measurability target for a directing measure `ν` with respect to the tail or
+  exchangeable σ-algebra;
+* the **Hewitt–Savage zero-one law**: for an i.i.d. sequence the *symmetric / exchangeable*
+  σ-algebra is trivial. This is stronger than Kolmogorov's tail 0-1 law: tail triviality holds
+  for any independent sequence, whereas Hewitt–Savage is the symmetric-σ-algebra statement and
+  needs the identically-distributed hypothesis.
+
+### Layer 3: L² averaging library and the standard-Borel de Finetti route
 
 Suggested home:
 
@@ -358,8 +396,9 @@ TauCeti/Probability/Exchangeability/L2/BlockAverages.lean
 TauCeti/Probability/DeFinetti/ViaL2.lean
 ```
 
-This is the first proof route to port after the shared layers. It is real-valued and
-requires L² assumptions.
+This is the first proof route to port after the shared layers. Its analytic core is
+real-valued and second-moment, but the Layer 3 milestone is the standard-Borel de Finetti
+statement, not a relabeled real-valued theorem.
 
 Build:
 
@@ -369,6 +408,8 @@ Build:
 * two-window L² bounds for block averages;
 * long-average versus tail-average bounds;
 * L¹ convergence of weighted block averages;
+* extension from bounded measurable real observables to a countable determining class on the
+  standard Borel state space;
 * the directing-measure bridge;
 * the call to `conditional_iid_from_directing_measure`.
 
@@ -379,14 +420,18 @@ contractable_covariance_structure
 l2_bound_two_windows_uniform
 l2_bound_long_vs_tail
 weighted_sums_converge_L1
+realObservables_determine_directing_measure
 directing_measure_satisfies_requirements
 conditionallyIID_of_contractable_viaL2
 deFinetti_viaL2
 deFinetti_RyllNardzewski_equivalence_viaL2
 ```
 
-The final route should make clear that it proves a real-valued L² theorem, not the full
-standard-Borel theorem.
+Real-valued L² convergence is the intermediate analytic step. Through the common ending and a
+determining class of bounded measurable real observables on the standard Borel state space,
+the route reaches the standard-Borel de Finetti statement; the roadmap target is this
+library-level theorem, stronger than the bare real-valued conclusion the source currently
+carries.
 
 ### Layer 4: reverse martingales and conditional-expectation limits
 
@@ -477,6 +522,18 @@ metProjection
 birkhoffAverage_tendsto_metProjection
 ```
 
+State the operator at the right level of generality (it is the same operator everywhere, not
+just on `L²`):
+
+* the Koopman operator on `Lᵖ` for `1 ≤ p < ∞` (via Mathlib's `Lp.compMeasurePreserving`), an
+  isometric embedding — not unitary for the one-sided shift, since it is surjective only when
+  the map is invertible mod null sets;
+* the associated Markov operator on bounded measurable functions / `L^∞`: positive and unital;
+* multiplicativity **for the deterministic Koopman operator** on `L^∞` — this is special to
+  composition operators; a general Markov operator is positive and unital but not
+  multiplicative;
+* compatibility with composition and with the invariant σ-algebra.
+
 Then specialize to path-space shift and identify the projection:
 
 ```lean
@@ -537,6 +594,21 @@ deFinetti_equivalence
 deFinetti_RyllNardzewski_equivalence
 ```
 
+The directing-measure theorem should expose a real API, not just an existence proof:
+
+* construction of the directing measure `ν`;
+* **a.e.** uniqueness of `ν` (equality of probability measures a.e. under the base law, tested
+  against a determining class — not pointwise);
+* the finite-dimensional factorization identity;
+* the empirical-measure form: `(1/n) Σ_{i<n} δ_{Xᵢ}(ω) ⇒ ν(ω)` weakly in `P(α)`, tested
+  against bounded continuous functions (a milestone in its own right, bringing in the weak
+  topology on `ProbabilityMeasure α`; not a prerequisite for the base directing-measure
+  theorem);
+* the mixture-of-product-measures form: `pathLaw X = ∫ p^{⊗ℕ} dπ(p)` with `π` the unique law
+  of `ν` on `P(α)`;
+* the extreme-point corollary, once π-system uniqueness and the Hewitt–Savage input (Layer 2)
+  are available: the extreme exchangeable laws are exactly the i.i.d. laws.
+
 This is the default route for the final public API.
 
 ### Layer 7: public API and examples
@@ -568,37 +640,33 @@ deFinetti_RyllNardzewski_equivalence
 
 deFinetti_viaL2
 deFinetti_viaKoopman
+
+deFinetti_empiricalMeasure
+deFinetti_mixture
+conditionallyIID_ae_unique
+exchangeable_extreme_iff_iid
 ```
 
 Route-specific theorem names should keep their suffixes. The unsuffixed theorem should be
 the general martingale route.
 
-### Long horizon
+### Layer 8: generalized exchangeability and representation theorems
 
-After v1:
+This layer is not needed before the v1 sequence theorem, but it is part of the roadmap: it
+extends the library from exchangeable sequences to the next standard representation theorems
+and approximation results.
 
-* finite de Finetti bounds;
+Build:
+
+* finite de Finetti bounds, including quantitative approximation by mixtures of products;
 * de Finetti for other countable index types;
-* exchangeable arrays and Aldous–Hoover;
-* Markov exchangeability;
 * ergodic decomposition of exchangeable laws;
-* Mathlib extraction of general infrastructure.
+* Markov exchangeability;
+* exchangeable arrays and the Aldous–Hoover representation (a substantially larger tower than
+  the sequence theorem, with its own prerequisites).
 
-Optional extensions of the core theory, valuable but not part of v1:
-
-* the empirical-measure and mixture forms of de Finetti (the law-of-large-numbers form
-  `(1/n) Σ_{i<n} δ_{Xᵢ} ⇒ ν` in `P(α)`, and `pathLaw X = ∫ p^{⊗ℕ} dπ(p)` with `π` unique on
-  `P(α)`);
-* the Hewitt–Savage zero-one law (triviality of the symmetric σ-algebra for i.i.d.
-  sequences) and the extreme-point / ergodic-decomposition corollary;
-* the full Koopman Markov-operator API (positive, unital, multiplicative on `L^∞`);
-* the detailed directing-measure API: a.e. uniqueness, measurability with respect to the
-  tail/exchangeable σ-algebra, and the conditional-factorization identity
-  `E[∏_j f_j(X_{i_j}) | σ(ν)] = ∏_j ∫ f_j dν`;
-* a boundary worked example marking the limits of the theory: a stationary-not-exchangeable
-  two-state Markov chain (`P(0→0) = P(1→1) = q`, `0 < q < 1`, `q ≠ ½`).
-
-These are not prerequisites for the v1 theorem.
+Mathlib extraction of the general-purpose infrastructure built along the way — reverse
+martingales, Koopman operators, product kernels — is a parallel ongoing goal.
 
 ## Worked examples
 
@@ -612,6 +680,11 @@ objects, not just the final theorem.
   the two-point kernel keeps the example independent of a mature `Bernoulli` API.
 * Finite-dimensional prefix marginals determine a probability measure on `ℕ → α`.
 * Full exchangeability of a path law implies shift-preservation.
+* A stationary non-reversible finite-state Markov chain — for instance the deterministic
+  3-cycle with uniform stationary law — is shift-invariant but not exchangeable, since the law
+  of `(X₀, X₁)` differs from that of `(X₁, X₀)`. This keeps stationarity, shift-invariance, and
+  exchangeability distinct.
+* Hewitt–Savage: the symmetric σ-algebra of an i.i.d. sequence is trivial.
 * The tail-family of a process is antitone.
 * The Lévy downward theorem specializes correctly to an eventually constant decreasing
   filtration (a test of `condExp_tendsto_iInf`, not a de Finetti example).
@@ -626,7 +699,8 @@ Layer 2 next: tails and shifts are needed by the martingale and Koopman routes.
 After that, the L² route can land first because it validates the common ending with the
 least global infrastructure. Reverse martingales and Koopman can proceed in parallel as
 general infrastructure. The martingale de Finetti proof comes after reverse martingales
-and becomes the default public theorem.
+and becomes the default public theorem. Layer 8 (generalized exchangeability and
+representation theorems) sequences after the v1 theorem.
 
 ## References
 
