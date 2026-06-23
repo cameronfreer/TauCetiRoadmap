@@ -124,7 +124,8 @@ ergodic-theory lane.
 
 Index the v1 theorem by `ℕ`. General exchangeability over other countable index types,
 exchangeable arrays, Aldous–Hoover, Markov exchangeability, and finite de Finetti bounds
-are long-horizon generalizations, not prerequisites for v1.
+are Layer 8 milestones, sequenced after the v1 sequence theorem but still part of this
+roadmap.
 
 ## What Mathlib already has (consume)
 
