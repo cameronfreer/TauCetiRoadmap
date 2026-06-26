@@ -100,7 +100,7 @@ def ConditionallyIID (μ : Measure Ω) (X : ℕ → Ω → α) : Prop :=
 agreeing on every finite-dimensional prefix marginal are equal (`ν`'s finiteness is forced by
 the conclusion). This is a roadmap-local ℕ-prefix wrapper over Mathlib's projective-limit
 machinery (`IsProjectiveLimit.unique`), not new measure theory; the `sorry` is the thin
-`Fin n`-prefix ↔ finite-subset adapter. Assuming only `[IsFiniteMeasure]` covers probability
+`Fin n`-prefix ↔ finite-subset adapter. Assuming only `[IsFiniteMeasure μ]` covers probability
 applications too, via the `IsProbabilityMeasure → IsFiniteMeasure` instance, so no separate
 probability wrapper is needed. -/
 example {μ ν : Measure (ℕ → α)} [IsFiniteMeasure μ]
