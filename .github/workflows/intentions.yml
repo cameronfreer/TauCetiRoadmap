@@ -7,10 +7,10 @@ on:
     types: [opened, closed, reopened]
   pull_request_target:
     types: [opened, reopened, ready_for_review, converted_to_draft, closed]
-  schedule:
+  #schedule:
     # Every 30 minutes, so short (hour-scale) TTLs are released reasonably promptly.
     # GitHub cron is loose, so release lags somewhat.
-    - cron: "*/30 * * * *"
+  #  - cron: "*/30 * * * *"
   workflow_dispatch: {}
 
 jobs:
