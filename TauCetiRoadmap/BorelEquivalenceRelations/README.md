@@ -165,9 +165,11 @@ equivalents land.
   Kuratowski–Ulam theorem as `curry_le_residual`, `eventually_eventually_left_of_mem_residual`,
   `IsMeagre.prod_left`, `BaireMeasurableSet.baireMeasurableSet_curry_left` and
   `BaireMeasurableSet.eventually_eventually_left_iff_mem_residual` (Layer 1.1).
-- [Mathlib #42693](https://github.com/leanprover-community/mathlib4/pull/42693): `IsGδ.polishSpace`
-  and `IsGδ.isCompletelyMetrizableSpace`; [Mathlib #42912](https://github.com/leanprover-community/mathlib4/pull/42912):
-  a completely metrizable subspace is Gδ (Layer 0.2).
+- [Mathlib #42693](https://github.com/leanprover-community/mathlib4/pull/42693) has landed:
+  `IsGδ.polishSpace` and `IsGδ.isCompletelyMetrizableSpace` are Mathlib's.
+  [Mathlib #42912](https://github.com/leanprover-community/mathlib4/pull/42912): a completely
+  metrizable subspace is Gδ (Layer 0.2); Tau Ceti proves it as
+  `TauCeti.isGδ_of_isCompletelyMetrizableSpace`.
 - [Mathlib #41945](https://github.com/leanprover-community/mathlib4/pull/41945), on
   [#41944](https://github.com/leanprover-community/mathlib4/pull/41944): the Borel graph theorem
   `analyticSet_graph_iff_measurable`, `measurable_of_analyticSet_graph` and
@@ -178,7 +180,7 @@ equivalents land.
 
 What is missing from Mathlib and built here: a working `PolishSpace (ℕ → Bool)` instance (at
 the pinned Mathlib, instance search does not find it although `PolishSpace.mk` produces it);
-`PerfectSpace` for infinite products; meagreness of countable sets; Gδ subspaces; analytic sets
+`PerfectSpace` for infinite products; meagreness of countable sets; standard Borel Gδ subspaces; analytic sets
 under binary intersection, products, off-diagonals and saturation; the perfect set theorem
 beyond closed sets; Kuratowski–Ulam; Mycielski; every object of Layers 1.3–5.
 
@@ -198,7 +200,7 @@ is related but not consumed: no milestone here needs a selector.
   so `PerfectSpace (ℕ → Bool)` and `PerfectSpace (ℕ → ℕ)` hold. No separation axiom is needed:
   a basic neighbourhood constrains finitely many coordinates.
 - `Set.Countable.isMeagre`: in a perfect `T₁` space every countable set is meagre (singletons
-  are closed with empty interior). Consequently, in a nonempty perfect Baire space every
+  are closed with empty interior). Consequently, in a nonempty perfect `T₁` Baire space every
   comeagre set is uncountable, and a nonempty perfect Polish space contains a Cantor copy and
   has cardinality 𝔠.
 - Word cylinders: `prependWord`, `wordCylinder`, the prefix order on words against inclusion of
@@ -210,10 +212,15 @@ is related but not consumed: no milestone here needs a selector.
 
 ### 0.2 Gδ subspaces
 
-- `IsGδ.polishSpace`: a Gδ subset of a Polish space is Polish in the subspace topology, with no
-  nonemptiness assumption; `IsGδ.standardBorelSpace` for the subspace σ-algebra.
-- The converse: a subset of a metrizable space that is completely metrizable (in particular
-  Polish) in the subspace topology is Gδ.
+- Mathlib's `IsGδ.polishSpace`: a Gδ subset of a Polish space is Polish in the subspace topology,
+  with no nonemptiness assumption. Build `IsGδ.standardBorelSpace` for the subspace σ-algebra.
+- The converse (Alexandrov): a subset of a `T6` space (in particular of a metrizable space) that
+  is completely metrizable in the subspace topology is Gδ, as
+  `TopologicalSpace.IsCompletelyMetrizableSpace.isGδ` following Mathlib #42912. Tau Ceti proves it
+  as `TauCeti.isGδ_of_isCompletelyMetrizableSpace` for perfectly normal Hausdorff spaces, which are
+  exactly the `T6` spaces, so the prototype derives the roadmap's form from it. Separability is
+  not needed: an uncountable discrete space is a completely metrizable Gδ subset of itself that is
+  not Polish.
 - Open and closed subsets are recovered as special cases; the existing `IsOpen.polishSpace` and
   `IsClosed.polishSpace` are not restated.
 
@@ -620,9 +627,11 @@ Discharge these alongside the layers; they check that the API describes real rel
 2. **A finite and a countable quotient.** Equality of first coordinates, `x 0 = y 0`, on
    `ℕ → Bool` (two classes) and on `ℕ → ℕ` (countably many classes): both are closed, smooth,
    bireducible with equality on `Fin 2` and on `ℕ` respectively, and have no Cantor antichain.
-3. **A closed relation with 𝔠 classes**: `|x| = |y|` on `ℝ`, and more generally the kernel of a
-   continuous map between Polish spaces. Smooth by `isSmooth_of_isClosed` and directly by the
-   map itself.
+3. **A closed relation with 𝔠 classes**: `|x| = |y|` on `ℝ`. More generally the kernel of a
+   continuous map between Polish spaces is closed and smooth, by `isSmooth_of_isClosed` and
+   directly by the map itself, and its classes correspond to the points of the image, so it has
+   𝔠 classes exactly when the image is uncountable. The constant map `ℝ → ℝ` is the negative
+   control: its kernel is the universal relation, with one class.
 4. **E₀**: Borel, countable dense classes, generically ergodic, explicit Cantor antichain, not
    smooth. No Cantor scheme of open sets has E₀-inequivalent siblings, since any two nonempty
    open sets contain E₀-related points; this is why Silver's theorem is proved by Mycielski's
