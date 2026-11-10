@@ -89,7 +89,7 @@ EXPECTED = {
     (B, "/-! ### Stand-in owned by InfinitaryModelExistence"): "pcSeparation stand-in header",
     (B, "Owner: the InfinitaryModelExistence roadmap, Layer 7. Declaration: `pcSeparation`, over "
         "the pinned"): "pcSeparation stand-in header",
-    (B, "infinitary syntax. Checked against revision 786457c7 of that roadmap (follow-up "
+    (B, "infinitary syntax. Checked against revision 35db8dff of that roadmap (follow-up "
         "TauCetiRoadmap #1615). The"): "pcSeparation stand-in header, owner revision",
     (B, "/-- **Stand-in for `pcSeparation` of the InfinitaryModelExistence roadmap** (its Craig"):
         "pcSeparation stand-in docstring",

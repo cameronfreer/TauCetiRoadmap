@@ -6,6 +6,7 @@ import TauCetiRoadmap.HanfNumbers.Suggested
 import TauCeti.MeasureTheory.Constructions.Polish.GDelta
 import TauCeti.SetTheory.Descriptive.Silver
 import TauCeti.SetTheory.Descriptive.InvariantSeparation
+import TauCeti.ModelTheory.Infinitary.GraphTranslation.BackTranslate
 import TauCetiRoadmap.Integration.Adapters
 
 /-!
@@ -110,12 +111,9 @@ end Guards
   TauCeti.RelationalConfiguration.modelsOf
 #assert_uses TauCetiRoadmap.CountableModelCounting.countable_bfClasses_or_hasPerfectSet
   TauCeti.RelationalConfiguration.bfEquivSetoidOn
-#assert_uses TauCetiRoadmap.CountableModelCounting.isIsolatingRank_scottHeight TauCeti.scottHeight
 #assert_uses TauCetiRoadmap.CountableModelCounting.morleyCode FirstOrder.Language.morleyExpansion
 #assert_uses TauCetiRoadmap.CountableModelCounting.isoSetoid_morleyCode_iff
   FirstOrder.Language.nonempty_morleyEquiv_iff
-#assert_uses TauCetiRoadmap.CountableModelCounting.lift_countableModelCount_onBoundedFormulaInf
-  FirstOrder.Language.LHom.onBoundedFormulaInf
 
 -- E: the stand-ins of the earlier runs stay gone; statements use A's interfaces.
 #assert_absent TauCetiRoadmap.HanfNumbers.onBoundedFormulaInf
@@ -211,14 +209,14 @@ end AtoB
 
 B's README names these as BorelEquivalenceRelations results "as implemented at the pin":
 Mathlib's `IsGδ.polishSpace`, Tau Ceti's `IsGδ.standardBorelSpace`, `AnalyticSet.prod` and
-`Setoid.exists_invariant_measurableSet_separating`. Each is followed by the same use of C's own
+`Setoid.exists_invariant_measurableSet_separating`. C's README now cites the first three as Tau
+Ceti's and no longer states them, so only the separation theorem is also checked against C's own
 statement. -/
 
 section CtoB
 
-open TauCetiRoadmap.CountableStructureSpaces (ActionInvariant isGδ_modelsOf_toInf_alls
-  polishSpace_perm continuousSMul_relationalConfiguration analyticSet_orbitRel_graph
-  saturated_iff_actionInvariant)
+open TauCetiRoadmap.CountableStructureSpaces (isGδ_modelsOf_toInf_alls
+  continuousSMul_relationalConfiguration analyticSet_orbitRel_graph saturated_iff_isFixedBlock)
 
 variable {L : FirstOrder.Language.{u, v}}
 
@@ -232,19 +230,11 @@ example [L.IsRelational] [∀ n, Countable (L.Relations n)] {n : ℕ}
   ⟨(isGδ_modelsOf_toInf_alls ψ hψ).polishSpace,
     (isGδ_modelsOf_toInf_alls ψ hψ).standardBorelSpace⟩
 
-/-- The same, with C's `IsGδ.standardBorelSpace` (same hypotheses as Tau Ceti's). -/
-example [L.IsRelational] [∀ n, Countable (L.Relations n)] {n : ℕ}
-    (ψ : L.BoundedFormula Empty n) (hψ : ψ.IsExistential) :
-    StandardBorelSpace
-      (modelsOf (ψ.alls.toInf (ι := ℕ)) : Set (RelationalConfiguration L ℕ)) :=
-  BorelEquivalenceRelations.IsGδ.standardBorelSpace (isGδ_modelsOf_toInf_alls ψ hψ)
-
 /-- **B Layer 1, `analyticSet_iUnion_smul`**, derived as B's README says: the saturation is the
-image of `univ ×ˢ A` under the continuous action, analytic by `AnalyticSet.prod` (with B's
-`polishSpace_perm` and `continuousSMul_relationalConfiguration`). -/
+image of `univ ×ˢ A` under the continuous action, analytic by `AnalyticSet.prod` (with the
+Polish group `Equiv.Perm ℕ` and B's `continuousSMul_relationalConfiguration`). -/
 example [∀ n, Countable (L.Relations n)] {A : Set (RelationalConfiguration L ℕ)}
     (hA : AnalyticSet A) : AnalyticSet (⋃ σ : Equiv.Perm ℕ, σ • A) := by
-  haveI : PolishSpace (Equiv.Perm ℕ) := polishSpace_perm
   haveI : ContinuousSMul (Equiv.Perm ℕ) (RelationalConfiguration L ℕ) :=
     continuousSMul_relationalConfiguration
   have h := (((isClosed_univ (X := Equiv.Perm ℕ)).analyticSet).prod hA).image_of_continuous
@@ -253,47 +243,36 @@ example [∀ n, Countable (L.Relations n)] {A : Set (RelationalConfiguration L �
   ext c
   simp only [mem_iUnion, mem_image, mem_prod, mem_univ, true_and, Prod.exists, Set.mem_smul_set]
 
-/-- The same, with C's `AnalyticSet.prod` (same hypotheses as Tau Ceti's). -/
-example [∀ n, Countable (L.Relations n)] {A : Set (RelationalConfiguration L ℕ)}
-    (hA : AnalyticSet A) : AnalyticSet (⋃ σ : Equiv.Perm ℕ, σ • A) := by
-  haveI : PolishSpace (Equiv.Perm ℕ) := polishSpace_perm
-  haveI : ContinuousSMul (Equiv.Perm ℕ) (RelationalConfiguration L ℕ) :=
-    continuousSMul_relationalConfiguration
-  have h := (BorelEquivalenceRelations.AnalyticSet.prod
-    ((isClosed_univ (X := Equiv.Perm ℕ)).analyticSet) hA).image_of_continuous
-    (continuous_smul (M := Equiv.Perm ℕ) (X := RelationalConfiguration L ℕ))
-  convert h using 1
-  ext c
-  simp only [mem_iUnion, mem_image, mem_prod, mem_univ, true_and, Prod.exists, Set.mem_smul_set]
-
 /-- **B 6.1, `invariant_analytic_separation`**, from
 `Setoid.exists_invariant_measurableSet_separating` on B's coding space with `E` the orbit relation
-(analytic by B's `analyticSet_orbitRel_graph`) and B's `saturated_iff_actionInvariant`. -/
+(analytic by B's `analyticSet_orbitRel_graph`) and B's `saturated_iff_isFixedBlock`. -/
 example [∀ n, Countable (L.Relations n)] {A B : Set (RelationalConfiguration L ℕ)}
-    (hA : AnalyticSet A) (hB : AnalyticSet B) (hinv : ActionInvariant B) (hd : Disjoint A B) :
-    ∃ C, A ⊆ C ∧ Disjoint B C ∧ MeasurableSet C ∧ ActionInvariant C := by
+    (hA : AnalyticSet A) (hB : AnalyticSet B) (hinv : MulAction.IsFixedBlock (Equiv.Perm ℕ) B)
+    (hd : Disjoint A B) :
+    ∃ C, A ⊆ C ∧ Disjoint B C ∧ MeasurableSet C ∧ MulAction.IsFixedBlock (Equiv.Perm ℕ) C := by
   set E := MulAction.orbitRel (Equiv.Perm ℕ) (RelationalConfiguration L ℕ)
-  have hsat : Quotient.mk E ⁻¹' (Quotient.mk E '' B) = B := saturated_iff_actionInvariant.mpr hinv
+  have hsat : Quotient.mk E ⁻¹' (Quotient.mk E '' B) = B := saturated_iff_isFixedBlock.mpr hinv
   have hd' : Disjoint (Quotient.mk E '' A) (Quotient.mk E '' B) := by
     rw [Set.disjoint_left]
     rintro _ ⟨a, ha, rfl⟩ hb
     exact Set.disjoint_left.mp hd ha (hsat ▸ hb)
   obtain ⟨C, hCm, hCsat, hAC, hCB⟩ :=
     Setoid.exists_invariant_measurableSet_separating E analyticSet_orbitRel_graph hA hB hd'
-  exact ⟨C, hAC, hCB.symm, hCm, saturated_iff_actionInvariant.mp hCsat⟩
+  exact ⟨C, hAC, hCB.symm, hCm, saturated_iff_isFixedBlock.mp hCsat⟩
 
 /-- The same, with C's `exists_invariant_measurableSet_separating`. C states it on a Polish space
 with its Borel σ-algebra, for a saturated `B` disjoint from `A`; Tau Ceti's needs only a
 Hausdorff space whose open sets are measurable and takes disjoint saturations. C's form is the
 one B's README states, so it applies to B's hypotheses with no glue. -/
 example [∀ n, Countable (L.Relations n)] {A B : Set (RelationalConfiguration L ℕ)}
-    (hA : AnalyticSet A) (hB : AnalyticSet B) (hinv : ActionInvariant B) (hd : Disjoint A B) :
-    ∃ C, A ⊆ C ∧ Disjoint B C ∧ MeasurableSet C ∧ ActionInvariant C := by
+    (hA : AnalyticSet A) (hB : AnalyticSet B) (hinv : MulAction.IsFixedBlock (Equiv.Perm ℕ) B)
+    (hd : Disjoint A B) :
+    ∃ C, A ⊆ C ∧ Disjoint B C ∧ MeasurableSet C ∧ MulAction.IsFixedBlock (Equiv.Perm ℕ) C := by
   obtain ⟨C, hCm, hCsat, hAC, hCB⟩ :=
     BorelEquivalenceRelations.exists_invariant_measurableSet_separating
       (MulAction.orbitRel (Equiv.Perm ℕ) (RelationalConfiguration L ℕ))
-      analyticSet_orbitRel_graph hA hB (saturated_iff_actionInvariant.mpr hinv) hd
-  exact ⟨C, hAC, hCB.symm, hCm, saturated_iff_actionInvariant.mp hCsat⟩
+      analyticSet_orbitRel_graph hA hB (saturated_iff_isFixedBlock.mpr hinv) hd
+  exact ⟨C, hAC, hCB.symm, hCm, saturated_iff_isFixedBlock.mp hCsat⟩
 
 end CtoB
 
@@ -313,20 +292,21 @@ open TauCetiRoadmap.CountableModelCounting (HasPerfectSetOfNonisoModelsOn
 variable {L : FirstOrder.Language.{u, v}} [L.IsRelational] [∀ n, Countable (L.Relations n)]
 
 /-- **D Layer 3, one level** (`countable_bfClasses_or_hasPerfectSet`): Silver relative to the
-Borel set `modelsOf φ` (B's `measurableSet_modelsOf`) for `R = isoSetoid L ℕ` and
-`F = bfEquivSetoidOn ℕ φ β` (Borel by B's `measurableSet_bfEquivSetoid`, refined by `R` by B's
-`isoSetoid_le_bfEquivSetoid`), then the Cantor-to-perfect passage into D's
-`HasPerfectSetOfNonisoModelsOn`. -/
+Borel set `modelsOf φ` (`RelationalConfiguration.measurableSet_modelsOf`) for
+`R = isoSetoid L ℕ` and `F = bfEquivSetoidOn ℕ φ β` (Borel by
+`measurableSet_setOf_bfEquivSetoid`, refined by `R` by `isoSetoid_le_bfEquivSetoid`: B's
+interface (S2), (S4), which B and D both cite as Tau Ceti's), then the Cantor-to-perfect
+passage into D's `HasPerfectSetOfNonisoModelsOn`. -/
 example (φ : L.Sentenceω) {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1) :
     Countable (Quotient (bfEquivSetoidOn ℕ φ β)) ∨ HasPerfectSetOfNonisoModelsOn ℕ φ := by
   have hF : MeasurableSet {p : ↥(modelsOf φ : Set (RelationalConfiguration L ℕ)) ×
       ↥(modelsOf φ : Set (RelationalConfiguration L ℕ)) | bfEquivSetoidOn ℕ φ β p.1 p.2} :=
-    (CountableStructureSpaces.measurableSet_bfEquivSetoid hβ).preimage
+    (RelationalConfiguration.measurableSet_setOf_bfEquivSetoid hβ).preimage
       (measurable_subtype_coe.prodMap measurable_subtype_coe)
   rcases Setoid.countable_or_hasCantorAntichainOn_of_measurableSet
-      (CountableStructureSpaces.measurableSet_modelsOf (α := ℕ) φ) (isoSetoid L ℕ)
+      (RelationalConfiguration.measurableSet_modelsOf (V := ℕ) φ) (isoSetoid L ℕ)
       (bfEquivSetoidOn ℕ φ β)
-      (fun _ _ h => CountableStructureSpaces.isoSetoid_le_bfEquivSetoid β h) hF with h | h
+      (fun _ _ h => RelationalConfiguration.isoSetoid_le_bfEquivSetoid β h) hF with h | h
   · exact Or.inl h
   · exact Or.inr (Setoid.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mp h)
 
@@ -337,12 +317,12 @@ example (φ : L.Sentenceω) {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1) :
     Countable (Quotient (bfEquivSetoidOn ℕ φ β)) ∨ HasPerfectSetOfNonisoModelsOn ℕ φ := by
   have hF : MeasurableSet {p : ↥(modelsOf φ : Set (RelationalConfiguration L ℕ)) ×
       ↥(modelsOf φ : Set (RelationalConfiguration L ℕ)) | bfEquivSetoidOn ℕ φ β p.1 p.2} :=
-    (CountableStructureSpaces.measurableSet_bfEquivSetoid hβ).preimage
+    (RelationalConfiguration.measurableSet_setOf_bfEquivSetoid hβ).preimage
       (measurable_subtype_coe.prodMap measurable_subtype_coe)
   rcases BorelEquivalenceRelations.countable_or_hasCantorAntichainOn_of_measurableSet
-      (CountableStructureSpaces.measurableSet_modelsOf (α := ℕ) φ) (isoSetoid L ℕ)
+      (RelationalConfiguration.measurableSet_modelsOf (V := ℕ) φ) (isoSetoid L ℕ)
       (bfEquivSetoidOn ℕ φ β)
-      (fun _ _ h => CountableStructureSpaces.isoSetoid_le_bfEquivSetoid β h) hF with h | h
+      (fun _ _ h => RelationalConfiguration.isoSetoid_le_bfEquivSetoid β h) hF with h | h
   · exact Or.inl h
   · exact Or.inr ((Adapters.hasPerfectAntichainOn_iff _ _).mp
       (BorelEquivalenceRelations.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mp h))
@@ -374,7 +354,7 @@ example (φ : L.Sentenceω) (n : ℕ) :
     (measurableSet_isoSetoid_fin n).preimage
       (measurable_subtype_coe.prodMap measurable_subtype_coe)
   rcases Setoid.countable_or_hasCantorAntichainOn_of_measurableSet
-      (CountableStructureSpaces.measurableSet_modelsOf (α := Fin n) φ) (isoSetoid L (Fin n))
+      (RelationalConfiguration.measurableSet_modelsOf (V := Fin n) φ) (isoSetoid L (Fin n))
       (isoSetoidOn (Fin n) φ) (fun _ _ h => h) hF with h | h
   · exact Or.inl h
   · exact Or.inr (Setoid.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mp h)
@@ -387,7 +367,7 @@ example (φ : L.Sentenceω) (n : ℕ) :
     (measurableSet_isoSetoid_fin n).preimage
       (measurable_subtype_coe.prodMap measurable_subtype_coe)
   rcases BorelEquivalenceRelations.countable_or_hasCantorAntichainOn_of_measurableSet
-      (CountableStructureSpaces.measurableSet_modelsOf (α := Fin n) φ) (isoSetoid L (Fin n))
+      (RelationalConfiguration.measurableSet_modelsOf (V := Fin n) φ) (isoSetoid L (Fin n))
       (isoSetoidOn (Fin n) φ) (fun _ _ h => h) hF with h | h
   · exact Or.inl h
   · exact Or.inr ((Adapters.hasPerfectAntichainOn_iff _ _).mp
@@ -410,13 +390,12 @@ private theorem measurableSet_isoSetoidOn_of_scottHeight_le {φ : L.Sentenceω} 
   rfl
 
 /-- **D Layer 2, the cardinality form (E2)** under bounded Scott height: the cardinality form of
-Silver's theorem on the standard Borel space `modelsOf φ` (B's `standardBorelSpace_modelsOf`), for
-isomorphism, Borel there by B's `measurableSet_iso_inter_of_scottHeight_le`. -/
+Silver's theorem on the standard Borel space `modelsOf φ` (Tau Ceti's `standardBorelSpace_modelsOf`
+instance), for isomorphism, Borel there by B's `measurableSet_iso_inter_of_scottHeight_le`. -/
 example {φ : L.Sentenceω} {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1)
     (hbound : ∀ c ∈ (modelsOf φ : Set (RelationalConfiguration L ℕ)),
       (letI : L.Structure ℕ := c.toStructure; scottHeight (L := L) ℕ) ≤ β) :
     #(Quotient (isoSetoidOn ℕ φ)) ≤ ℵ₀ ∨ #(Quotient (isoSetoidOn ℕ φ)) = 𝔠 := by
-  haveI := CountableStructureSpaces.standardBorelSpace_modelsOf (L := L) φ
   exact Setoid.mk_quotient_le_aleph0_or_eq_continuum _
     (measurableSet_isoSetoidOn_of_scottHeight_le hβ hbound)
 
@@ -425,30 +404,31 @@ example {φ : L.Sentenceω} {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1)
     (hbound : ∀ c ∈ (modelsOf φ : Set (RelationalConfiguration L ℕ)),
       (letI : L.Structure ℕ := c.toStructure; scottHeight (L := L) ℕ) ≤ β) :
     #(Quotient (isoSetoidOn ℕ φ)) ≤ ℵ₀ ∨ #(Quotient (isoSetoidOn ℕ φ)) = 𝔠 := by
-  haveI := CountableStructureSpaces.standardBorelSpace_modelsOf (L := L) φ
   exact BorelEquivalenceRelations.mk_quotient_le_aleph0_or_eq_continuum _
     (measurableSet_isoSetoidOn_of_scottHeight_le hβ hbound)
 
-/-- **D Layer 1, `isIsolatingRank_scottHeight`, the `isolates` field**: B's
-`nonempty_equiv_of_bfEquiv_of_scottHeight_le` at `M = N = ℕ` with the two decoded structures and
-`β` the Scott height of the first (in `Ordinal.{0}`, the level type of D's `bfEquivSetoid`). -/
+/-- **D Layer 1, the `isolates` field of `TauCeti.isIsolatingRank_scottHeight`** (which D now
+cites directly): `TauCeti.nonempty_equiv_of_bfEquiv_of_scottHeight_le` (B's interface (S5)) at
+`M = N = ℕ` with the two decoded structures and `β` the Scott height of the first (in
+`Ordinal.{0}`, the level type of D's `bfEquivSetoid`). -/
 example (c d : RelationalConfiguration L ℕ)
     (h : bfEquivSetoid L ℕ (letI : L.Structure ℕ := c.toStructure; scottHeight (L := L) ℕ) c d) :
     isoSetoid L ℕ c d :=
   RelationalConfiguration.isoSetoid_apply.mpr
-    (@CountableStructureSpaces.nonempty_equiv_of_bfEquiv_of_scottHeight_le L _ ℕ ℕ c.toStructure
-      d.toStructure _ _ _ le_rfl (RelationalConfiguration.bfEquivSetoid_apply.mp h))
+    (@TauCeti.nonempty_equiv_of_bfEquiv_of_scottHeight_le L _ ℕ c.toStructure _ ℕ d.toStructure _
+      _ le_rfl (RelationalConfiguration.bfEquivSetoid_apply.mp h))
 
 /-- **D 4g, Morleyization transport**: `Setoid.hasCantorAntichainOn_image_iff` between the coding
 spaces of `L` and of the Morleyization (A's interface, Tau Ceti's `morleyize`), applied to D's
 `morleyCode` with D's `measurableEmbedding_morleyCode` and `isoSetoid_morleyCode_iff`; the
-countability of the Morleyized relation symbols is A's `countable_relations_morleyize`. This is
+countability of the Morleyized relation symbols is Tau Ceti's `countable_relations_morleyize`
+(A's interface). This is
 the proof D's `hasCantorAntichainOn_image_morleyCode_iff` names, with nothing assumed. -/
 example (Φ : Set (Σ n, L.BoundedFormulaω Empty n)) (hΦ : Φ.Countable)
     (K : Set (RelationalConfiguration L ℕ)) :
     (isoSetoid (L.morleyize Φ) ℕ).HasCantorAntichainOn (morleyCode Φ '' K) ↔
       (isoSetoid L ℕ).HasCantorAntichainOn K := by
-  haveI := InfinitaryModelExistence.countable_relations_morleyize (L := L) hΦ
+  haveI := Language.countable_relations_morleyize (L := L) hΦ
   haveI : ∀ n, Countable ((L.morleyize Φ).Relations n) := fun n =>
     (sigma_mk_injective (i := n)).countable
   exact Setoid.hasCantorAntichainOn_image_iff (measurableEmbedding_morleyCode Φ hΦ)
@@ -460,7 +440,7 @@ example (Φ : Set (Σ n, L.BoundedFormulaω Empty n)) (hΦ : Φ.Countable)
     (K : Set (RelationalConfiguration L ℕ)) :
     (isoSetoid (L.morleyize Φ) ℕ).HasCantorAntichainOn (morleyCode Φ '' K) ↔
       (isoSetoid L ℕ).HasCantorAntichainOn K := by
-  haveI := InfinitaryModelExistence.countable_relations_morleyize (L := L) hΦ
+  haveI := Language.countable_relations_morleyize (L := L) hΦ
   haveI : ∀ n, Countable ((L.morleyize Φ).Relations n) := fun n =>
     (sigma_mk_injective (i := n)).countable
   rw [← Adapters.hasCantorAntichainOn_iff, ← Adapters.hasCantorAntichainOn_iff]
@@ -473,21 +453,23 @@ end BCtoD
 
 section AtoD
 
-open TauCetiRoadmap.CountableModelCounting (lift_countableModelCount_onBoundedFormulaInf
-  VaughtConjecture HasVaughtDichotomy sentenceTheory morleyCode toStructure_morleyCode)
+open TauCetiRoadmap.CountableModelCounting (VaughtConjecture HasVaughtDichotomy sentenceTheory
+  morleyCode toStructure_morleyCode)
 
 variable {L : FirstOrder.Language.{u, v}}
 
-/-- **D Layer 0 transport (M0, M4)**: D's `lift_countableModelCount_onBoundedFormulaInf` at the
-small presentation of A's Layer 0.3, moving the count to `Language.{0, 0}`. A relational language
-has countably many function symbols (none), so the small presentation exists. -/
+/-- **D Layer 0 transport (M0, M4)**: Tau Ceti's
+`LEquiv.lift_countableModelCount_onBoundedFormulaInf`, which D cites, at the small presentation of
+A's Layer 0.3, moving the count to `Language.{0, 0}`. A relational language has countably many
+function symbols (none), so the small presentation exists. -/
 example [L.IsRelational] [Countable (Σ l, L.Relations l)] (φ : L.Sentenceω) :
     Cardinal.lift.{0} (countableModelCount φ) =
       Cardinal.lift.{v} (countableModelCount
         (L.smallPresentationEquiv.toLHom.onBoundedFormulaInf φ)) :=
-  lift_countableModelCount_onBoundedFormulaInf L.smallPresentationEquiv φ
+  LEquiv.lift_countableModelCount_onBoundedFormulaInf L.smallPresentationEquiv φ
 
-/-- **D Layer 0 transport**, the realization step on codes, by A's `realize_smallPresentation`:
+/-- **D Layer 0 transport**, the realization step on codes, by `Language.realize_smallPresentation`
+(A's Layer 0.3, as Tau Ceti implements it):
 `c ∈ modelsOf φ` iff the reinterpreted structure realizes the transported sentence. -/
 example [L.IsRelational] [Countable (Σ l, L.Relations l)] (φ : L.Sentenceω)
     (c : RelationalConfiguration L ℕ) :
@@ -498,7 +480,7 @@ example [L.IsRelational] [Countable (Σ l, L.Relations l)] (φ : L.Sentenceω)
         (L.smallPresentationEquiv.invLHom.reduct ℕ) := by
   letI : L.Structure ℕ := c.toStructure
   rw [RelationalConfiguration.mem_modelsOf]
-  exact (InfinitaryModelExistence.realize_smallPresentation φ Empty.elim Fin.elim0).symm
+  exact (L.realize_smallPresentation φ Empty.elim Fin.elim0).symm
 
 /-- **D Layer 5, universes** (`vaughtConjecture_iff_forall_universe`): D's `VaughtConjecture`,
 quantified over `Language.{0, 0}`, applies to the small presentation of a countable relational
@@ -508,12 +490,12 @@ example [L.IsRelational] [Countable (Σ l, L.Relations l)] (h : VaughtConjecture
     HasVaughtDichotomy (L.smallPresentationEquiv.toLHom.onBoundedFormulaInf φ) :=
   h L.smallPresentation _
 
-/-- **D 4f, fragment spectra**: A's `Fragment.generated_countable` on the range of a list of
-sentences. -/
+/-- **D 4f, fragment spectra**: `Fragment.generated_countable` (A's Layer 1, in Tau Ceti) on the
+range of a list of sentences. -/
 example (θ : ℕ → L.Sentenceω) :
     (Fragment.generated
       (range fun k => (⟨0, θ k⟩ : Σ n, L.BoundedFormulaω Empty n))).toSet.Countable :=
-  InfinitaryModelExistence.Fragment.generated_countable (countable_range _)
+  Language.Fragment.generated_countable (countable_range _)
 
 /-- **D 4f**: the arity-0 spectrum of `Fragment.generated` of the range of a list `θ` determines
 its truth sequences, with A's `fragmentType` read in decoded codes and D's `sentenceTheory`. -/
@@ -540,9 +522,9 @@ example [L.IsRelational] (θ : ℕ → L.Sentenceω) (c d : RelationalConfigurat
 
 /-- **D 4g, canonical expansion**: the code `morleyCode Φ c` of D's canonical expansion is a code
 of the image of `φ` along `lhomMorleyize Φ` exactly when `c` is a code of `φ`: D's
-`toStructure_morleyCode` identifies the decoded structure with the canonical expansion, and A's
-`realize_onBoundedFormulaInf` (with A's `isExpansionOn_morleyExpansion`) passes `φ` along the
-inclusion. -/
+`toStructure_morleyCode` identifies the decoded structure with the canonical expansion, and
+`LHom.realize_onBoundedFormulaInf` (A's Layer 0.1, in Tau Ceti; the expansion instance is Tau
+Ceti's `isExpansionOn_morleyExpansion`) passes `φ` along the inclusion. -/
 example [L.IsRelational] (Φ : Set (Σ n, L.BoundedFormulaω Empty n)) (φ : L.Sentenceω)
     (c : RelationalConfiguration L ℕ) :
     morleyCode Φ c ∈ (modelsOf ((lhomMorleyize Φ).onBoundedFormulaInf φ) :
@@ -552,12 +534,11 @@ example [L.IsRelational] (Φ : Set (Σ n, L.BoundedFormulaω Empty n)) (φ : L.S
     toStructure_morleyCode]
   letI : L.Structure ℕ := c.toStructure
   letI := morleyExpansion Φ ℕ
-  haveI := InfinitaryModelExistence.isExpansionOn_morleyExpansion Φ ℕ
-  exact InfinitaryModelExistence.realize_onBoundedFormulaInf (lhomMorleyize Φ) φ _ _
+  exact (lhomMorleyize Φ).realize_onBoundedFormulaInf φ _ _
 
 end AtoD
 
-/-! ## 5. A → E: reducts, isolators, countable `A`-elementary substructures -/
+/-! ## 5. A → E: reducts, isolators, countable `A`-elementary substructures, graph translation -/
 
 section AtoE
 
@@ -567,17 +548,19 @@ variable {L : FirstOrder.Language.{u, v}}
 
 /-- **E 3.4, the reduct step** of `exists_model_card_eq_of_forall_beth`: the EM model realizes the
 image `g.onBoundedFormulaInf φ` (E's `exists_emSource_of_forall_beth`, with `L'` in
-`Language.{0, 0}`); its reduct along `g` realizes `φ` by A's `realize_onBoundedFormulaInf`. -/
+`Language.{0, 0}`); its reduct along `g` realizes `φ` by `LHom.realize_onBoundedFormulaInf` (A's
+Layer 0.1). -/
 example {L' : FirstOrder.Language.{0, 0}} (g : L →ᴸ L') (φ : L.Sentenceω) (E : Type w)
     [L'.Structure E] (hE : SentenceInf.Realize (g.onBoundedFormulaInf φ) E) :
     @SentenceInf.Realize L ℕ φ E (g.reduct E) := by
   letI := g.reduct E
-  exact (InfinitaryModelExistence.realize_onBoundedFormulaInf g φ _ _).mp hE
+  exact (g.realize_onBoundedFormulaInf φ _ _).mp hE
 
 /-- **E 5.4, countable companion seed**: for E's `IsLω₁ωSmall M` (stated with A's
-`realizedTypes`), A's `exists_isolatingFormula` gives an isolator for each realized type, A's
-`Fragment.generated_countable` a countable fragment containing them, and A's
-`exists_countable_aElementary_substructure` with `X = ∅` a countable `A`-elementary substructure
+`realizedTypes`), `exists_isolatingFormula` gives an isolator for each realized type,
+`Fragment.generated_countable` a countable fragment containing them, and
+`exists_countable_aElementary_substructure` (A's Layers 4, 1 and 2, all in Tau Ceti) with
+`X = ∅` a countable `A`-elementary substructure
 (no function symbols: `L` is relational). -/
 example [L.IsRelational] [Countable (Σ l, L.Relations l)] (M : Type w) [L.Structure M]
     (hM : IsLω₁ωSmall (L := L) M) :
@@ -590,17 +573,36 @@ example [L.IsRelational] [Countable (Σ l, L.Relations l)] (M : Type w) [L.Struc
   have hiso : ∀ (n : ℕ) (p : realizedTypes (L := L) M n), ∃ χ : L.BoundedFormulaω Empty n,
       ∀ b : Fin n → M, χ.Realize Empty.elim b ↔ infinitaryType (L := L) M b = p.1 := by
     rintro n ⟨p, a, rfl⟩
-    exact InfinitaryModelExistence.exists_isolatingFormula (hM n) a
+    exact Language.exists_isolatingFormula (hM n) a
   choose χ hχ using hiso
   let S : Set (Σ n, L.BoundedFormulaω Empty n) :=
     ⋃ n, range fun p : realizedTypes (L := L) M n => (⟨n, χ n p⟩ : Σ n, L.BoundedFormulaω Empty n)
   have hS : S.Countable :=
     countable_iUnion fun n => by haveI := (hM n).to_subtype; exact countable_range _
-  have hF := InfinitaryModelExistence.Fragment.generated_countable hS
-  obtain ⟨N, -, hN, hNc⟩ := InfinitaryModelExistence.exists_countable_aElementary_substructure
+  have hF := Language.Fragment.generated_countable hS
+  obtain ⟨N, -, hN, hNc⟩ := Language.exists_countable_aElementary_substructure
     (Fragment.generated S) hF (X := (∅ : Set M)) countable_empty
   exact ⟨_, N, hF, fun n a => ⟨χ n ⟨infinitaryType M a, a, rfl⟩,
     Fragment.subset_generated S (mem_iUnion.2 ⟨n, _, rfl⟩), hχ n _⟩, hN, hNc⟩
+
+open TauCetiRoadmap.HanfNumbers (IsCompleteSentence isLω₁ωSmall_iff_exists_isCompleteSentence) in
+/-- **E 5.6, the forward step of `isLω₁ωSmall_iff_exists_isCompleteSentence_of_countable`**: for
+`L` with countably many function and relation symbols, E's relational headline
+`isLω₁ωSmall_iff_exists_isCompleteSentence`, applied to the graph language of `L` (relational with
+countably many relation symbols, by Tau Ceti's instances) and the graph expansion of `M`, gives a
+complete `θ`; its back-translation (A's Layer 6, Tau Ceti's `BoundedFormulaInf.backTranslate`
+with `realize_backTranslate`) holds in `M` and, in every `L`-structure, exactly when `θ` holds in
+the graph expansion. This is the sentence `σ` of E's README 5.6. -/
+example [Countable (Σ l, L.Functions l)] [Countable (Σ l, L.Relations l)] (M : Type w)
+    [L.Structure M] (hM : @IsLω₁ωSmall L.graphLanguage M (graphExpansion L M)) :
+    ∃ θ : L.graphLanguage.Sentenceω, IsCompleteSentence.{_, _, w} θ ∧
+      SentenceInf.Realize θ.backTranslate M ∧
+      ∀ (N : Type w) [L.Structure N], SentenceInf.Realize θ.backTranslate N ↔
+        @SentenceInf.Realize L.graphLanguage ℕ θ N (graphExpansion L N) := by
+  obtain ⟨θ, hθ, hMθ⟩ :=
+    (@isLω₁ωSmall_iff_exists_isCompleteSentence L.graphLanguage _ _ M (graphExpansion L M)).1 hM
+  exact ⟨θ, hθ, (BoundedFormulaInf.realize_backTranslate θ _ _).2 hMθ,
+    fun N _ => BoundedFormulaInf.realize_backTranslate θ _ _⟩
 
 end AtoE
 
@@ -634,7 +636,7 @@ open TauCetiRoadmap.HanfNumbers (exists_emSource_of_forall_beth exists_emModel_c
 `exists_model_card_eq_of_forall_beth`, composed from its parts: E's
 `exists_emSource_of_forall_beth` gives a source in `Type` over `L' : Language.{0, 0}`; E's
 `exists_emModel_card_eq` stretches it along `κ.ord.ToType` to a model in `Type w` of cardinality
-`κ`; A's `realize_onBoundedFormulaInf` passes `φ` to the reduct along `g`. -/
+`κ`; `LHom.realize_onBoundedFormulaInf` (A's Layer 0.1) passes `φ` to the reduct along `g`. -/
 example (φ : L.Sentenceω)
     (h : ∀ α < Ordinal.omega.{w} 1,
       ∃ (M : Type w) (_ : L.Structure M), SentenceInf.Realize φ M ∧ ℶ_ α ≤ #M)
@@ -646,7 +648,7 @@ example (φ : L.Sentenceω)
   obtain ⟨E, _, -, hE, -, -, hcard⟩ := exists_emModel_card_eq hsrc ha κ.ord.ToType
   letI := g.reduct E
   refine ⟨E, g.reduct E,
-    (InfinitaryModelExistence.realize_onBoundedFormulaInf g φ _ _).mp ((hE _ hmem).mp hφ), ?_⟩
+    (g.realize_onBoundedFormulaInf φ _ _).mp ((hE _ hmem).mp hφ), ?_⟩
   rw [hcard, Cardinal.mk_toType, Cardinal.card_ord]
 
 end Universes
