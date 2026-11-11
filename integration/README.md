@@ -10,13 +10,13 @@ the consumer's README needs.
 
 The tree is TauCetiRoadmap `main` at 35884a8c, octopus-merged (540f108f) with the six heads as
 revised after the second round of reviews, then merged (c9c13c3b) with A, C, B and D as revised
-after the 10 November reviews, so `TauCetiRoadmap/<Dir>/` here is what was checked.
+after the 10 November reviews and (b3b9502b) with the B and C follow-ups, so `TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
 | InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 6601a3b5 |
-| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | e4077268 |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | eb1eee58 |
+| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | 81fe877e |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | cf843fd3 |
 | CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | a25a711d |
 | HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 2dc7d398 |
 | RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | d6486263 |
@@ -85,6 +85,13 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    symbols; B's `lopez_escobar` now holds for every relational language, by B's step 0, which
    reduces to the countable sublanguage of the atoms a Borel set depends on.
 
+   Step 0 itself is checked after section 1: `preimage_reductConfiguration_eq_modelsOf` shows,
+   for relational `L₀`, `L` and `g : L₀ →ᴸ L` with no countability assumed, that the preimage of
+   `B₀ = modelsOf φ₀` under Tau Ceti's `LHom.reductConfiguration` is
+   `modelsOf (g.onBoundedFormulaInf φ₀)`, by Tau Ceti's `realize_sentenceInf_reductConfiguration`
+   (a guard checks that it uses that lemma); and an example applies B's `lopezEscobar_iff` at an
+   arbitrary relational `L`, with no countability instance in scope, to that preimage.
+
    Most suppliers are now Tau Ceti declarations that owner and consumer both use. Where a
    consumer's draft cites a Tau Ceti or Mathlib declaration directly, the example uses that
    declaration; an example is kept when it still checks a fit, a native theorem applied to the
@@ -100,7 +107,8 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
 ## Examples dropped in the port
 
 The pre-migration `Integration.lean` had 26 examples in sections 1–6; 22 are ported, 4 dropped,
-and 2 added (`lopezEscobar_steps34` and the E 5.6 graph-translation step), 24 in all. The checks
+and 4 added (`lopezEscobar_steps34`, the two step-0 checks of B's general López–Escobar and the
+E 5.6 graph-translation step), 26 in all. The checks
 of C's own statements added in the meantime are gone again (see below).
 
 | old example | reason |
@@ -133,6 +141,9 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
   change (its docstring now says how the countable case it checks relates to the general one).
 * **D** drops a countability hypothesis from `hasVaughtDichotomy_and_infiniteSentence_iff`, which
   no example uses.
+* **B** follow-up cf843fd3 (docstrings and README: the general López–Escobar theorem is for the
+  product σ-algebra) and **C** follow-up 81fe877e (README only) change no statement. Two checks of
+  B's step 0 are added (see "What is checked").
 
 ### Second-round reviews (43633a12)
 

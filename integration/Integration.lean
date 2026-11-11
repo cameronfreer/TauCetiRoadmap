@@ -40,7 +40,7 @@ set_option linter.style.haveILetI false
 -- Theorems are elaborated synchronously so that `#assert_uses` sees their proof terms.
 set_option Elab.async false
 
-universe u v w
+universe u v w u' v'
 
 open FirstOrder FirstOrder.Language MeasureTheory Cardinal Set Descriptive
 open TauCeti
@@ -206,6 +206,46 @@ theorem lopezEscobar_steps34 (B : Set (RelationalConfiguration L ℕ)) (T₀ T�
     exact h₁ ℕ (LHom.pcMem_of_isExpansionOn (hc₁ c g hg)) hθ
 
 end AtoB
+
+/-! ### B 5.3 step 0: López–Escobar for every relational language
+
+B states López–Escobar (`lopez_escobar`, `lopezEscobar_iff`, ...) for every relational `L`, with no
+countability hypothesis. Its step 0 reduces to the countable sublanguage `L₀` of the atoms a set
+measurable for the product σ-algebra depends on: with `g : L₀ →ᴸ L` the inclusion, `B` is the
+preimage of an `L₀`-class `B₀` under Tau Ceti's `LHom.reductConfiguration`, and
+`realize_sentenceInf_reductConfiguration` carries a sentence for `B₀` to one for `B`. -/
+
+section StepZero
+
+variable {L₀ : FirstOrder.Language.{u', v'}} {L : FirstOrder.Language.{u, v}}
+  [L₀.IsRelational] [L.IsRelational]
+
+/-- **B 5.3 step 0, the transfer.** If `B₀ = modelsOf φ₀` for codes of the sublanguage `L₀`, then
+the preimage of `B₀` under the reduct along `g : L₀ →ᴸ L` is the model class of the image of `φ₀`
+along `g`, by Tau Ceti's `LHom.realize_sentenceInf_reductConfiguration`. No countability of
+either language is used. -/
+theorem preimage_reductConfiguration_eq_modelsOf (g : L₀ →ᴸ L)
+    {B₀ : Set (RelationalConfiguration L₀ ℕ)} {φ₀ : L₀.Sentenceω} (hB₀ : B₀ = modelsOf φ₀) :
+    g.reductConfiguration ⁻¹' B₀ =
+      (modelsOf (g.onBoundedFormulaInf φ₀) : Set (RelationalConfiguration L ℕ)) := by
+  subst hB₀
+  ext c
+  rw [Set.mem_preimage, RelationalConfiguration.mem_modelsOf,
+    RelationalConfiguration.mem_modelsOf]
+  exact (g.realize_sentenceInf_reductConfiguration c φ₀).symm
+
+/-- **B's `lopezEscobar_iff` at an arbitrary relational language.** With only `[L.IsRelational]`
+in scope (no countability instance for `L` or `L₀`), B's headline applies to the class obtained
+by step 0, whose sentence the transfer above supplies: the preimage of a model class of `L₀` is
+Borel and isomorphism invariant. -/
+example (g : L₀ →ᴸ L) (φ₀ : L₀.Sentenceω) :
+    MeasurableSet (g.reductConfiguration ⁻¹' (modelsOf φ₀ : Set (RelationalConfiguration L₀ ℕ))) ∧
+      RelationalConfiguration.IsomorphismInvariant
+        (g.reductConfiguration ⁻¹' (modelsOf φ₀ : Set (RelationalConfiguration L₀ ℕ))) :=
+  CountableStructureSpaces.lopezEscobar_iff.mpr
+    ⟨_, preimage_reductConfiguration_eq_modelsOf g rfl⟩
+
+end StepZero
 
 /-! ## 2. C → B: Gδ subspaces, `AnalyticSet.prod`, invariant separation
 
@@ -583,3 +623,6 @@ end TauCetiRoadmap.Integration
 -- The PC-separation boundary check really uses the owner's `pcSeparation`.
 #assert_uses TauCetiRoadmap.Integration.lopezEscobar_steps34
   TauCetiRoadmap.InfinitaryModelExistence.pcSeparation
+-- B's step 0 transfer uses Tau Ceti's reduct lemma.
+#assert_uses TauCetiRoadmap.Integration.preimage_reductConfiguration_eq_modelsOf
+  FirstOrder.Language.LHom.realize_sentenceInf_reductConfiguration
