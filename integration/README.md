@@ -8,16 +8,16 @@ the consumer's README needs.
 
 ## Revisions
 
-The tree is TauCetiRoadmap `main` at 35884a8c, octopus-merged (540f108f) with the six heads
-below, as revised after the second round of reviews, so `TauCetiRoadmap/<Dir>/` here is what was
-checked.
+The tree is TauCetiRoadmap `main` at 35884a8c, octopus-merged (540f108f) with the six heads as
+revised after the second round of reviews, then merged (c9c13c3b) with A, C, B and D as revised
+after the 10 November reviews, so `TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
-| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 35db8dff |
-| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | 68c5f0bf |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 31039c31 |
-| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 8584c5d3 |
+| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 6601a3b5 |
+| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | e4077268 |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | eb1eee58 |
+| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | a25a711d |
 | HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 2dc7d398 |
 | RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | d6486263 |
 
@@ -25,8 +25,9 @@ RandomGraphs is compiled with the others but takes no part in the substitution c
 
 Pins (those of `main` at 35884a8c): Lean `v4.36.0-rc2`, Mathlib 1b1ccf4b0, Tau Ceti 2fd255d99.
 
-The run against the previous heads at the same pins (A 786457c7, C 6908d404, B 7cb889e0,
-D e2b39535, E c716a691, RandomGraphs 1752d9dd) is 7d5a38c9; the changes since are listed under
+Runs against earlier heads at the same pins: 7d5a38c9 (A 786457c7, C 6908d404, B 7cb889e0,
+D e2b39535, E c716a691, RandomGraphs 1752d9dd) and 43633a12 (A 35db8dff, C 68c5f0bf, B 31039c31,
+D 8584c5d3, E and RandomGraphs as here). The changes since are listed under
 [Changes for the revised heads](#changes-for-the-revised-heads).
 
 Earlier runs of this check, at the old pins (Lean `v4.35.0-rc3`, Tau Ceti 358314d) and against the
@@ -47,23 +48,21 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    `Owner:`, `checked against revision`) and fails on any marker it does not expect. A marker
    naming only Tau Ceti or Mathlib as owner (a marked stand-in for a declaration absent at the pin)
    would be allowed and reported. At these heads the only markers are B's `pcSeparation` block
-   and E's module docstring sentence "There are no stand-ins."
+   (which records A's revision 35db8dff; A's statement is unchanged at 6601a3b5, as the
+   identity check confirms) and E's module docstring sentence "There are no stand-ins."
 3. **Compilation.** A, C, D, E and RandomGraphs compile unchanged and B' compiles with A's
    `pcSeparation`, each with the pinned `lean`, in dependency order, into `_build/olean`. A file
    importing A, B', C, D and E together must compile too (`CoImport` in the output). C's
-   prototype once redeclared root names that Tau Ceti declares (fixed in #1616 at 6908d404, and
-   since then C imports Tau Ceti's declarations instead of restating them); the run fails, naming
-   the declaration, if such a clash returns.
-4. **`Adapters.lean`** proves, from Tau Ceti's unfolding lemmas, that C's `HasPerfectAntichainOn`,
-   `HasCantorAntichainOn` and `IsThinOn` are Tau Ceti's `Setoid.HasPerfectAntichainOn`,
-   `Setoid.HasCantorAntichainOn` and `Setoid.IsThinOn`, the vocabulary in which D states its
-   targets.
-5. **`Integration.lean`** imports A, B', C, D, E and the adapters and has three parts:
+   prototype once redeclared root names that Tau Ceti declares (fixed in #1616 at 6908d404); since
+   e4077268 it states only the two targets Tau Ceti lacks (`isSmooth_of_isClosed` and the
+   analytic perfect set theorem) and imports Tau Ceti for the rest. The run fails, naming the
+   declaration, if a clash returns.
+4. **`Integration.lean`** imports A, B', C, D and E and has three parts:
    * name-resolution guards: `#assert_absent` fails if B's `pcSeparation` (or any stand-in removed
      before or during the migration) is still declared, and `#assert_uses` fails unless a consumer
      declaration's type or proof term mentions the owner's constant, for instance D's
      `HasPerfectSetOfNonisoModelsOn` and Tau Ceti's `Setoid.HasPerfectAntichainOn` (C's
-     interface), D's `isoSetoid_morleyCode_iff` and `nonempty_morleyEquiv_iff` (A's), E's
+     interface, which C now cites as Tau Ceti's), D's `isoSetoid_morleyCode_iff` and `nonempty_morleyEquiv_iff` (A's), E's
      `IsLω₁ωSmall` and `realizedTypes` (A's), and `lopezEscobar_steps34` (below) and A's
      `pcSeparation`;
    * one `example` for each cross-roadmap use, sections 1–5: A → B (`pcSeparation` and
@@ -82,30 +81,16 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    `exists_pcSentence`, turn tree representations of `B` and of its complement into a sentence
    `θ` with `B = modelsOf θ`, the conclusion of B's `lopez_escobar`. Its hypotheses are B's own
    earlier steps (the tree representations of Layer 3 and the disjointness of step 2, which uses
-   invariance), not supplier lemmas.
+   invariance), not supplier lemmas. Like B's steps 1–4 it assumes countably many relation
+   symbols; B's `lopez_escobar` now holds for every relational language, by B's step 0, which
+   reduces to the countable sublanguage of the atoms a Borel set depends on.
 
    Most suppliers are now Tau Ceti declarations that owner and consumer both use. Where a
    consumer's draft cites a Tau Ceti or Mathlib declaration directly, the example uses that
    declaration; an example is kept when it still checks a fit, a native theorem applied to the
-   consumer's own setoids, model classes or codes. Where C supplies B or D and C still states the
-   result, the example with the Tau Ceti declaration the consumer's README cites is followed by
-   the same use of C's own statement (six examples: C's `exists_invariant_measurableSet_separating`
-   on B's coding space; C's relative Silver theorem twice, its Cantor-to-perfect, subtype and
-   continuum lemmas, its cardinality form and its `hasCantorAntichainOn_image_iff` on D's model
-   classes and Morley codes). `IsGδ.standardBorelSpace` and `AnalyticSet.prod` are now cited by C
-   itself as Tau Ceti's and are checked only in that form. The integration files contain no
-   `sorry`, and no hypothesis stands in for a missing supplier lemma.
-
-### C's statements against Tau Ceti's
-
-All of C's statements used fit the consumers' objects as stated. They differ from the Tau Ceti
-declarations the consumers cite only in hypotheses, never in conclusions:
-
-| C's statement | Tau Ceti's | difference |
-|---|---|---|
-| `exists_invariant_measurableSet_separating` | `Setoid.exists_invariant_measurableSet_separating` | C: Polish space with its Borel σ-algebra, `B` saturated and `A`, `B` disjoint. Tau Ceti: Hausdorff space whose open sets are measurable, disjoint saturations of `A` and `B`. Tau Ceti's is more general; C's is the form B's README states and applies to B's hypotheses directly, while Tau Ceti's needs a step from a saturated `B` to disjoint saturations. |
-| `hasCantorAntichainOn_iff_hasPerfectAntichainOn` | `Setoid.hasCantorAntichainOn_iff_hasPerfectAntichainOn` | C assumes `PolishSpace X`, Tau Ceti `IsCompletelyMetrizableSpace X`. The coding spaces are Polish, so both apply. |
-| `countable_or_hasCantorAntichainOn_of_measurableSet`, `mk_quotient_le_aleph0_or_eq_continuum`, `hasCantorAntichainOn_subtype_iff`, `HasCantorAntichainOn.continuum_le_mk_quotient`, `hasCantorAntichainOn_image_iff` | the same names (root or `Setoid`) | none, up to binder order |
+   consumer's own setoids, model classes or codes. Every use where C supplies B or D is of this
+   kind: C, B and D all cite the same Tau Ceti declarations, and C states none of them. The
+   integration file contains no `sorry`, and no hypothesis stands in for a missing supplier lemma.
 
 ## What is not checked
 
@@ -115,8 +100,8 @@ declarations the consumers cite only in hypotheses, never in conclusions:
 ## Examples dropped in the port
 
 The pre-migration `Integration.lean` had 26 examples in sections 1–6; 22 are ported, 4 dropped,
-and 8 added (`lopezEscobar_steps34`, the six uses of C's own statements and the E 5.6
-graph-translation step), 30 in all.
+and 2 added (`lopezEscobar_steps34` and the E 5.6 graph-translation step), 24 in all. The checks
+of C's own statements added in the meantime are gone again (see below).
 
 | old example | reason |
 |---|---|
@@ -133,6 +118,23 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
 `Setoid.exists_invariant_measurableSet_separating` takes.
 
 ## Changes for the revised heads
+
+### 10 November reviews (this run)
+
+* **C** deletes every definition and theorem Tau Ceti already has (18 definitions, 42 theorems)
+  and cites Tau Ceti's instead; it states only `isSmooth_of_isClosed` and the analytic perfect
+  set theorem. So `Adapters.lean` (C's antichain vocabulary against Tau Ceti's) is deleted, and so
+  are the six examples that repeated a C-supplied use with C's own statement: invariant
+  separation on B's coding space, relative Silver at one level and on `Fin n`, the
+  Cantor-to-perfect, subtype and continuum lemmas, the cardinality form, and the Morley-code
+  transport. Each had a Tau Ceti twin just before it, which remains. The table comparing C's
+  hypotheses with Tau Ceti's is moot and removed.
+* **B** states López–Escobar for every relational language; `lopezEscobar_steps34` needed no
+  change (its docstring now says how the countable case it checks relates to the general one).
+* **D** drops a countability hypothesis from `hasVaughtDichotomy_and_infiniteSentence_iff`, which
+  no example uses.
+
+### Second-round reviews (43633a12)
 
 The revised heads delete the prototypes' verbatim wrappers of Tau Ceti declarations and rename a
 few declarations. The examples follow the drafts: they now use the Tau Ceti or Mathlib declaration
@@ -174,7 +176,7 @@ From the repository root on this branch, with a `.lake` at the pinned manifest:
 
 ```
 lake exe cache get
-grep -h '^\(public \)\?import TauCeti\.' integration/{Adapters,Integration}.lean \
+grep -h '^\(public \)\?import TauCeti\.' integration/Integration.lean \
     TauCetiRoadmap/{InfinitaryModelExistence,BorelEquivalenceRelations,CountableStructureSpaces,CountableModelCounting,HanfNumbers,RandomGraphs}/Suggested.lean \
   | awk '{print $NF}' | sort -u | xargs lake build
 integration/run.sh
@@ -182,7 +184,7 @@ integration/run.sh
 
 The second step builds (or downloads) the Tau Ceti modules the files import; no roadmap target is
 built by `lake`. `run.sh` then runs `substitute.py` and compiles, in order, A, C, B', D, E,
-RandomGraphs, `Adapters.lean` and `Integration.lean`, each with the pinned `lean` and
+RandomGraphs and `Integration.lean`, each with the pinned `lean` and
 `LEAN_PATH=_build/olean:<lake LEAN_PATH>`. Files with a `module` header need no extra flag:
 `lean -o X.olean` also writes the `X.olean.server` and `X.olean.private` parts that their importers
 read. It prints one line per file with its exit code and number of `sorry` warnings, followed by
@@ -202,12 +204,11 @@ The result at these heads:
 | file | exit | `sorry` warnings |
 |---|---|---|
 | InfinitaryModelExistence | 0 | 8 |
-| BorelEquivalenceRelations | 0 | 44 |
+| BorelEquivalenceRelations | 0 | 2 |
 | CountableStructureSpaces (B') | 0 | 38 (the draft has 39; the deleted stand-in was one) |
 | CountableModelCounting | 0 | 36 |
 | HanfNumbers | 0 | 28 |
 | RandomGraphs | 0 | 62 |
-| Adapters | 0 | 0 |
 | Integration | 0 | 0 |
 
 Perturbing A's `pcSeparation` statement in a scratch copy (adding `[Infinite M]` to the

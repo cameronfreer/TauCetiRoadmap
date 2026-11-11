@@ -7,7 +7,6 @@ import TauCeti.MeasureTheory.Constructions.Polish.GDelta
 import TauCeti.SetTheory.Descriptive.Silver
 import TauCeti.SetTheory.Descriptive.InvariantSeparation
 import TauCeti.ModelTheory.Infinitary.GraphTranslation.BackTranslate
-import TauCetiRoadmap.Integration.Adapters
 
 /-!
 # Supplier-substitution integration check
@@ -25,10 +24,11 @@ both the owner and the consumer use; such a use is kept when it checks that the 
 statement fits the consumer's objects, and dropped (see `README.md`) when it would only restate
 one declaration.
 
-Where C supplies B or D, each use is checked twice: against Tau Ceti's implementation of C's
-interface, which B's and D's READMEs cite, and against C's own statement of it (in the namespace
-`TauCetiRoadmap.BorelEquivalenceRelations`). D states its targets in Tau Ceti's antichain
-vocabulary; `Adapters.lean` shows that C's vocabulary is the same.
+C now states only the two targets Tau Ceti lacks (`isSmooth_of_isClosed` and the analytic perfect
+set theorem), neither of which B or D consumes, and cites Tau Ceti for everything else. Where C
+supplies B or D, the uses are therefore checked against Tau Ceti's declarations, which C, B and D
+all cite. C is imported so that a clash between its declarations and the others' would fail
+here.
 
 Nothing here is `sorry`, and no hypothesis stands in for a missing supplier lemma. Hypotheses
 that are a consumer's own earlier step (the disjointness step 2 of B 5.3, the tree
@@ -172,7 +172,9 @@ example (T : tree (Bool × ℕ)) (ψ : (L.sum pcWitnessLanguage).Sentenceω)
 `B` and `T₁` of its complement (B Layer 3) and the disjointness of the projective classes of their
 PC sentences (B 5.3 step 2, B's own proof obligation, which uses invariance), A's `pcSeparation`
 applied to the PC sentences of B's `exists_pcSentence` yields a sentence whose model class is
-`B`: the conclusion of B's `lopez_escobar`. -/
+`B`: the conclusion of B's `lopez_escobar`. Steps 1–4 assume countably many relation symbols, as
+here; B's `lopez_escobar` holds for every relational language, by B's step 0, which reduces to the
+countable sublanguage of the atoms a Borel set depends on. -/
 theorem lopezEscobar_steps34 (B : Set (RelationalConfiguration L ℕ)) (T₀ T₁ : tree (Bool × ℕ))
     (hT₀ : ∀ c, c ∈ B ↔ ∃ g : ℕ → ℕ, (fun n => (queryCode c n, g n)) ∈ body T₀)
     (hT₁ : ∀ c, c ∉ B ↔ ∃ g : ℕ → ℕ, (fun n => (queryCode c n, g n)) ∈ body T₁)
@@ -209,9 +211,7 @@ end AtoB
 
 B's README names these as BorelEquivalenceRelations results "as implemented at the pin":
 Mathlib's `IsGδ.polishSpace`, Tau Ceti's `IsGδ.standardBorelSpace`, `AnalyticSet.prod` and
-`Setoid.exists_invariant_measurableSet_separating`. C's README now cites the first three as Tau
-Ceti's and no longer states them, so only the separation theorem is also checked against C's own
-statement. -/
+`Setoid.exists_invariant_measurableSet_separating`, which C's README also cites as Tau Ceti's. -/
 
 section CtoB
 
@@ -260,29 +260,14 @@ example [∀ n, Countable (L.Relations n)] {A B : Set (RelationalConfiguration L
     Setoid.exists_invariant_measurableSet_separating E analyticSet_orbitRel_graph hA hB hd'
   exact ⟨C, hAC, hCB.symm, hCm, saturated_iff_isFixedBlock.mp hCsat⟩
 
-/-- The same, with C's `exists_invariant_measurableSet_separating`. C states it on a Polish space
-with its Borel σ-algebra, for a saturated `B` disjoint from `A`; Tau Ceti's needs only a
-Hausdorff space whose open sets are measurable and takes disjoint saturations. C's form is the
-one B's README states, so it applies to B's hypotheses with no glue. -/
-example [∀ n, Countable (L.Relations n)] {A B : Set (RelationalConfiguration L ℕ)}
-    (hA : AnalyticSet A) (hB : AnalyticSet B) (hinv : MulAction.IsFixedBlock (Equiv.Perm ℕ) B)
-    (hd : Disjoint A B) :
-    ∃ C, A ⊆ C ∧ Disjoint B C ∧ MeasurableSet C ∧ MulAction.IsFixedBlock (Equiv.Perm ℕ) C := by
-  obtain ⟨C, hCm, hCsat, hAC, hCB⟩ :=
-    BorelEquivalenceRelations.exists_invariant_measurableSet_separating
-      (MulAction.orbitRel (Equiv.Perm ℕ) (RelationalConfiguration L ℕ))
-      analyticSet_orbitRel_graph hA hB (saturated_iff_isFixedBlock.mpr hinv) hd
-  exact ⟨C, hAC, hCB.symm, hCm, saturated_iff_isFixedBlock.mp hCsat⟩
-
 end CtoB
 
 /-! ## 3. B, C → D: Silver on model classes, the cardinality form, Morley-code transport
 
 D consumes C's perfect-set vocabulary (E0), Silver relative to a Borel subset (E1) and its
 cardinality form (E2) as Tau Ceti implements them, and B's Borelness, refinement and Scott-height
-results; the examples apply them to D's own setoids and model classes. Each C-supplied example is
-followed by the same use of C's own statements, carried to D's Tau Ceti vocabulary by
-`Adapters.lean`. -/
+results; the examples apply them to D's own setoids and model classes. C's README cites the same
+Tau Ceti declarations. -/
 
 section BCtoD
 
@@ -310,23 +295,6 @@ example (φ : L.Sentenceω) {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1) :
   · exact Or.inl h
   · exact Or.inr (Setoid.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mp h)
 
-/-- The same, with C's `countable_or_hasCantorAntichainOn_of_measurableSet` (same hypotheses as
-Tau Ceti's) and C's `hasCantorAntichainOn_iff_hasPerfectAntichainOn` (C assumes a Polish space,
-Tau Ceti a completely metrizable one). -/
-example (φ : L.Sentenceω) {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1) :
-    Countable (Quotient (bfEquivSetoidOn ℕ φ β)) ∨ HasPerfectSetOfNonisoModelsOn ℕ φ := by
-  have hF : MeasurableSet {p : ↥(modelsOf φ : Set (RelationalConfiguration L ℕ)) ×
-      ↥(modelsOf φ : Set (RelationalConfiguration L ℕ)) | bfEquivSetoidOn ℕ φ β p.1 p.2} :=
-    (RelationalConfiguration.measurableSet_setOf_bfEquivSetoid hβ).preimage
-      (measurable_subtype_coe.prodMap measurable_subtype_coe)
-  rcases BorelEquivalenceRelations.countable_or_hasCantorAntichainOn_of_measurableSet
-      (RelationalConfiguration.measurableSet_modelsOf (V := ℕ) φ) (isoSetoid L ℕ)
-      (bfEquivSetoidOn ℕ φ β)
-      (fun _ _ h => RelationalConfiguration.isoSetoid_le_bfEquivSetoid β h) hF with h | h
-  · exact Or.inl h
-  · exact Or.inr ((Adapters.hasPerfectAntichainOn_iff _ _).mp
-      (BorelEquivalenceRelations.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mp h))
-
 /-- **D Layer 0, `HasPerfectlyManyCountableModels.countableModelCount_eq`, one tier**: a perfect
 set gives `𝔠 ≤ #(Quotient (isoSetoidOn α φ))`. The perfect set of D's definition becomes a Cantor
 antichain in the coding space, then one on the subtype `modelsOf φ` for the restricted relation
@@ -335,14 +303,6 @@ example {α : Type} [Countable α] (φ : L.Sentenceω) (h : HasPerfectSetOfNonis
     𝔠 ≤ #(Quotient (isoSetoidOn α φ)) :=
   (Setoid.hasCantorAntichainOn_subtype_iff.mpr
     (Setoid.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mpr h)).continuum_le_mk_quotient
-
-/-- The same, with C's `hasCantorAntichainOn_iff_hasPerfectAntichainOn`,
-`hasCantorAntichainOn_subtype_iff` and `HasCantorAntichainOn.continuum_le_mk_quotient`. -/
-example {α : Type} [Countable α] (φ : L.Sentenceω) (h : HasPerfectSetOfNonisoModelsOn α φ) :
-    𝔠 ≤ #(Quotient (isoSetoidOn α φ)) :=
-  (BorelEquivalenceRelations.hasCantorAntichainOn_subtype_iff.mpr
-    (BorelEquivalenceRelations.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mpr
-      ((Adapters.hasPerfectAntichainOn_iff _ _).mpr h))).continuum_le_mk_quotient
 
 /-- **D Layer 0, finite tiers** (`countable_or_hasPerfectSetOfNonisoModelsOn_fin`): the same
 Silver theorem on the coding space on `Fin n` with `R = F` = isomorphism, Borel by D's
@@ -358,20 +318,6 @@ example (φ : L.Sentenceω) (n : ℕ) :
       (isoSetoidOn (Fin n) φ) (fun _ _ h => h) hF with h | h
   · exact Or.inl h
   · exact Or.inr (Setoid.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mp h)
-
-/-- The same, with C's Silver theorem relative to a Borel subset. -/
-example (φ : L.Sentenceω) (n : ℕ) :
-    Countable (Quotient (isoSetoidOn (Fin n) φ)) ∨ HasPerfectSetOfNonisoModelsOn (Fin n) φ := by
-  have hF : MeasurableSet {p : ↥(modelsOf φ : Set (RelationalConfiguration L (Fin n))) ×
-      ↥(modelsOf φ : Set (RelationalConfiguration L (Fin n))) | isoSetoidOn (Fin n) φ p.1 p.2} :=
-    (measurableSet_isoSetoid_fin n).preimage
-      (measurable_subtype_coe.prodMap measurable_subtype_coe)
-  rcases BorelEquivalenceRelations.countable_or_hasCantorAntichainOn_of_measurableSet
-      (RelationalConfiguration.measurableSet_modelsOf (V := Fin n) φ) (isoSetoid L (Fin n))
-      (isoSetoidOn (Fin n) φ) (fun _ _ h => h) hF with h | h
-  · exact Or.inl h
-  · exact Or.inr ((Adapters.hasPerfectAntichainOn_iff _ _).mp
-      (BorelEquivalenceRelations.hasCantorAntichainOn_iff_hasPerfectAntichainOn.mp h))
 
 /-- Glue for (E2): B's `measurableSet_iso_inter_of_scottHeight_le`, restricted to the subtype
 `modelsOf φ`, is the Borelness of D's `isoSetoidOn ℕ φ`. -/
@@ -397,14 +343,6 @@ example {φ : L.Sentenceω} {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1)
       (letI : L.Structure ℕ := c.toStructure; scottHeight (L := L) ℕ) ≤ β) :
     #(Quotient (isoSetoidOn ℕ φ)) ≤ ℵ₀ ∨ #(Quotient (isoSetoidOn ℕ φ)) = 𝔠 := by
   exact Setoid.mk_quotient_le_aleph0_or_eq_continuum _
-    (measurableSet_isoSetoidOn_of_scottHeight_le hβ hbound)
-
-/-- The same, with C's `mk_quotient_le_aleph0_or_eq_continuum` (same hypotheses as Tau Ceti's). -/
-example {φ : L.Sentenceω} {β : Ordinal.{0}} (hβ : β < Ordinal.omega 1)
-    (hbound : ∀ c ∈ (modelsOf φ : Set (RelationalConfiguration L ℕ)),
-      (letI : L.Structure ℕ := c.toStructure; scottHeight (L := L) ℕ) ≤ β) :
-    #(Quotient (isoSetoidOn ℕ φ)) ≤ ℵ₀ ∨ #(Quotient (isoSetoidOn ℕ φ)) = 𝔠 := by
-  exact BorelEquivalenceRelations.mk_quotient_le_aleph0_or_eq_continuum _
     (measurableSet_isoSetoidOn_of_scottHeight_le hβ hbound)
 
 /-- **D Layer 1, the `isolates` field of `TauCeti.isIsolatingRank_scottHeight`** (which D now
@@ -433,19 +371,6 @@ example (Φ : Set (Σ n, L.BoundedFormulaω Empty n)) (hΦ : Φ.Countable)
     (sigma_mk_injective (i := n)).countable
   exact Setoid.hasCantorAntichainOn_image_iff (measurableEmbedding_morleyCode Φ hΦ)
     (isoSetoid_morleyCode_iff Φ) K
-
-/-- The same, with C's `hasCantorAntichainOn_image_iff` (same hypotheses as Tau Ceti's, in
-another binder order), carried to D's statement by `Adapters.hasCantorAntichainOn_iff`. -/
-example (Φ : Set (Σ n, L.BoundedFormulaω Empty n)) (hΦ : Φ.Countable)
-    (K : Set (RelationalConfiguration L ℕ)) :
-    (isoSetoid (L.morleyize Φ) ℕ).HasCantorAntichainOn (morleyCode Φ '' K) ↔
-      (isoSetoid L ℕ).HasCantorAntichainOn K := by
-  haveI := Language.countable_relations_morleyize (L := L) hΦ
-  haveI : ∀ n, Countable ((L.morleyize Φ).Relations n) := fun n =>
-    (sigma_mk_injective (i := n)).countable
-  rw [← Adapters.hasCantorAntichainOn_iff, ← Adapters.hasCantorAntichainOn_iff]
-  exact BorelEquivalenceRelations.hasCantorAntichainOn_image_iff
-    (measurableEmbedding_morleyCode Φ hΦ) (isoSetoid_morleyCode_iff Φ) K
 
 end BCtoD
 

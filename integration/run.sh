@@ -14,7 +14,7 @@ B="$AU/_build"
 rm -rf "$B"
 python3 -I "$AU/substitute.py" "$S" "$B" || { echo "SUBSTITUTION FAILED"; exit 1; }
 mkdir -p "$B/olean" "$B/src/TauCetiRoadmap/Integration" "$B/diffs" "$B/logs"
-cp "$AU/Adapters.lean" "$AU/Integration.lean" "$B/src/TauCetiRoadmap/Integration/"
+cp "$AU/Integration.lean" "$B/src/TauCetiRoadmap/Integration/"
 for d in InfinitaryModelExistence BorelEquivalenceRelations CountableStructureSpaces \
          CountableModelCounting HanfNumbers RandomGraphs; do
   diff -u "$B/orig/$d.lean" "$B/src/TauCetiRoadmap/$d/Suggested.lean" > "$B/diffs/$d.diff"
@@ -23,12 +23,12 @@ LAKE_LEAN_PATH=$(cd "$LAKE_ROOT" && lake env printenv LEAN_PATH) || exit 1
 LAKE_LEAN=$(cd "$LAKE_ROOT" && lake env which lean) || exit 1
 export LAKE_ROOT LAKE_LEAN_PATH LAKE_LEAN
 fail=0
-# Dependency order: B' imports A; Adapters imports C; Integration imports A, B', C, D, E, Adapters.
+# Dependency order: B' imports A; Integration imports A, B', C, D, E.
 for m in InfinitaryModelExistence BorelEquivalenceRelations CountableStructureSpaces \
-         CountableModelCounting HanfNumbers RandomGraphs Adapters Integration; do
+         CountableModelCounting HanfNumbers RandomGraphs Integration; do
   "$AU/compile1.sh" "$m" || fail=1
 done
-for m in Adapters Integration; do
+for m in Integration; do
   if grep -q "declaration uses .sorry." "$B/logs/$m.out"; then echo "$m.lean uses sorry"; fail=1; fi
 done
 # The five drafts must import together. C's prototype once declared root names that Tau Ceti's
