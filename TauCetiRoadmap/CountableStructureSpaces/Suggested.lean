@@ -18,14 +18,13 @@ public import TauCeti.ModelTheory.Scott.Stabilization
 public import TauCeti.Topology.Algebra.Group.Perm
 
 /-!
-# Spaces of countable structures and the López–Escobar theorem: suggested signatures
+# Spaces of countable structures and the López–Escobar theorem: target signatures
 
 **`README.md` is the definitive roadmap document** — its narrative plan, standing conventions,
 layer-by-layer build (Layers 0–6), worked examples, coordination, and references are the
-specification. This file is **not** the roadmap and is **not exhaustive**: it records suggested
-Lean `sorry`-forms (allowed in this human-owned roadmap library) for *particular* milestones, so
-that contributors and reviewers converge on names and signatures; discharging every statement here
-neither finishes a layer nor the roadmap.
+specification. This file states target signatures for the central objects and the headline
+theorems against the pinned Mathlib and Tau Ceti APIs, with `sorry` proofs. It is **not
+exhaustive**: discharging every statement here neither finishes a layer nor the roadmap.
 
 Everything is stated over the pinned Tau Ceti library: the infinitary syntax and satisfaction
 (`FirstOrder.Language.BoundedFormulaInf`, `Sentenceω`, `SentenceInf.Realize`), back-and-forth
@@ -33,17 +32,16 @@ equivalence and the Scott analysis (`TauCeti.BFEquiv`, `TauCeti.scottSentence`,
 `TauCeti.SelfStabilizesCompletely`, `TauCeti.scottHeight`), the coding space
 `TauCeti.RelationalConfiguration` with its topology, decoding, logic action, model classes and
 isomorphism and back-and-forth setoids, the permutation-group topology, and projective classes
-(`FirstOrder.Language.LHom.PCMem`). The library's theorems are cited, not restated, except where
-the roadmap needs a milestone in a different form; such a milestone is stated in the roadmap's
-form and proved by the library's theorem. One declaration below, `pcSeparation`, is a stand-in for
-the InfinitaryModelExistence roadmap, which owns it, marked with the owner's revision it was checked
-against. The PC sentence of a tree is recorded by its specification (`exists_pcSentence`); the
-README gives its explicit construction. Names and namespaces are provisional.
+(`FirstOrder.Language.LHom.PCMem`). The library's theorems are cited, not restated. Two targets
+are proved in place: `isomorphismInvariant_modelsOf`, which CountableModelCounting consumes by
+name, and `orbitRank_le_scottHeight`, from the target `selfStabilizationOrdinal_le_scottHeight`.
+The PC sentence of a tree is recorded by its specification (`exists_pcSentence`); the
+README gives its explicit construction.
 -/
 
 @[expose] public section
 
-universe u v w w' u₁ v₁ u₂ v₂
+universe u v w w'
 
 namespace TauCetiRoadmap.CountableStructureSpaces
 
@@ -81,42 +79,10 @@ theorem isClosedEmbedding_queryCode [∀ n, Countable (L.Relations n)] :
 `Equiv.Perm α` carries the topology of pointwise convergence (induced by `σ ↦ (σ, σ⁻¹)`), and acts
 on `RelationalConfiguration L α` by relabelling, for every language. For a discrete `α` the library
 makes it a topological group, Polish when `α` is countable, and identifies isomorphism of codes
-with the orbit relation (`RelationalConfiguration.isoSetoid_eq_orbitRel`). -/
-
-section PermTopology
-
-variable [TopologicalSpace α] [DiscreteTopology α]
-
-/-- **Layer 1 acceptance lemma.** The pointwise stabilizers of finite sets form a neighbourhood
-basis of the identity, so the induced topology is the pointwise one. The library indexes the basis
-by finite `Set`s (`Equiv.Perm.hasBasis_nhds_one_fixingSubgroup`); here it is indexed by
-`Finset`s. -/
-theorem hasBasis_nhds_one_fixingSubgroup :
-    (𝓝 (1 : Equiv.Perm α)).HasBasis (fun _ : Finset α => True)
-      (fun s => (fixingSubgroup (Equiv.Perm α) (s : Set α) : Set (Equiv.Perm α))) :=
-  Equiv.Perm.hasBasis_nhds_one_fixingSubgroup.to_hasBasis
-    (fun s hs => ⟨hs.toFinset, trivial, by simp⟩) (fun s _ => ⟨s, s.finite_toSet, subset_rfl⟩)
-
-end PermTopology
-
-/-- **Layer 1, the logic action**: `(σ • c)` holds of `R` on `x` exactly when `c` holds of `R` on
-`σ⁻¹ ∘ x`. -/
-theorem eval_smul_atom (σ : Equiv.Perm α) (c : RelationalConfiguration L α) {n : ℕ}
-    (R : L.Relations n) (x : Fin n → α) :
-    (σ • c).eval (atom R x) = c.eval (atom R (⇑σ⁻¹ ∘ x)) := by
-  rw [eval_perm_smul, Atom.map_atom]
-  rfl
-
-/-- **Layer 1 milestone.** The logic action is jointly continuous, for every language: the
-library's joint continuity of restriction (`RelationalConfiguration.continuous_uncurry_restrict`)
-composed with `Equiv.Perm.continuous_inv_apply`. -/
-theorem continuousSMul_relationalConfiguration [TopologicalSpace α] [DiscreteTopology α] :
-    ContinuousSMul (Equiv.Perm α) (RelationalConfiguration L α) := by
-  refine ⟨?_⟩
-  simp only [perm_smul_def]
-  exact (continuous_uncurry_restrict (L := L) (V := α) (W := α)).comp
-    ((continuous_pi fun x => (Equiv.Perm.continuous_inv_apply x).comp continuous_fst).prodMk
-      continuous_snd)
+with the orbit relation (`RelationalConfiguration.isoSetoid_eq_orbitRel`). The action convention
+(`eval_perm_smul`), joint continuity of the action, the coincidence of `MulAction.IsFixedBlock`
+with `IsomorphismInvariant` and the invariant σ-algebra are stated in the README with the library
+declarations that give them. -/
 
 /-- **Layer 1 milestone, stabilizers are automorphism groups.** -/
 theorem mem_stabilizer_iff [L.IsRelational] (σ : Equiv.Perm α) (c : RelationalConfiguration L α) :
@@ -125,52 +91,12 @@ theorem mem_stabilizer_iff [L.IsRelational] (σ : Equiv.Perm α) (c : Relational
         @RelMap L α c.toStructure l R (σ ∘ v) ↔ @RelMap L α c.toStructure l R v := by
   sorry
 
-/-- **Layer 1 milestone.** Action invariance, Mathlib's `MulAction.IsFixedBlock`, is the
-library's isomorphism invariance `RelationalConfiguration.IsomorphismInvariant`, through Tau Ceti's
-`isomorphismInvariant_iff_isInvariantBlock` and Mathlib's `isInvariantBlock_iff_isFixedBlock`. -/
-theorem isFixedBlock_iff_isomorphismInvariant [L.IsRelational]
-    (B : Set (RelationalConfiguration L α)) :
-    MulAction.IsFixedBlock (Equiv.Perm α) B ↔ IsomorphismInvariant B :=
-  (isomorphismInvariant_iff_isInvariantBlock.trans
-    MulAction.isInvariantBlock_iff_isFixedBlock).symm
-
-/-- **Layer 1 milestone, the invariant σ-algebra.** Measurability for the infimum over `σ` of
-Mathlib's `MeasurableSpace.invariants (σ • ·)` is measurability together with action
-invariance. -/
-theorem measurableSet_iInf_invariants_iff (B : Set (RelationalConfiguration L α)) :
-    MeasurableSet[⨅ σ : Equiv.Perm α,
-        MeasurableSpace.invariants (fun c : RelationalConfiguration L α => σ • c)] B ↔
-      MeasurableSet B ∧ MulAction.IsFixedBlock (Equiv.Perm α) B := by
-  simp only [MeasurableSpace.measurableSet_iInf, MeasurableSpace.measurableSet_invariants]
-  exact ⟨fun h => ⟨(h 1).1, fun σ => by simpa [Set.preimage_smul] using (h σ⁻¹).2⟩,
-    fun ⟨hB, hfix⟩ σ => ⟨hB, by rw [Set.preimage_smul, hfix]⟩⟩
-
 /-- **Layer 1 milestone.** The saturation of an analytic class is analytic, for every language.
 The library proves the relational case (`RelationalConfiguration.analyticSet_iUnion_smul`). -/
 theorem analyticSet_iUnion_smul [∀ n, Countable (L.Relations n)]
     {A : Set (RelationalConfiguration L ℕ)} (hA : AnalyticSet A) :
     AnalyticSet (⋃ σ : Equiv.Perm ℕ, σ • A) := by
   sorry
-
-open Set in
-/-- **Layer 1.** The orbit relation of the logic action, as a subset of the square, is analytic: it
-is the image of the Polish space `Perm ℕ × RelationalConfiguration L ℕ` under a continuous map. The
-library proves the relational case for the isomorphism setoid
-(`RelationalConfiguration.analyticSet_setOf_isoSetoid`). -/
-theorem analyticSet_orbitRel_graph [∀ n, Countable (L.Relations n)] :
-    AnalyticSet {p : RelationalConfiguration L ℕ × RelationalConfiguration L ℕ |
-      MulAction.orbitRel (Equiv.Perm ℕ) (RelationalConfiguration L ℕ) p.1 p.2} := by
-  have : ContinuousSMul (Equiv.Perm ℕ) (RelationalConfiguration L ℕ) :=
-    continuousSMul_relationalConfiguration
-  have h : Continuous fun q : Equiv.Perm ℕ × RelationalConfiguration L ℕ => (q.1 • q.2, q.2) :=
-    continuous_smul.prodMk continuous_snd
-  convert analyticSet_range_of_polishSpace h using 1
-  ext ⟨c, d⟩
-  simp only [mem_ofPred_eq, mem_range, Prod.exists, Prod.mk.injEq, MulAction.orbitRel_apply,
-    MulAction.mem_orbit_iff]
-  constructor
-  · rintro ⟨σ, rfl⟩; exact ⟨σ, d, rfl, rfl⟩
-  · rintro ⟨σ, d', h1, rfl⟩; exact ⟨σ, h1⟩
 
 /-! ## Layer 2: satisfaction and model classes
 
@@ -209,10 +135,6 @@ def initialSegment {A : Type*} (x : ℕ → A) (n : ℕ) : List A :=
 PR #41946. -/
 def body {A : Type*} (T : tree A) : Set (ℕ → A) :=
   {x | ∀ n, initialSegment x n ∈ T}
-
-/-- **Layer 3.** The body is monotone in the tree. -/
-theorem body_mono {A : Type*} {S T : tree A} (h : S ≤ T) : body S ⊆ body T :=
-  fun _ hx n => h (hx n)
 
 /-- Strict extension on the nodes of a tree: `y` properly extends `x`. -/
 def StrictExt {A : Type*} (T : tree A) (y x : T) : Prop :=
@@ -281,33 +203,10 @@ countable structures in `Type`. The library proves Borelness of back-and-forth e
 `SelfStabilizesCompletely.stabilizesCompletely_add_omega0`), the upper comparisons
 `scottHeight_le_selfStabilizationOrdinal_add_omega0` and
 `scottHeight_le_internalScottRank_add_omega0`, and the height comparison
-`nonempty_equiv_of_bfEquiv_of_scottHeight_le`. -/
-
-/-- **Layer 4 milestone, isomorphism classes are Borel**: the class of a code is the model class
-of the Scott sentence of the structure it names, by the library's `realize_scottSentence_iff`. -/
-theorem setOf_iso_eq_modelsOf_scottSentence [L.IsRelational] [∀ n, Countable (L.Relations n)]
-    (c : RelationalConfiguration L ℕ) :
-    {d | (isoSetoid L ℕ) c d} =
-      modelsOf (@scottSentence L _ ℕ c.toStructure _ _) := by
-  ext d
-  rw [Set.mem_ofPred_eq, isoSetoid_apply, mem_modelsOf]
-  exact (@realize_scottSentence_iff L _ _ ℕ c.toStructure _ ℕ d.toStructure _).symm
-
-/-- **Layer 4 milestone, the constant-chain bound.** If `M` stabilizes internally at `β`, then
-back-and-forth equivalence at `β + ω` between a tuple of `M` and a tuple of any structure `N`, of
-any cardinality and in any universe, implies equivalence at every level: the library's step at the
-limit level `β + ω` for any `N` (`SelfStabilizesCompletely.bfEquiv_add_one_of_isSuccLimit`),
-propagated upward by `bfEquiv_of_le_of_forall_add_one`. -/
-theorem bfEquiv_of_selfStabilizesCompletely [L.IsRelational] {M : Type w} {N : Type w'}
-    [L.Structure M] [L.Structure N] {β : Ordinal.{w}}
-    (h : SelfStabilizesCompletely (L := L) M β) {n : ℕ} {a : Fin n → M} {b : Fin n → N}
-    (hab : BFEquiv (L := L) (β + Ordinal.omega0) n a b) (γ : Ordinal.{w}) :
-    BFEquiv (L := L) γ n a b := by
-  rcases le_total (β + Ordinal.omega0) γ with hγ | hγ
-  · refine bfEquiv_of_le_of_forall_add_one (fun n a b => ?_) hγ hab
-    exact h.bfEquiv_add_one_of_isSuccLimit (Ordinal.isSuccLimit_add β Ordinal.isSuccLimit_omega0)
-      (lt_add_of_pos_right β Ordinal.omega0_pos)
-  · exact hab.mono hγ
+`nonempty_equiv_of_bfEquiv_of_scottHeight_le`. Isomorphism classes are model classes of Scott
+sentences by `realize_scottSentence_iff`, and the constant-chain bound for structures `N` of any
+cardinality follows from `SelfStabilizesCompletely.bfEquiv_add_one_of_isSuccLimit` with
+`bfEquiv_of_le_of_forall_add_one` (README 4.1–4.2). -/
 
 /-- **Layer 4 milestone.** Testing external stabilization against countable structures in any
 other universe gives the same predicate as testing against countable structures in `Type`. -/
@@ -420,32 +319,9 @@ theorem measurableSet_iso_inter_iff_exists_bfLevel [L.IsRelational]
 
 /-! ## Layer 5: the López–Escobar theorem
 
-Projective classes are the library's `FirstOrder.Language.LHom.PCMem`. -/
-
-/-! ### Stand-in owned by InfinitaryModelExistence
-
-Owner: the InfinitaryModelExistence roadmap, Layer 7. Declaration: `pcSeparation`, over the pinned
-infinitary syntax. Checked against revision 35db8dff of that roadmap (follow-up TauCetiRoadmap #1615). The
-copy is prototype scaffolding; the owner's statement is authoritative. -/
-
-/-- **Stand-in for `pcSeparation` of the InfinitaryModelExistence roadmap** (its Craig
-interpolation layer), stated as there. Two projective classes with no common countable nonempty
-member are separated by a single `L`-sentence on nonempty structures; no language is assumed
-countable. For a countable relational language, on the space of structures with carrier `ℕ`, it
-plays the role of Lusin separation. Each `LHom.PCMem` carries its own expansion, so the theorem
-applies with `L₁ = L₂`. This roadmap consumes the theorem and does not prove it; Layer 5 applies it
-to the PC sentences of trees for `B` and its complement. -/
-theorem pcSeparation {L : FirstOrder.Language.{u, v}} {L₁ : FirstOrder.Language.{u₁, v₁}}
-    {L₂ : FirstOrder.Language.{u₂, v₂}}
-    (Θ₁ : (L.sum L₁).Sentenceω) (Θ₂ : (L.sum L₂).Sentenceω)
-    (h : ∀ (M : Type) [L.Structure M] [Nonempty M] [Countable M],
-      LHom.PCMem LHom.sumInl Θ₁ M → ¬ LHom.PCMem LHom.sumInl Θ₂ M) :
-    ∃ θ : L.Sentenceω,
-      (∀ (M : Type w) [L.Structure M] [Nonempty M], LHom.PCMem LHom.sumInl Θ₁ M →
-        SentenceInf.Realize θ M) ∧
-      (∀ (M : Type w) [L.Structure M] [Nonempty M], LHom.PCMem LHom.sumInl Θ₂ M →
-        ¬ SentenceInf.Realize θ M) := by
-  sorry
+Projective classes are the library's `FirstOrder.Language.LHom.PCMem`. The hard direction consumes
+`pcSeparation` of the InfinitaryModelExistence roadmap, whose statement the README quotes as that
+roadmap's contract; it is not restated here. -/
 
 /-- The relation symbols of the witness vocabulary: a zero, the graph of a successor, and the
 graph of a branch. -/
@@ -494,7 +370,7 @@ theorem exists_pcSentence [L.IsRelational] [∀ n, Countable (L.Relations n)]
 
 /-- **Layer 5, the López–Escobar theorem, hard direction**, for every relational language. Here
 `MeasurableSet` is for the product σ-algebra on codes (README Convention 5), which for uncountably
-many relation symbols is strictly smaller than the Borel σ-algebra of the topology. Such a set
+many atoms is strictly smaller than the Borel σ-algebra of the topology. Such a set
 depends on the atoms of a countable sublanguage, where the countable case applies (README §5.3,
 step 0). -/
 theorem lopez_escobar [L.IsRelational]
@@ -535,30 +411,6 @@ theorem analyticSet_iff_exists_pc [L.IsRelational] [∀ n, Countable (L.Relation
   sorry
 
 /-! ## Layer 6: separation and the well-order class -/
-
-open Set in
-/-- **Layer 6.** Saturation for the orbit relation, in the form of invariant Lusin separation for
-analytic equivalence relations, is action invariance, for every language. The library proves the
-relational case for the isomorphism setoid
-(`RelationalConfiguration.isomorphismInvariant_iff_preimage_image_quotientMk`). -/
-theorem saturated_iff_isFixedBlock {B : Set (RelationalConfiguration L ℕ)} :
-    Quotient.mk (MulAction.orbitRel (Equiv.Perm ℕ) (RelationalConfiguration L ℕ)) ⁻¹'
-        (Quotient.mk (MulAction.orbitRel (Equiv.Perm ℕ) (RelationalConfiguration L ℕ)) '' B) = B ↔
-      MulAction.IsFixedBlock (Equiv.Perm ℕ) B := by
-  constructor
-  · intro h
-    refine MulAction.isInvariantBlock_iff_isFixedBlock.1 fun σ => ?_
-    rintro _ ⟨x, hx, rfl⟩
-    rw [← h]
-    exact ⟨x, hx, Quotient.sound (MulAction.mem_orbit_iff.mpr ⟨σ⁻¹, inv_smul_smul σ x⟩)⟩
-  · intro h
-    ext x
-    constructor
-    · rintro ⟨y, hy, hxy⟩
-      obtain ⟨g, rfl⟩ := MulAction.mem_orbit_iff.mp (Quotient.exact hxy)
-      rw [← h g⁻¹]
-      exact ⟨g • x, hy, inv_smul_smul g x⟩
-    · intro hx; exact ⟨x, hx, rfl⟩
 
 /-- **Layer 6 milestone, invariant analytic separation**, for every language. The route through
 the library's `Setoid.exists_invariant_measurableSet_separating` and

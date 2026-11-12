@@ -107,6 +107,12 @@ Pin these once; every statement below uses them.
 7. **Sentence level.** Interpolation and separation are stated for single sentences, or for
    countable theories reduced to one sentence by a countable conjunction. Statements about
    arbitrary sets of sentences are excluded (see [Out of scope](#out-of-scope)).
+8. **Names.** A backticked declaration name in Layers 0–8 is a declaration of Mathlib, one of
+   Tau Ceti at this repository's pin (for this roadmap's own targets, those listed under
+   [Tau Ceti implementation](#tau-ceti-implementation)), one of a sibling roadmap named with it, or
+   otherwise the name under which a target of this roadmap is to be declared. `Suggested.lean`
+   states some of these targets, not all: `aElementary_of_cocone` (2.4), `craig_pcSeparation` (7.2)
+   and `realize_mono_of_signed` (7.3), for instance, are targets named only here.
 
 ## Existing library and ownership
 
@@ -126,12 +132,11 @@ or interpolation theorems (checked at the pinned Mathlib); all are targets here.
 
 This roadmap owns the objects in the layers below. Its sibling roadmaps consume them:
 
-* **CountableStructureSpaces** (proposed in
-  [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316)) (spaces of countable
-  structures and López–Escobar) consumes exactly `PCMem` and `pcSeparation`, in the sum-language
-  form of Layer 7, for the hard direction of López–Escobar. It owns the structure space,
-  López–Escobar and the non-Borelness of the well-order class.
-* **HanfNumbers** (proposed in [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319))
+* **[CountableStructureSpaces](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316)**
+  (spaces of countable structures and López–Escobar) consumes exactly `PCMem` and `pcSeparation`,
+  in the sum-language form of Layer 7, for the hard direction of López–Escobar. It owns the
+  structure space, López–Escobar and the non-Borelness of the well-order class.
+* **[HanfNumbers](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319)**
   (Ehrenfeucht–Mostowski models and Hanf numbers) consumes:
   * from 0.1, `onBoundedFormulaInf` and `realize_onBoundedFormulaInf`;
   * from 0.2, `functionsIn`, `relationsIn`, their countability lemmas and
@@ -510,6 +515,13 @@ Suggested home: `TauCeti/ModelTheory/ModelExistence/{Types,OmittingTypes}.lean`.
 * The countable seed of isolators: for a structure realizing countably many types at every arity,
   the set of all `χ_p` and their one-variable existential closures generates a countable fragment.
 
+**Checks** (`fragmentType`).
+
+* `fragmentType ⊤ M a = infinitaryType M a`, and `fragmentType ⊥ M a = ∅`.
+* `AElementary.fragmentType_comp` needs its hypothesis: for the inclusion `(ℤ, <) ↪ (ℚ, <)`, a
+  fragment containing the density sentence `δ`, and `n = 0`, `δ` is in the `A`-type of the empty
+  tuple in `ℚ` and not in `ℤ`.
+
 ### 4.2 Isolation over a theory and omitting types
 
 * `Theoryω.IsolatesIn A T p`: some member `φ` of `A` at arity `n` has `T ∪ {∃̄φ}` satisfiable and
@@ -533,6 +545,11 @@ Suggested home: `TauCeti/ModelTheory/ModelExistence/{Types,OmittingTypes}.lean`.
   of the existential. This makes `T ∪ σ ∪ {¬ψ[c]}` satisfiable, and `¬ψ[c]` is an instance of the
   member `¬ψ` of `A`. The model omits `p` because it omits the image of `p` along
   `lhomWithConstants` and every element is named.
+
+  *Needs:* `ConsistencyProperty.model_existence_omitting` (3.2), `ConsistencyProperty.ofSatisfiable`
+  (3.3), `Fragment.FormationClosed` with `FormationClosed.mapBound_mem` (1.2), `substBounds` and
+  `inst` (0.4), `realize_onBoundedFormulaInf` along `lhomWithConstants` (0.1), and
+  `Theoryω.IsolatesIn` (4.2).
 * Corollaries: for `A` and `T` as above (in particular `T` satisfiable), a partial type inside `A`
   realized in every countable model of `T` is isolated over `T` in `A`; and the **first-order
   omitting types theorem** `exists_countable_model_omitting_fo` (Exercise 4.11 of the notes, p. 45):
@@ -544,6 +561,18 @@ Suggested home: `TauCeti/ModelTheory/ModelExistence/{Types,OmittingTypes}.lean`.
   for every `ψ ∈ p`; omission is `OmitsFOType M p`, every `n`-tuple of `M` refuting some formula of
   `p`. The empty type, isolated by `⊤`, shows that the non-isolation hypothesis cannot be dropped.
   Derive the theorem by taking `A` to be the first-order image fragment.
+
+  *Needs:* `Theoryω.exists_countable_model_omitting` (4.2), the first-order image fragment (1.2),
+  and `BoundedFormula.realize_toInf` (InfinitaryLogic), which carries satisfiability, isolation and
+  omission between Mathlib's first-order notions and those of 1.1 and 4.2.
+
+**Checks** (`IsolatesFO`, `OmitsFOType`).
+
+* The empty type is isolated by `⊤` over every satisfiable `T`, and no nonempty structure omits it.
+* `{⊥}` is isolated by nothing, and every structure omits it.
+* At `n = 0`, `OmitsFOType M {ψ}` holds exactly when `M ⊭ ψ`.
+* Over `Th(ℕ, 0, S)`, the type `{x ≠ Sᵏ0 : k ∈ ℕ}` is not isolated, because a formula consistent
+  with this complete theory holds of some standard number, and `ℕ` omits it.
 
 **Acceptance example.** A partial type realized in every countable model of a satisfiable `T` is
 isolated.
@@ -595,10 +624,15 @@ under components.
 * `morleyTheory_countable`, `morleyTypes_countable` for countable `A`, with no countability of the
   language.
 * `exists_firstOrder_presentation` (Marker 2016, Chapter 1; Theorem 1.31 and Exercise 1.32 of
-  Marker's 2013 notes, pp. 11–12): an expansion `S` of an `L`-structure along `lhomMorleyize A`
+  Marker's 2013 notes, pp. 11–12, which state it for a countable vocabulary and the fragment
+  generated by a countable theory): an expansion `S` of an `L`-structure along `lhomMorleyize A`
   models `morleyTheory A` and omits every type of `morleyTypes A` **iff** `S` is the canonical
   expansion. The backward direction is an induction over `A`; omission supplies exactly the
   conjunction and disjunction steps.
+
+  *Needs:* `morleyize`, `lhomMorleyize` and `morleyExpansion` (5.1), `morleyTheory` and
+  `morleyTypes` with their countability (5.2), `OmitsFOType` (4.2), and the component closure of
+  `Fragment` (1.2).
 * Corollary: for a sentence `φ` with `⟨0, φ⟩ ∈ A`, the models of `φ` are exactly the reducts of the
   models of the countable first-order theory `morleyTheory A ∪ {R_φ}` that omit `morleyTypes A`.
 
@@ -692,6 +726,10 @@ Suggested home: `TauCeti/ModelTheory/Interpolation/{PCClass,Craig,Lyndon,Malitz}
 * `craig_interpolation_relational`, the relational core: for relational `L` of any cardinality and
   sentences with `Sentenceω.Entails φ ψ`, there is `θ` with
   `relationsIn θ ⊆ relationsIn φ ∩ relationsIn ψ`, `φ ⊨ θ` and `θ ⊨ ψ`.
+
+  *Needs:* `ConsistencyProperty.model_existence` (3.2), the symbol sublanguage with `symbSublang`
+  and `restrictSymbols` (0.3), `constantsVarsEquiv` (0.4), and the transfer of entailment along
+  language maps (2.5).
 * `craig_interpolation` (Theorem 4.21 of Marker's 2013 notes, p. 48): the same for an arbitrary
   language of any cardinality, with no hypothesis on `L`, and with both bounds
   `functionsIn θ ⊆ functionsIn φ ∩ functionsIn ψ` and
@@ -701,6 +739,10 @@ Suggested home: `TauCeti/ModelTheory/Interpolation/{PCClass,Craig,Lyndon,Malitz}
   the exact occurrence identity and the shared-vocabulary identity to bound the interpolant's
   symbols by `relSym (F₁ ∩ F₂) (R₁ ∩ R₂)`, and back-translate; both entailments are transported
   along the graph expansion, without reconstruction.
+
+  *Needs:* `craig_interpolation_relational` (7.2); from Layer 6, `entails_iff_graphTranslation`,
+  `relationalize` with its exact occurrence identity, the shared-vocabulary identity `relSym_inter`,
+  and `backTranslate` with `realize_backTranslate` and its occurrence calculus.
 * `craig_pcSeparation`: if `ψ₁ ⊨ ¬ψ₂`, some sentence of
   `symbSublang (functionsIn ψ₁ ∩ functionsIn ψ₂) (relationsIn ψ₁ ∩ relationsIn ψ₂)` holds in the
   reduct of every nonempty model of `ψ₁` and fails in the reduct of every nonempty model of `ψ₂`,
@@ -736,6 +778,11 @@ Suggested home: `TauCeti/ModelTheory/Interpolation/{PCClass,Craig,Lyndon,Malitz}
   Corollary: if every countable nonempty `L`-structure lies in
   exactly one of two such classes, the first is the class of countable nonempty models of `θ`.
 
+  *Needs:* `craig_interpolation` (7.2), `PCMem` (7.1),
+  `FirstOrder.Language.Theoryω.exists_countable_model` and `Theoryω.Entails.realize` (2.5),
+  `exists_eq_onBoundedFormulaInf_of_subset_range` (0.3), the occurrence laws for
+  `onBoundedFormulaInf` (0.2), and `realize_onBoundedFormulaInf` (0.1).
+
 Route for the relational core. Reduce to the countable symbol sublanguage of `φ` and `ψ` (Layer 0)
 and work in `L[[ℕ]]`. The members of the consistency property are finite pairs `(Γ, Δ)`, presented
 as the set `Γ ∪ Δ`, with `Γ` in the symbols of `φ`, `Δ` in those of `ψ`, both with finite constant
@@ -767,6 +814,16 @@ is used.
   sign, back-translate into equalities and drop out of the signed bounds.
   `craig_of_lyndon_interpolation` recovers Craig from the two signed bounds.
 
+  *Needs:* `lyndon_interpolation_relational` and `relationsInSigned` (7.3); from Layer 6,
+  `entails_iff_graphTranslation`, the polarity of base relations under `relationalize`, and the
+  signed occurrence calculus of `backTranslate`.
+
+**Checks** (`relationsInSigned`).
+
+* `¬R(t)` has `R` only negatively, and `¬¬R(t)` only positively.
+* `R(t) → R(t)` has `R` with both signs.
+* `t = t'` and `⊥` contribute to neither sign.
+
 This is the **relation-polarity, logical-equality form** of López-Escobar's interpolation theorem
 (López-Escobar 1965, Theorem 4.1, p. 267): his polarity clause (.4) is proved in full, and his
 clause (.3) restricting where equality may occur in `θ` is not part of this theorem. The proof
@@ -792,6 +849,15 @@ refines the Craig engine: only the separator class changes, the pair maintaining
   universal. The engine is a side-labelled budgeted pair whose separators carry two quantifier
   permissions; the right root `¬ψ` has no positive universal occurrence exactly when `ψ` is
   universal, so no separator acquires an existential occurrence.
+
+  *Needs:* `universalSigned` with its laws (7.4), `ConsistencyProperty.model_existence` (3.2), the
+  symbol sublanguage (0.3) and `constantsVarsEquiv` (0.4), as for the relational core of Craig
+  interpolation (7.2).
+
+**Checks** (`universalSigned`).
+
+* `∀x R(x)` is universal and not existential.
+* `∃x R(x)`, which is `¬∀x ¬R(x)`, is existential and not universal.
 
 **Acceptance example.** The degenerate interpolants: if `φ` is unsatisfiable, `⊥` interpolates with
 empty occurrence sets; if `ψ` is valid, `⊤` does.
@@ -1033,10 +1099,8 @@ universe-general statements here are part of the work. The map below says where 
 At Tau Ceti `2fd255d99`, the revision this repository pins, the declarations below implement
 targets of this roadmap. Files are under `TauCeti/ModelTheory/` and names are in the namespace
 `FirstOrder.Language` unless written with `TauCeti`. `Suggested.lean` uses these definitions under
-their Tau Ceti names and states only the targets the pin lacks, together with
-`model_existence_omitting`, which derives the set-indexed form of Layer 3 from Tau Ceti's
-family-indexed theorem. Where the two statements differ, the roadmap's statement remains the target
-and the difference is recorded in the last column.
+their Tau Ceti names and states only targets the pin lacks. Where the two statements differ, the
+roadmap's statement remains the target and the difference is recorded in the last column.
 
 | Layer | Files | Declarations | Difference from the roadmap |
 |---|---|---|---|
@@ -1051,15 +1115,20 @@ and the difference is recorded in the last column.
 | L8 | `WellOrdering.lean` | `RelChain`, `RelChain.not_wellFounded`, `Sentenceω.HasWellOrderedChains`, `Sentenceω.exists_model_relChain_rat`, `Sentenceω.wellFounded_boundedness`, `Sentenceω.wellOrder_type_boundedness`, `wellOrdering_undefinable` | none |
 
 Among the targets that `Suggested.lean` states, Tau Ceti `2fd255d99` does not implement
-`fragmentType`, `AElementary.fragmentType_comp`, `Theoryω.exists_countable_model_omitting`,
-`OmitsFOType`, `IsolatesFO`, `exists_countable_model_omitting_fo`,
-`exists_firstOrder_presentation`, `craig_interpolation_relational`, `craig_interpolation`,
+`fragmentType`, `Theoryω.exists_countable_model_omitting`, `OmitsFOType`, `IsolatesFO`,
+`exists_countable_model_omitting_fo`, `exists_firstOrder_presentation`, `craig_interpolation`,
 `pcSeparation`, `relationsInSigned`, `lyndon_interpolation`, `universalSigned` or
-`malitz_interpolation`. Tau Ceti commit `d2083f0` has declarations for all of them except the three
-first-order omitting-types items, Lyndon and Malitz, with the first-order presentation stated as
-`model_morleyTheory_and_omitsType_iff_eq_morleyExpansion`; its `pcSeparation`, in
-`Interpolation/Craig.lean`, takes the hypothesis over countable structures in an arbitrary universe
-rather than in `Type`.
+`malitz_interpolation`.
+
+**Provenance after the pin.** Later Tau Ceti work, which this repository does not pin and nothing
+here imports, is a further proof reference. At Tau Ceti commit
+[`d2083f0`](https://github.com/TauCetiProject/TauCeti/tree/d2083f0f1dd2136d02467ba36efbbe1af612e89c),
+every target in the list above has a declaration except `OmitsFOType`, `IsolatesFO`,
+`exists_countable_model_omitting_fo`, `lyndon_interpolation` and `malitz_interpolation`. There the
+first-order presentation is `model_morleyTheory_and_omitsType_iff_eq_morleyExpansion`
+(`ModelExistence/Presentation.lean`), and `pcSeparation` (`Interpolation/Craig.lean`) takes its
+hypothesis over countable structures in an arbitrary universe `Type w₀`; at `w₀ = 0` it is the
+statement of Layer 7.
 
 ## References
 

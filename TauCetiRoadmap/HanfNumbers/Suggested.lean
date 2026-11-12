@@ -4,15 +4,14 @@ public import Mathlib
 public import TauCeti.ModelTheory.Infinitary.Fragment
 public import TauCeti.ModelTheory.Infinitary.LanguageMap
 public import TauCeti.ModelTheory.ModelExistence.Types
+public import TauCeti.ModelTheory.Scott.Sentence
 
 /-!
-# Ehrenfeucht–Mostowski models and Hanf numbers for Lω₁ω: suggested signatures
+# Ehrenfeucht–Mostowski models and Hanf numbers for Lω₁ω: target signatures
 
-**`README.md` is the definitive roadmap document** — its narrative plan, layer-by-layer build
-(Layers 0–5), conventions, worked examples, and references are the specification. This file is
-**not** the roadmap and is **not exhaustive**: it records suggested Lean `sorry`-forms (allowed in
-this human-owned roadmap library) for *particular* milestones, so that contributors and reviewers
-converge on names and signatures; discharging every statement here neither finishes a layer nor
+**This file is not the roadmap and is not exhaustive.** The definitive specification is
+`README.md`. The statements here suggest Lean forms for the milestones, so that contributors and
+reviewers converge on names and signatures; discharging all of them finishes neither a layer nor
 the roadmap.
 
 Everything is stated over the pinned Tau Ceti library: the infinitary syntax and satisfaction of
@@ -25,7 +24,6 @@ and the Ehrenfeucht–Mostowski term model `EM(J, Φ)` are constructions specifi
 only, so the targets about them (`realize_em_iff`, `isSkolemTemplate_templateOf`, `isEMSource_em`,
 `exists_total_of_cofinallyApproximated`, `isSkolemTemplate_of_approximated`) have no signature
 here; the source and stretching theorems are stated here semantically.
-Names are provisional.
 -/
 
 @[expose] public section
@@ -85,11 +83,6 @@ noncomputable def iteratedTwoPow (κ : Cardinal.{u}) : ℕ → Cardinal.{u}
   | 0 => κ
   | n + 1 => 2 ^ iteratedTwoPow κ n
 
-/-- On the beth scale the iterated exponential is a shift of the index. -/
-theorem iteratedTwoPow_beth (α : Ordinal.{u}) (n : ℕ) :
-    iteratedTwoPow (ℶ_ α) n = ℶ_ (α + n) := by
-  induction n <;> simp_all [iteratedTwoPow, ← add_assoc, Cardinal.beth_add_one]
-
 /-- **Layer 0, the pigeonhole principle** `κ⁺ → (κ⁺)¹_κ`, from the regularity of successor
 cardinals. -/
 theorem partitionRel_succ_one {κ : Cardinal.{u}} (hκ : ℵ₀ ≤ κ) :
@@ -138,12 +131,6 @@ def IsIndiscernibleOn {J : Type u'} [LinearOrder J] {M : Type w} [L.Structure M]
     BoundedFormulaInf.Realize p.2 (Empty.elim : Empty → M) (a ∘ s) ↔
       BoundedFormulaInf.Realize p.2 (Empty.elim : Empty → M) (a ∘ t)
 
-/-- Indiscernibility passes to subsequences. -/
-theorem IsIndiscernibleOn.comp {J : Type u'} [LinearOrder J] {K : Type*} [LinearOrder K]
-    {M : Type w} [L.Structure M] {a : J → M} {Δ : Set (Σ n, L.BoundedFormulaω Empty n)}
-    (h : IsIndiscernibleOn a Δ) (e : K ↪o J) : IsIndiscernibleOn (a ∘ e) Δ :=
-  fun p hp s t => h p hp (s.trans e) (t.trans e)
-
 /-- An Ehrenfeucht–Mostowski template: for each arity, the formulas declared true of increasing
 tuples. The README pins its coherence, completeness and Skolem conditions. -/
 structure EMTemplate (L : FirstOrder.Language.{u, v}) where
@@ -162,13 +149,6 @@ def EMTemplate.RealizesOn (Φ : EMTemplate L) {J : Type u'} [LinearOrder J] {M :
   ∀ p ∈ Δ, ∀ t : Fin p.1 ↪o J,
     BoundedFormulaInf.Realize p.2 (Empty.elim : Empty → M) (a ∘ t) ↔ p.2 ∈ Φ.formulas p.1
 
-/-- Indiscernibility on `Δ` is realization of the sequence's own template on `Δ`. -/
-theorem isIndiscernibleOn_iff_realizesOn_templateOf {J : Type u'} [LinearOrder J]
-    {M : Type w} [L.Structure M] (a : J → M) (Δ : Set (Σ n, L.BoundedFormulaω Empty n)) :
-    IsIndiscernibleOn a Δ ↔ (templateOf a).RealizesOn a Δ :=
-  ⟨fun h p hp t => ⟨fun ht s => (h p hp t s).1 ht, fun hall => hall t⟩,
-    fun h p hp s t => ⟨fun hs => (h p hp s).1 hs t, fun ht => (h p hp t).1 ht s⟩⟩
-
 /-- The formula `x₀ ≠ x₁` on two bound positions. -/
 def disEq : L.BoundedFormulaω Empty 2 :=
   (BoundedFormulaInf.equal (Term.var (Sum.inr 0)) (Term.var (Sum.inr 1))).not
@@ -176,15 +156,6 @@ def disEq : L.BoundedFormulaω Empty 2 :=
 /-- The Morley seed of a sentence: the sentence itself and `x₀ ≠ x₁`. -/
 def morleySeed (φ : L.Sentenceω) : Set (Σ n, L.BoundedFormulaω Empty n) :=
   {⟨0, φ⟩, ⟨2, disEq⟩}
-
-/-- **Layer 1 worked example.** Every injective sequence in a model of `φ` is indiscernible for
-the Morley seed. -/
-theorem isIndiscernibleOn_morleySeed {J : Type u'} [LinearOrder J] {M : Type w} [L.Structure M]
-    (φ : L.Sentenceω) {a : J → M} (ha : Function.Injective a) :
-    IsIndiscernibleOn a (morleySeed φ) := by
-  rintro p (rfl | rfl) s t
-  · rw [Subsingleton.elim (a ∘ ⇑s) (a ∘ ⇑t)]
-  · simp [disEq, ha.eq_iff, s.injective.eq_iff, t.injective.eq_iff]
 
 end Indiscernibles
 
@@ -370,11 +341,6 @@ theorem morley_hanf (φ : L.Sentenceω) :
     IsHanfBound φ (ℶ_ (Ordinal.omega.{w} 1)) := by
   sorry
 
-/-- **Layer 3.** The Hanf number of every Lω₁ω sentence is at most `ℶ_ω₁`, by `morley_hanf`. -/
-theorem hanfNumber_le_beth_omega_one (φ : L.Sentenceω) :
-    hanfNumber.{u, v, w} φ ≤ ℶ_ (Ordinal.omega.{w} 1) :=
-  csInf_le' (morley_hanf φ)
-
 /-- **Layer 3, Morley's omitting-types theorem**, over any language. Partial first-order types are
 tagged with their arity. Countability of each type is a hypothesis separate from countability of
 the family: without it the omitting sentence is not in Lω₁ω, and the theorem fails (README 3.4). -/
@@ -441,12 +407,6 @@ finite number of variables. -/
 def IsLω₁ωSmall (M : Type w) [L.Structure M] : Prop :=
   ∀ n, (realizedTypes (L := L) M n).Countable
 
-/-- **Layer 5 acceptance check.** Every countable structure is Lω₁ω-small: its `n`-tuples are
-countably many. -/
-theorem isLω₁ωSmall_of_countable (M : Type w) [L.Structure M] [Countable M] :
-    IsLω₁ωSmall (L := L) M :=
-  fun _ => (Set.countable_range (infinitaryType M)).mono fun _ hp => mem_realizedTypes.1 hp
-
 /-- A linear order is highly order-transitive when any two increasing tuples of the same length
 are conjugate by an order automorphism. -/
 def HighlyOrderTransitive (J : Type*) [LinearOrder J] : Prop :=
@@ -486,6 +446,15 @@ This is the sentence-level Lω₁ω form of Mathlib's `Cardinal.Categorical`. -/
 def IsCategorical (φ : L.Sentenceω) (κ : Cardinal.{w}) : Prop :=
   ∀ (M N : Type w) (_ : L.Structure M) (_ : L.Structure N), SentenceInf.Realize φ M →
     SentenceInf.Realize φ N → #M = κ → #N = κ → Nonempty (M ≃[L] N)
+
+/-- **Layer 5.4 milestone, completeness of Scott sentences.** The Scott sentence of a countable
+structure in a countable relational language (Tau Ceti's `TauCeti.scottSentence`) is complete: it
+decides every Lω₁ω sentence on all its models in `Type w`, of every cardinality, not only on the
+countable ones. -/
+theorem isCompleteSentence_scottSentence [L.IsRelational] [Countable (Σ l, L.Relations l)]
+    (M₀ : Type w) [L.Structure M₀] [Countable M₀] :
+    IsCompleteSentence.{u, v, w} (TauCeti.scottSentence (L := L) M₀) := by
+  sorry
 
 /-- **Layer 5 milestone, small structures satisfy complete sentences.** For a countable relational
 language, a structure is Lω₁ω-small exactly when it satisfies a complete sentence. -/
