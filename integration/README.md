@@ -1,34 +1,40 @@
-# Supplier-substitution integration check
+# Supplier integration check
 
 This folder is evidence for the InfinitaryLogic successor roadmaps after their migration to
 native Tau Ceti imports. It is not meant to be merged. It checks that the prototypes compile
-together, that the one cross-roadmap stand-in left still matches its owner, and that each
-cross-roadmap use fits: the supplier's theorem, applied to the consumer's own objects, gives what
-the consumer's README needs.
+together, that none of them carries a cross-roadmap stand-in, that the boundary checks moved out
+of the prototypes still compile against them, and that each cross-roadmap use fits: the
+supplier's theorem, applied to the consumer's own objects, gives what the consumer's README needs.
+(Until the 12 November conformance pass the harness also substituted B's stand-in copy of A's
+`pcSeparation`; B has since removed it, so nothing is substituted any more.)
 
 ## Revisions
 
 The tree is TauCetiRoadmap `main` at 35884a8c, octopus-merged (540f108f) with the six heads as
 revised after the second round of reviews, then merged (c9c13c3b) with A, C, B and D as revised
-after the 10 November reviews and (b3b9502b) with the B and C follow-ups, so `TauCetiRoadmap/<Dir>/` here is what was checked.
+after the 10 November reviews, (b3b9502b) with the B and C follow-ups, and (73e23254) with the
+six heads as revised in the 12 November conformance pass, so `TauCetiRoadmap/<Dir>/` here is what
+was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
-| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 6601a3b5 |
-| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | 81fe877e |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | cf843fd3 |
-| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | a25a711d |
-| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 2dc7d398 |
-| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | d6486263 |
+| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | bb883e0b |
+| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | 6ca8a4f0 |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 65a7a7ea |
+| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 1c8987f5 |
+| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | c61d6445 |
+| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | 2210a669 |
 
-RandomGraphs is compiled with the others but takes no part in the substitution check.
+RandomGraphs is compiled with the others, with its moved checks, but supplies and consumes no
+cross-roadmap use.
 
 Pins (those of `main` at 35884a8c): Lean `v4.36.0-rc2`, Mathlib 1b1ccf4b0, Tau Ceti 2fd255d99.
 
 Runs against earlier heads at the same pins: 7d5a38c9 (A 786457c7, C 6908d404, B 7cb889e0,
-D e2b39535, E c716a691, RandomGraphs 1752d9dd) and 43633a12 (A 35db8dff, C 68c5f0bf, B 31039c31,
-D 8584c5d3, E and RandomGraphs as here). The changes since are listed under
-[Changes for the revised heads](#changes-for-the-revised-heads).
+D e2b39535, E c716a691, RandomGraphs 1752d9dd), 43633a12 (A 35db8dff, C 68c5f0bf, B 31039c31,
+D 8584c5d3, E 2dc7d398, RandomGraphs d6486263) and ec503a21 (A 6601a3b5, C 81fe877e, B cf843fd3,
+D a25a711d, E 2dc7d398, RandomGraphs d6486263; with the substitution of B's stand-in). The
+changes since are listed under [Changes for the revised heads](#changes-for-the-revised-heads).
 
 Earlier runs of this check, at the old pins (Lean `v4.35.0-rc3`, Tau Ceti 358314d) and against the
 pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run) and 19849b3d
@@ -36,33 +42,53 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
 
 ## What is checked
 
-1. **The remaining stand-in.** After the migration, every prototype imports Tau Ceti modules
-   instead of the parent prototype, and the only cross-roadmap stand-in left is B's copy of A's
-   `pcSeparation`. `substitute.py` asserts that the copy's statement, from `theorem pcSeparation`
-   through `:= by`, is textually identical to A's; then it deletes the copy and its stand-in
-   section header from B's copy B', adds `public import TauCetiRoadmap.InfinitaryModelExistence.Suggested`
-   and resolves the name with `open TauCetiRoadmap.InfinitaryModelExistence (pcSeparation)`.
-   Every edit is anchored on exact draft text and asserted unique, so a changed draft makes the
-   script fail instead of quietly checking something else.
-2. **No other stand-in.** `substitute.py` scans the six drafts for stand-in markers (`stand-in`,
-   `Owner:`, `checked against revision`) and fails on any marker it does not expect. A marker
-   naming only Tau Ceti or Mathlib as owner (a marked stand-in for a declaration absent at the pin)
-   would be allowed and reported. At these heads the only markers are B's `pcSeparation` block
-   (which records A's revision 35db8dff; A's statement is unchanged at 6601a3b5, as the
-   identity check confirms) and E's module docstring sentence "There are no stand-ins."
-3. **Compilation.** A, C, D, E and RandomGraphs compile unchanged and B' compiles with A's
-   `pcSeparation`, each with the pinned `lean`, in dependency order, into `_build/olean`. A file
-   importing A, B', C, D and E together must compile too (`CoImport` in the output). C's
-   prototype once redeclared root names that Tau Ceti declares (fixed in #1616 at 6908d404); since
-   e4077268 it states only the two targets Tau Ceti lacks (`isSmooth_of_isClosed` and the
-   analytic perfect set theorem) and imports Tau Ceti for the rest. The run fails, naming the
-   declaration, if a clash returns.
-4. **`Integration.lean`** imports A, B', C, D and E and has three parts:
-   * name-resolution guards: `#assert_absent` fails if B's `pcSeparation` (or any stand-in removed
-     before or during the migration) is still declared, and `#assert_uses` fails unless a consumer
-     declaration's type or proof term mentions the owner's constant, for instance D's
-     `HasPerfectSetOfNonisoModelsOn` and Tau Ceti's `Setoid.HasPerfectAntichainOn` (C's
-     interface, which C now cites as Tau Ceti's), D's `isoSetoid_morleyCode_iff` and `nonempty_morleyEquiv_iff` (A's), E's
+1. **No stand-in.** Every prototype imports Mathlib and Tau Ceti only, never another roadmap,
+   and none carries a cross-roadmap stand-in. `prepare.py` asserts this before anything is
+   compiled: it scans the six drafts for stand-in markers (`stand-in`, `Owner:`,
+   `checked against revision`) and fails on any marker it does not expect (a marker naming only
+   Tau Ceti or Mathlib as owner, a marked stand-in for a declaration absent at the pin, would be
+   allowed and reported); it fails if any draft but A declares `pcSeparation`, or if any draft
+   imports a `TauCetiRoadmap` module. At these heads the only marker is E's module docstring
+   sentence "There are no stand-ins." B's draft mentions A's `pcSeparation` only in prose (its
+   README quotes the supplier contract). Nothing is substituted: `prepare.py` copies the drafts
+   verbatim.
+2. **The moved boundary checks.** The 12 November conformance pass moved proved boundary checks
+   (conventions, indexing adapters, generality and definition-fit checks against Tau Ceti and
+   Mathlib) out of the drafts; each README keeps the statements. They are kept here, with their
+   comments, as `checks/<Dir>.lean`, one per roadmap, each importing its own draft and using its
+   roadmap's namespace under unchanged names. Each must compile with no `sorry` warning (some use
+   a draft theorem that is itself admitted, for instance RandomGraphs' `exists_isQF_equivalent`,
+   which applies the draft's `exists_computable_quantifierElimination`).
+
+   | file | from | contents |
+   |---|---|---|
+   | `checks/InfinitaryModelExistence.lean` | A at 6601a3b5 | `model_existence_omitting` (set-of-types indexing over Tau Ceti's indexed family), `AElementary.fragmentType_comp` |
+   | `checks/BorelEquivalenceRelations.lean` | C at 81fe877e | two examples: the Polish and perfect instances of Cantor and Baire space found with Tau Ceti imported; Alexandrov's theorem for `T6` spaces from Tau Ceti's form |
+   | `checks/CountableStructureSpaces.lean` | B at cf843fd3 | nine theorems, among them `continuousSMul_relationalConfiguration`, `analyticSet_orbitRel_graph`, `saturated_iff_isFixedBlock` and `bfEquiv_of_selfStabilizesCompletely`, which `Integration.lean` uses |
+   | `checks/CountableModelCounting.lean` | D at a25a711d | `measurableSet_isoSetoid_fin`, `encodeVia_mem_modelsOf`, the image forms of three Tau Ceti counting results, six Morley-code lemmas (among them `toStructure_morleyCode` and `isoSetoid_morleyCode_iff`, which `Integration.lean` uses) and `VaughtConjecture.cardinal` |
+   | `checks/HanfNumbers.lean` | E at 2dc7d398 | six examples against E's definitions (`iteratedTwoPow`, `IsIndiscernibleOn`, `templateOf`, `morleySeed`, `hanfNumber`, `IsLω₁ωSmall`) |
+   | `checks/RandomGraphs.lean` | RandomGraphs at d6486263 | six theorems (strong amalgamation, extension-budget boundary and direction, the QE adapter, the Scott-sentence boundary, `cardEq`) |
+
+   The header of `checks/RandomGraphs.lean` still says its last check is an admitted computed
+   value; that check (`productGraphon_isolated_expectation`) went back to the draft as an admitted
+   target, and every declaration in the file is proved.
+3. **Compilation.** The six drafts compile unchanged, each with the pinned `lean`, into
+   `_build/olean`; then the six check files; then `Integration.lean`. A file importing A, B, C, D
+   and E together must compile too (`CoImport` in the output). C's prototype once redeclared root
+   names that Tau Ceti declares (fixed in #1616 at 6908d404); since e4077268 it states only the
+   two targets Tau Ceti lacks (`isSmooth_of_isClosed` and the analytic perfect set theorem) and
+   imports Tau Ceti for the rest. The run fails, naming the declaration, if a clash returns.
+4. **`Integration.lean`** imports A, B, C, D and E, the moved checks of B and D that it uses
+   (`checks/CountableStructureSpaces.lean`, `checks/CountableModelCounting.lean`) and the Tau Ceti
+   modules its examples cite, and has three parts:
+   * name-resolution guards: `#assert_absent` fails if B declares `pcSeparation` (or if any
+     stand-in removed before or during the migration is still declared),
+     `#assert_only_declaration pcSeparation TauCetiRoadmap.InfinitaryModelExistence.pcSeparation`
+     fails if any other declaration in the environment has that last name component, and
+     `#assert_uses` fails unless a consumer declaration's type or proof term mentions the owner's
+     constant, for instance D's `HasPerfectSetOfNonisoModelsOn` and Tau Ceti's
+     `Setoid.HasPerfectAntichainOn` (C's interface, which C now cites as Tau Ceti's), D's
+     `isoSetoid_morleyCode_iff` (a moved check) and `nonempty_morleyEquiv_iff` (A's), E's
      `IsLω₁ωSmall` and `realizedTypes` (A's), and `lopezEscobar_steps34` (below) and A's
      `pcSeparation`;
    * one `example` for each cross-roadmap use, sections 1–5: A → B (`pcSeparation` and
@@ -76,8 +102,8 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
      E's Morley–Hanf route (E's source, E's exact-cardinality stretching, A's reduct lemma)
      assembles into the statement of `exists_model_card_eq_of_forall_beth`.
 
-   Section 1 also has the theorem `lopezEscobar_steps34`, the remaining PC-separation boundary:
-   B 5.3 steps 3–4, with A's `pcSeparation` applied to the PC sentences of B's
+   Section 1 also has the theorem `lopezEscobar_steps34`, the PC-separation boundary: B 5.3
+   steps 3–4, with A's `pcSeparation` (imported from A directly) applied to the PC sentences of B's
    `exists_pcSentence`, turn tree representations of `B` and of its complement into a sentence
    `θ` with `B = modelsOf θ`, the conclusion of B's `lopez_escobar`. Its hypotheses are B's own
    earlier steps (the tree representations of Layer 3 and the disjointness of step 2, which uses
@@ -98,6 +124,13 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    consumer's own setoids, model classes or codes. Every use where C supplies B or D is of this
    kind: C, B and D all cite the same Tau Ceti declarations, and C states none of them. The
    integration file contains no `sorry`, and no hypothesis stands in for a missing supplier lemma.
+
+   Where an example uses a check that moved out of a draft (B's
+   `continuousSMul_relationalConfiguration`, `analyticSet_orbitRel_graph`,
+   `saturated_iff_isFixedBlock` and `bfEquiv_of_selfStabilizesCompletely` in sections 2 and 6; D's
+   `measurableSet_isoSetoid_fin`, `isoSetoid_morleyCode_iff` and `toStructure_morleyCode` in
+   sections 3 and 4 and in the guard on `isoSetoid_morleyCode_iff`), the name resolves to the
+   declaration in `checks/<Dir>.lean`.
 
 ## What is not checked
 
@@ -127,7 +160,35 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
 
 ## Changes for the revised heads
 
-### 10 November reviews (this run)
+### 12 November conformance pass (this run)
+
+Each draft keeps its targets and moves its proved boundary checks into a check file (see "What is
+checked"); no statement that `Integration.lean` uses changed.
+
+* **B** removes its `pcSeparation` stand-in (unused in the draft; its README keeps the supplier
+  contract). So `substitute.py`, which asserted that the copy's statement was A's verbatim and
+  deleted it from B', is replaced by `prepare.py`, which substitutes nothing and fails if any
+  draft but A declares `pcSeparation`; B's draft is compiled as it is, and `Integration.lean`
+  imports A for `pcSeparation` (as it already did). `#assert_only_declaration` is added beside the
+  `#assert_absent` guard. `lopezEscobar_steps34` and the two step-0 checks compile unchanged. B
+  also moves nine proved checks out (to `checks/CountableStructureSpaces.lean`), four of which
+  the examples of sections 2 and 6 use.
+* **D** moves `measurableSet_isoSetoid_fin`, `toStructure_morleyCode`, `isoSetoid_morleyCode_iff`
+  and the rest of its proved checks out (to `checks/CountableModelCounting.lean`), deletes
+  `countable_quotient_isoSetoidOn_iff` (no example used it) and drops its unused import of
+  `TauCeti.ModelTheory.Counting.LanguageEquiv`. The two section 4 examples applying
+  `LEquiv.lift_countableModelCount_onBoundedFormulaInf` and `L.smallPresentation`, which D's README
+  still cites as Tau Ceti's, failed only for want of that import; `Integration.lean` now imports it
+  directly. The examples are unchanged.
+* **A**, **C**, **E** and **RandomGraphs** move their proved boundary checks out (two, two, six
+  and six), none of which `Integration.lean` uses; RandomGraphs restores
+  `productGraphon_isolated_expectation` to its draft as an admitted target. A's `pcSeparation` is
+  unchanged.
+
+No example was dropped or changed, and none needed a change to a draft. The examples' count is
+unchanged (26, with `lopezEscobar_steps34` and `preimage_reductConfiguration_eq_modelsOf`).
+
+### 10 November reviews (ec503a21)
 
 * **C** deletes every definition and theorem Tau Ceti already has (18 definitions, 42 theorems)
   and cites Tau Ceti's instead; it states only `isSmooth_of_isClosed` and the analytic perfect
@@ -187,25 +248,26 @@ From the repository root on this branch, with a `.lake` at the pinned manifest:
 
 ```
 lake exe cache get
-grep -h '^\(public \)\?import TauCeti\.' integration/Integration.lean \
+grep -h '^\(public \)\?import TauCeti\.' integration/Integration.lean integration/checks/*.lean \
     TauCetiRoadmap/{InfinitaryModelExistence,BorelEquivalenceRelations,CountableStructureSpaces,CountableModelCounting,HanfNumbers,RandomGraphs}/Suggested.lean \
   | awk '{print $NF}' | sort -u | xargs lake build
 integration/run.sh
 ```
 
 The second step builds (or downloads) the Tau Ceti modules the files import; no roadmap target is
-built by `lake`. `run.sh` then runs `substitute.py` and compiles, in order, A, C, B', D, E,
-RandomGraphs and `Integration.lean`, each with the pinned `lean` and
+built by `lake`. `run.sh` then runs `prepare.py` and compiles, in order, A, C, B, D, E,
+RandomGraphs, the six files `checks/<Dir>.lean` (as
+`TauCetiRoadmap.Integration.Checks.<Dir>`) and `Integration.lean`, each with the pinned `lean` and
 `LEAN_PATH=_build/olean:<lake LEAN_PATH>`. Files with a `module` header need no extra flag:
 `lean -o X.olean` also writes the `X.olean.server` and `X.olean.private` parts that their importers
 read. It prints one line per file with its exit code and number of `sorry` warnings, followed by
 any other compiler output, then the result of the co-import check, and ends with `ALL COMPILED`
-or `SOME FILE FAILED`. Outputs go to `integration/_build/`:
+or `SOME FILE FAILED`; a `sorry` warning in a check file or in `Integration.lean` fails the run.
+Outputs go to `integration/_build/`:
 
-* `orig/`, the draft snapshot;
-* `src/`, the copies compiled (B' substituted, the others verbatim);
-* `diffs/`, each draft against its copy (only B's is nonempty);
-* `logs/`, one compiler log per file.
+* `src/`, the copies compiled (all verbatim);
+* `olean/`, the compiled files;
+* `logs/`, one compiler log per file (`Checks.<Dir>.out` for the check files).
 
 `LAKE_ROOT=<checkout> integration/run.sh` reuses another checkout's built `.lake`, provided it has
 the same `lake-manifest.json`.
@@ -214,17 +276,24 @@ The result at these heads:
 
 | file | exit | `sorry` warnings |
 |---|---|---|
-| InfinitaryModelExistence | 0 | 8 |
+| InfinitaryModelExistence | 0 | 7 |
 | BorelEquivalenceRelations | 0 | 2 |
-| CountableStructureSpaces (B') | 0 | 38 (the draft has 39; the deleted stand-in was one) |
+| CountableStructureSpaces | 0 | 38 |
 | CountableModelCounting | 0 | 36 |
-| HanfNumbers | 0 | 28 |
-| RandomGraphs | 0 | 62 |
+| HanfNumbers | 0 | 29 |
+| RandomGraphs | 0 | 74 |
+| checks/InfinitaryModelExistence | 0 | 0 |
+| checks/BorelEquivalenceRelations | 0 | 0 |
+| checks/CountableStructureSpaces | 0 | 0 |
+| checks/CountableModelCounting | 0 | 0 |
+| checks/HanfNumbers | 0 | 0 |
+| checks/RandomGraphs | 0 | 0 |
 | Integration | 0 | 0 |
 
-Perturbing A's `pcSeparation` statement in a scratch copy (adding `[Infinite M]` to the
-disjointness hypothesis) makes `substitute.py` fail with the diff of the two statements, before
+The co-import check passes. Declaring a `pcSeparation` in B's namespace in a scratch file that
+imports `Integration.lean` makes both `#assert_absent` and `#assert_only_declaration` fail, and
+adding `theorem pcSeparation` to a scratch copy of B's draft makes `prepare.py` fail before
 anything is compiled.
 
-When a draft changes, merge the heads onto `main` here again and rerun. The stand-in block in B
-records the owner revision it was checked against; keep it in step.
+When a draft changes, merge the heads onto `main` here again and rerun. A check that a draft
+moves out goes to `checks/<Dir>.lean`, and `Integration.lean` imports it if an example uses it.

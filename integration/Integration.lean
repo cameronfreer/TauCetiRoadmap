@@ -3,21 +3,32 @@ import TauCetiRoadmap.BorelEquivalenceRelations.Suggested
 import TauCetiRoadmap.CountableStructureSpaces.Suggested
 import TauCetiRoadmap.CountableModelCounting.Suggested
 import TauCetiRoadmap.HanfNumbers.Suggested
+import TauCetiRoadmap.Integration.Checks.CountableStructureSpaces
+import TauCetiRoadmap.Integration.Checks.CountableModelCounting
 import TauCeti.MeasureTheory.Constructions.Polish.GDelta
 import TauCeti.SetTheory.Descriptive.Silver
 import TauCeti.SetTheory.Descriptive.InvariantSeparation
 import TauCeti.ModelTheory.Infinitary.GraphTranslation.BackTranslate
+import TauCeti.ModelTheory.Counting.LanguageEquiv
 
 /-!
-# Supplier-substitution integration check
+# Supplier integration check
 
 The prototypes of InfinitaryModelExistence (A), BorelEquivalenceRelations (C),
-CountableStructureSpaces (B, in its substituted form B'), CountableModelCounting (D) and
-HanfNumbers (E) are imported together. In B' the one
-remaining cross-roadmap stand-in, `pcSeparation`, is deleted and the name resolves to A's
-declaration. For each cross-roadmap use, an `example` (or a named theorem, where a guard needs a
+CountableStructureSpaces (B), CountableModelCounting (D) and HanfNumbers (E) are imported
+together, unchanged. No prototype carries a cross-roadmap stand-in: B no longer copies A's
+`pcSeparation` (a guard below checks that it declares none), and this file imports A for it
+directly. For each cross-roadmap use, an `example` (or a named theorem, where a guard needs a
 name) applies the supplier's theorem to the consumer's own objects and produces the conclusion
 the consumer's README needs.
+
+Some proved boundary checks that the uses below rely on were moved out of the drafts in the
+12 November conformance pass: B's `continuousSMul_relationalConfiguration`,
+`analyticSet_orbitRel_graph`, `saturated_iff_isFixedBlock` and
+`bfEquiv_of_selfStabilizesCompletely`, and D's `measurableSet_isoSetoid_fin`,
+`toStructure_morleyCode` and `isoSetoid_morleyCode_iff`. They live, under their roadmap's
+namespace and unchanged names, in `checks/<Dir>.lean`, which is compiled against the draft before
+this file and imported here.
 
 After the migration to native imports most suppliers are Tau Ceti declarations at the pin, which
 both the owner and the consumer use; such a use is kept when it checks that the supplier's
@@ -69,12 +80,25 @@ elab "#assert_uses " d:ident c:ident : command => do
     e.getUsedConstants.contains c.getId).getD false
   unless inTy || inVal do throwError "{d.getId} does not mention {c.getId}"
 
+/-- `#assert_only_declaration s c` fails unless `c` is the only declaration in the environment
+whose last name component is `s`. -/
+elab "#assert_only_declaration " s:ident c:ident : command => do
+  let env ← getEnv
+  unless env.contains c.getId do throwError "unknown owner constant {c.getId}"
+  let suffix := s.getId
+  let others := env.constants.fold (init := #[]) fun acc n _ =>
+    if n != c.getId && !n.isInternal && n.componentsRev.head? == suffix.componentsRev.head? then
+      acc.push n else acc
+  unless others.isEmpty do throwError "other declarations named {suffix}: {others}"
+
 end Guards
 
--- B': the `pcSeparation` stand-in is gone; projective classes are A's interface `LHom.PCMem`
+-- B declares no `pcSeparation` (its stand-in copy was removed in the 12 November pass), and A's is
+-- the only declaration of that name in scope; projective classes are A's interface `LHom.PCMem`
 -- (implemented in Tau Ceti), and the López–Escobar check below uses A's `pcSeparation`
 -- (`#assert_uses` after `lopezEscobar_steps34`).
 #assert_absent TauCetiRoadmap.CountableStructureSpaces.pcSeparation
+#assert_only_declaration pcSeparation TauCetiRoadmap.InfinitaryModelExistence.pcSeparation
 #assert_absent TauCetiRoadmap.CountableStructureSpaces.PCMem
 #assert_uses TauCetiRoadmap.CountableStructureSpaces.analyticSet_iff_exists_pc
   FirstOrder.Language.LHom.PCMem
@@ -112,6 +136,7 @@ end Guards
 #assert_uses TauCetiRoadmap.CountableModelCounting.countable_bfClasses_or_hasPerfectSet
   TauCeti.RelationalConfiguration.bfEquivSetoidOn
 #assert_uses TauCetiRoadmap.CountableModelCounting.morleyCode FirstOrder.Language.morleyExpansion
+-- (`isoSetoid_morleyCode_iff` is one of D's moved checks, in `checks/CountableModelCounting.lean`.)
 #assert_uses TauCetiRoadmap.CountableModelCounting.isoSetoid_morleyCode_iff
   FirstOrder.Language.nonempty_morleyEquiv_iff
 
