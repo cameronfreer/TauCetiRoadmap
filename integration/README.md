@@ -69,9 +69,8 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    | `checks/HanfNumbers.lean` | E at 2dc7d398 | six examples against E's definitions (`iteratedTwoPow`, `IsIndiscernibleOn`, `templateOf`, `morleySeed`, `hanfNumber`, `IsLω₁ωSmall`) |
    | `checks/RandomGraphs.lean` | RandomGraphs at d6486263 | six theorems (strong amalgamation, extension-budget boundary and direction, the QE adapter, the Scott-sentence boundary, `cardEq`) |
 
-   The header of `checks/RandomGraphs.lean` still says its last check is an admitted computed
-   value; that check (`productGraphon_isolated_expectation`) went back to the draft as an admitted
-   target, and every declaration in the file is proved.
+   `productGraphon_isolated_expectation`, an admitted computed value, stays in the RandomGraphs
+   draft as a target; every declaration in `checks/RandomGraphs.lean` is proved.
 3. **Compilation.** The six drafts compile unchanged, each with the pinned `lean`, into
    `_build/olean`; then the six check files; then `Integration.lean`. A file importing A, B, C, D
    and E together must compile too (`CoImport` in the output). C's prototype once redeclared root

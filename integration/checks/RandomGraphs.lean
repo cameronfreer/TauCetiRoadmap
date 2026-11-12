@@ -5,9 +5,8 @@ import TauCetiRoadmap.RandomGraphs.Suggested
 
 Each snippet compiles against `TauCetiRoadmap/RandomGraphs/Suggested.lean` at the head of this
 pass. The README keeps every statement below as part of the roadmap; these are checks that the
-prototype's definitions meet a convention or a supplier's form, not further targets. All but the
-last are proved here (some through admitted prototype theorems); the last is a computed value,
-still admitted, recorded so that the boundary case is not lost.
+prototype's definitions meet a convention or a supplier's form, not further targets. All are
+proved here, some through admitted prototype theorems.
 -/
 
 open MeasureTheory FirstOrder FirstOrder.Language CategoryTheory
