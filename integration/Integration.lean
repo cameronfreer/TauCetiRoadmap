@@ -3,6 +3,7 @@ import TauCetiRoadmap.BorelEquivalenceRelations.Suggested
 import TauCetiRoadmap.CountableStructureSpaces.Suggested
 import TauCetiRoadmap.CountableModelCounting.Suggested
 import TauCetiRoadmap.HanfNumbers.Suggested
+import TauCetiRoadmap.RandomGraphs.Suggested
 import TauCetiRoadmap.Integration.Checks.CountableStructureSpaces
 import TauCetiRoadmap.Integration.Checks.CountableModelCounting
 import TauCeti.MeasureTheory.Constructions.Polish.GDelta
@@ -35,6 +36,9 @@ both the owner and the consumer use; such a use is kept when it checks that the 
 statement fits the consumer's objects, and dropped (see `README.md`) when it would only restate
 one declaration.
 
+RandomGraphs is imported for section 7 only: since the 14 November fix round it consumes B's
+`toStructure_toRelationalConfiguration` (README 0.3), its one cross-roadmap use.
+
 C now states only the two targets Tau Ceti lacks (`isSmooth_of_isClosed` and the analytic perfect
 set theorem), neither of which B or D consumes, and cites Tau Ceti for everything else. Where C
 supplies B or D, the uses are therefore checked against Tau Ceti's declarations, which C, B and D
@@ -43,7 +47,8 @@ here.
 
 Nothing here is `sorry`, and no hypothesis stands in for a missing supplier lemma. Hypotheses
 that are a consumer's own earlier step (the disjointness step 2 of B 5.3, the tree
-representations of B Layer 3) are named as such.
+representations of B Layer 3, E's relational 5.4 equivalence, which E's README states and E's
+draft no longer declares) are named as such.
 -/
 
 set_option autoImplicit false
@@ -575,22 +580,33 @@ example [L.IsRelational] [Countable (Σ l, L.Relations l)] (M : Type w) [L.Struc
   exact ⟨_, N, hF, fun n a => ⟨χ n ⟨infinitaryType M a, a, rfl⟩,
     Fragment.subset_generated S (mem_iUnion.2 ⟨n, _, rfl⟩), hχ n _⟩, hN, hNc⟩
 
-open TauCetiRoadmap.HanfNumbers (IsCompleteSentence isLω₁ωSmall_iff_exists_isCompleteSentence) in
+open TauCetiRoadmap.HanfNumbers (IsCompleteSentence) in
 /-- **E 5.6, the forward step of `isLω₁ωSmall_iff_exists_isCompleteSentence_of_countable`**: for
-`L` with countably many function and relation symbols, E's relational headline
-`isLω₁ωSmall_iff_exists_isCompleteSentence`, applied to the graph language of `L` (relational with
-countably many relation symbols, by Tau Ceti's instances) and the graph expansion of `M`, gives a
-complete `θ`; its back-translation (A's Layer 6, Tau Ceti's `BoundedFormulaInf.backTranslate`
-with `realize_backTranslate`) holds in `M` and, in every `L`-structure, exactly when `θ` holds in
-the graph expansion. This is the sentence `σ` of E's README 5.6. -/
-example [Countable (Σ l, L.Functions l)] [Countable (Σ l, L.Relations l)] (M : Type w)
-    [L.Structure M] (hM : @IsLω₁ωSmall L.graphLanguage M (graphExpansion L M)) :
+`L` with countably many function and relation symbols, E's relational 5.4 equivalence (a structure
+is small exactly when it satisfies a complete sentence), applied to the graph language of `L` and
+the graph expansion of `M`, gives a complete `θ`; its back-translation (A's Layer 6, Tau Ceti's
+`BoundedFormulaInf.backTranslate` with `realize_backTranslate`) holds in `M` and, in every
+`L`-structure, exactly when `θ` holds in the graph expansion. This is the sentence `σ` of E's
+README 5.6.
+
+The 5.4 equivalence is no longer a Lean declaration of E's draft (removed at 8e3245ab); it stays a
+requirement of E's README, 5.4 "Small structures and complete sentences". It is therefore taken
+here as the hypothesis `h54`, E's own earlier step, not a supplier lemma: the README statement of
+5.4, with its hypotheses (relational, countably many relation symbols) as instance binders,
+specialised to the graph language. Applying it discharges those hypotheses by Tau Ceti's instances
+on `L.graphLanguage`, as E 5.6 says ("`G` is relational with countably many relation symbols, so
+5.4 and 5.5 apply to it"). -/
+example [Countable (Σ l, L.Functions l)] [Countable (Σ l, L.Relations l)]
+    (h54 : ∀ [L.graphLanguage.IsRelational] [Countable (Σ l, L.graphLanguage.Relations l)]
+      (N : Type w) [L.graphLanguage.Structure N],
+      IsLω₁ωSmall (L := L.graphLanguage) N ↔
+        ∃ θ : L.graphLanguage.Sentenceω, IsCompleteSentence.{_, _, w} θ ∧ SentenceInf.Realize θ N)
+    (M : Type w) [L.Structure M] (hM : @IsLω₁ωSmall L.graphLanguage M (graphExpansion L M)) :
     ∃ θ : L.graphLanguage.Sentenceω, IsCompleteSentence.{_, _, w} θ ∧
       SentenceInf.Realize θ.backTranslate M ∧
       ∀ (N : Type w) [L.Structure N], SentenceInf.Realize θ.backTranslate N ↔
         @SentenceInf.Realize L.graphLanguage ℕ θ N (graphExpansion L N) := by
-  obtain ⟨θ, hθ, hMθ⟩ :=
-    (@isLω₁ωSmall_iff_exists_isCompleteSentence L.graphLanguage _ _ M (graphExpansion L M)).1 hM
+  obtain ⟨θ, hθ, hMθ⟩ := (@h54 _ _ M (graphExpansion L M)).1 hM
   exact ⟨θ, hθ, (BoundedFormulaInf.realize_backTranslate θ _ _).2 hMθ,
     fun N _ => BoundedFormulaInf.realize_backTranslate θ _ _⟩
 
@@ -642,6 +658,28 @@ example (φ : L.Sentenceω)
   rw [hcard, Cardinal.mk_toType, Cardinal.card_ord]
 
 end Universes
+
+/-! ## 7. B → RandomGraphs: the decoding identity behind the fixed-assignment graph events -/
+
+section BtoRG
+
+/-- **RandomGraphs 0.3, fixed-assignment graph events**: RandomGraphs' target
+`measurableSet_setOf_realize_graph`, with its statement taken from the draft by `type_of%`, follows
+from B's Layer 0 target `toStructure_toRelationalConfiguration` (the graph coding decodes to
+`G.structure`), Tau Ceti's `RelationalConfiguration.measurableSet_setOf_realize` at `toInf φ`,
+`SimpleGraph.measurable_toRelationalConfiguration` and `BoundedFormula.realize_toInf`, the route
+RandomGraphs' README gives. -/
+example : type_of% @TauCetiRoadmap.RandomGraphs.measurableSet_setOf_realize_graph.{u, w} := by
+  intro V _ α n φ v xs
+  have h := (RelationalConfiguration.measurableSet_setOf_realize (ι := ℕ)
+    (BoundedFormula.toInf φ) v xs).preimage SimpleGraph.measurable_toRelationalConfiguration
+  convert h using 1
+  ext G
+  rw [Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_ofPred_eq,
+    TauCetiRoadmap.CountableStructureSpaces.toStructure_toRelationalConfiguration]
+  exact (@BoundedFormula.realize_toInf _ ℕ _ V G.structure _ φ v xs).symm
+
+end BtoRG
 
 end TauCetiRoadmap.Integration
 

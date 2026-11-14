@@ -9,6 +9,10 @@ so they live here; the README keeps every statement and cites the library declar
 unchanged, so the harness's existing uses (`continuousSMul_relationalConfiguration`,
 `analyticSet_orbitRel_graph`, `saturated_iff_isFixedBlock`, `bfEquiv_of_selfStabilizesCompletely`)
 resolve once this file is compiled after `Suggested.lean`.
+
+The last section holds three corollaries moved out in the 14 November fix round (27e4b31f),
+`internalScottRank_le_succ_scottHeight`, `orbitRank_le_scottHeight` and
+`exists_uniform_bfSeparation_prod`, each proved in one term from targets of the draft and Tau Ceti.
 -/
 
 universe u v w w'
@@ -133,5 +137,39 @@ theorem saturated_iff_isFixedBlock {B : Set (RelationalConfiguration L ℕ)} :
       rw [← h g⁻¹]
       exact ⟨g • x, hy, inv_smul_smul g x⟩
     · intro hx; exact ⟨x, hx, rfl⟩
+
+/-! ## Corollaries moved out in the 14 November fix round (27e4b31f)
+
+Each declaration below was stated in `Suggested.lean` (at 3e1ae1f0) and follows in one term from
+targets of that file and pinned Tau Ceti declarations. The README keeps each statement as a
+requirement with this route; the names are unchanged. -/
+
+/-- README 4.2: SR(M) ≤ SH(M) + 1 for countable `M`, from the target
+`selfStabilizationOrdinal_le_scottHeight` and Tau Ceti's
+`internalScottRank_le_succ_selfStabilizationOrdinal`. -/
+theorem internalScottRank_le_succ_scottHeight [L.IsRelational] (M : Type w) [L.Structure M]
+    [Countable M] :
+    internalScottRank (L := L) M ≤ Order.succ (scottHeight (L := L) M) :=
+  (internalScottRank_le_succ_selfStabilizationOrdinal (L := L) (M := M)).trans <|
+    (Order.succ_eq_add_one _).symm.trans_le
+      (Order.succ_le_succ (selfStabilizationOrdinal_le_scottHeight M))
+
+/-- README 4.2: in a countable structure every tuple has orbit rank at most the Scott height, by
+Tau Ceti's `orbitRank_le_selfStabilizationOrdinal` and the target
+`selfStabilizationOrdinal_le_scottHeight`. -/
+theorem orbitRank_le_scottHeight [L.IsRelational] {M : Type w} [L.Structure M] [Countable M]
+    {n : ℕ} (a : Fin n → M) :
+    orbitRank (L := L) a ≤ scottHeight (L := L) M :=
+  (orbitRank_le_selfStabilizationOrdinal a).trans (selfStabilizationOrdinal_le_scottHeight M)
+
+/-- README 4.4, the form for two classes: `exists_uniform_bfSeparation` applied to `B ×ˢ C`,
+which is analytic by `AnalyticSet.prod`. -/
+theorem exists_uniform_bfSeparation_prod [L.IsRelational]
+    {B C : Set (RelationalConfiguration L ℕ)} (hB : AnalyticSet B) (hC : AnalyticSet C)
+    (hBC : ∀ c ∈ B, ∀ d ∈ C, ¬ (isoSetoid L ℕ) c d) :
+    ∃ β < (Ordinal.omega 1 : Ordinal.{0}), ∀ c ∈ B, ∀ d ∈ C,
+      ¬ @BFEquiv L _ ℕ ℕ c.toStructure d.toStructure β 0 Fin.elim0 Fin.elim0 :=
+  let ⟨β, hβ, h⟩ := exists_uniform_bfSeparation (hB.prod hC) fun _ hp => hBC _ hp.1 _ hp.2
+  ⟨β, hβ, fun c hc d hd => h (c, d) ⟨hc, hd⟩⟩
 
 end TauCetiRoadmap.CountableStructureSpaces

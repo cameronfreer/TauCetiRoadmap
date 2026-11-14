@@ -21,8 +21,8 @@ DIRS="InfinitaryModelExistence BorelEquivalenceRelations CountableStructureSpace
 CountableModelCounting HanfNumbers RandomGraphs"
 fail=0
 # The drafts (each imports only Mathlib and Tau Ceti), then the boundary checks moved out of them
-# (each imports its own draft), then Integration.lean (imports A, B, C, D, E and the checks it
-# uses).
+# (each imports its own draft), then Integration.lean (imports A, B, C, D, E, RandomGraphs and
+# the checks it uses).
 for m in $DIRS; do "$AU/compile1.sh" "$m" || fail=1; done
 for m in $DIRS; do "$AU/compile1.sh" "Checks/$m" || fail=1; done
 "$AU/compile1.sh" Integration || fail=1

@@ -13,21 +13,23 @@ supplier's theorem, applied to the consumer's own objects, gives what the consum
 The tree is TauCetiRoadmap `main` at 35884a8c, octopus-merged (540f108f) with the six heads as
 revised after the second round of reviews, then merged (c9c13c3b) with A, C, B and D as revised
 after the 10 November reviews, (b3b9502b) with the B and C follow-ups, and (73e23254) with the
-six heads as revised in the 12 November conformance pass, and (da6e0abc) with the heads corrected
-for the 13 November reviews, so `TauCetiRoadmap/<Dir>/` here is what
-was checked.
+six heads as revised in the 12 November conformance pass, (da6e0abc) with the heads corrected
+for the 13 November reviews, and (3d833598) with the heads revised in the 14 November fix round, so
+`TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
-| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 9aefeae0 |
-| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | b4d6f21d |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 3e1ae1f0 |
-| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | c49f63f6 |
-| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | c0ccdae6 |
-| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | fe9b305a |
+| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 92ff6a6e |
+| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | b4d6f21d (unchanged since the 13 November round) |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 27e4b31f |
+| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 0a74dda7 |
+| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 8b141bc3 |
+| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | 0a7e6ae5 |
 
-RandomGraphs is compiled with the others, with its moved checks, but supplies and consumes no
-cross-roadmap use.
+RandomGraphs is compiled with the others, with its moved checks. It supplies no cross-roadmap use
+and, since the 14 November fix round, consumes one: B's decoding identity
+`toStructure_toRelationalConfiguration` for its fixed-assignment graph events (section 7 of
+`Integration.lean`).
 
 Pins (those of `main` at 35884a8c): Lean `v4.36.0-rc2`, Mathlib 1b1ccf4b0, Tau Ceti 2fd255d99.
 
@@ -65,20 +67,21 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    |---|---|---|
    | `checks/InfinitaryModelExistence.lean` | A at 6601a3b5 | `model_existence_omitting` (set-of-types indexing over Tau Ceti's indexed family), `AElementary.fragmentType_comp` |
    | `checks/BorelEquivalenceRelations.lean` | C at 81fe877e | two examples: the Polish and perfect instances of Cantor and Baire space found with Tau Ceti imported; Alexandrov's theorem for `T6` spaces from Tau Ceti's form |
-   | `checks/CountableStructureSpaces.lean` | B at cf843fd3 | nine theorems, among them `continuousSMul_relationalConfiguration`, `analyticSet_orbitRel_graph`, `saturated_iff_isFixedBlock` and `bfEquiv_of_selfStabilizesCompletely`, which `Integration.lean` uses |
+   | `checks/CountableStructureSpaces.lean` | B at cf843fd3 and 27e4b31f | nine theorems, among them `continuousSMul_relationalConfiguration`, `analyticSet_orbitRel_graph`, `saturated_iff_isFixedBlock` and `bfEquiv_of_selfStabilizesCompletely`, which `Integration.lean` uses; and, from the 14 November fix round, three corollaries proved in one term from B's targets and Tau Ceti (`internalScottRank_le_succ_scottHeight`, `orbitRank_le_scottHeight`, `exists_uniform_bfSeparation_prod`) |
    | `checks/CountableModelCounting.lean` | D at a25a711d | `measurableSet_isoSetoid_fin`, `encodeVia_mem_modelsOf`, the image forms of three Tau Ceti counting results, six Morley-code lemmas (among them `toStructure_morleyCode` and `isoSetoid_morleyCode_iff`, which `Integration.lean` uses) and `VaughtConjecture.cardinal` |
    | `checks/HanfNumbers.lean` | E at 2dc7d398 | six examples against E's definitions (`iteratedTwoPow`, `IsIndiscernibleOn`, `templateOf`, `morleySeed`, `hanfNumber`, `IsLω₁ωSmall`) |
-   | `checks/RandomGraphs.lean` | RandomGraphs at d6486263 | six theorems (strong amalgamation, extension-budget boundary and direction, the QE adapter, the Scott-sentence boundary, `cardEq`) |
+   | `checks/RandomGraphs.lean` | RandomGraphs at 0a7e6ae5 | its own spelling of `StrongAmalgamation` (the draft no longer declares it) and eight theorems (strong amalgamation, extension-budget boundary and direction, the QE adapter, the Scott-sentence boundary, `cardEq`, isomorphism invariance of satisfaction, the graphon-mixture integral), and four examples instantiating the general formula-coding theorems (the graph language; a language with a unary function symbol, with a round trip) |
 
-   `productGraphon_isolated_expectation`, an admitted computed value, stays in the RandomGraphs
-   draft as a target; every declaration in `checks/RandomGraphs.lean` is proved.
+   Every declaration in `checks/RandomGraphs.lean` is proved (`exists_isQF_equivalent` through
+   the draft's admitted `exists_computable_quantifierElimination`); its README keeps the isolated-
+   vertex expectation, which the draft no longer states.
 3. **Compilation.** The six drafts compile unchanged, each with the pinned `lean`, into
    `_build/olean`; then the six check files; then `Integration.lean`. A file importing A, B, C, D
    and E together must compile too (`CoImport` in the output). C's prototype once redeclared root
    names that Tau Ceti declares (fixed in #1616 at 6908d404); since e4077268 it states only the
    two targets Tau Ceti lacks (`isSmooth_of_isClosed` and the analytic perfect set theorem) and
    imports Tau Ceti for the rest. The run fails, naming the declaration, if a clash returns.
-4. **`Integration.lean`** imports A, B, C, D and E, the moved checks of B and D that it uses
+4. **`Integration.lean`** imports A, B, C, D, E and RandomGraphs, the moved checks of B and D that it uses
    (`checks/CountableStructureSpaces.lean`, `checks/CountableModelCounting.lean`) and the Tau Ceti
    modules its examples cite, and has three parts:
    * name-resolution guards: `#assert_absent` fails if B declares `pcSeparation` (or if any
@@ -97,6 +100,10 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
      Morley-code transport), A → D (language maps, the small presentation, fragments,
      Morleyization), A → E (reducts, isolators, countable `A`-elementary substructures, and the
      graph translation of A's Layer 6 in E 5.6);
+   * section 7, B → RandomGraphs: RandomGraphs' `measurableSet_setOf_realize_graph`, its statement
+     taken from the draft by `type_of%`, follows from B's `toStructure_toRelationalConfiguration`
+     and Tau Ceti's `RelationalConfiguration.measurableSet_setOf_realize`,
+     `SimpleGraph.measurable_toRelationalConfiguration` and `BoundedFormula.realize_toInf`;
    * section 6, universe placement: B's general constant-chain bound gives the countable case D
      consumes, for `M` in any universe; E stretches a source in `Type 1` to a model in `Type`; and
      E's Morley–Hanf route (E's source, E's exact-cardinality stretching, A's reduct lemma)
@@ -124,6 +131,10 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    consumer's own setoids, model classes or codes. Every use where C supplies B or D is of this
    kind: C, B and D all cite the same Tau Ceti declarations, and C states none of them. The
    integration file contains no `sorry`, and no hypothesis stands in for a missing supplier lemma.
+   One hypothesis is a consumer's own requirement: the E 5.6 example takes E's relational 5.4
+   equivalence (small structures and complete sentences), which E's README states and E's draft
+   no longer declares, as the hypothesis `h54` at the graph language, with 5.4's relational and
+   countability hypotheses as instance binders that Tau Ceti's instances discharge.
 
    Where an example uses a check that moved out of a draft (B's
    `continuousSMul_relationalConfiguration`, `analyticSet_orbitRel_graph`,
@@ -140,8 +151,9 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
 ## Examples dropped in the port
 
 The pre-migration `Integration.lean` had 26 examples in sections 1–6; 22 are ported, 4 dropped,
-and 4 added (`lopezEscobar_steps34`, the two step-0 checks of B's general López–Escobar and the
-E 5.6 graph-translation step), 26 in all. The checks
+and 5 added (`lopezEscobar_steps34`, the two step-0 checks of B's general López–Escobar, the
+E 5.6 graph-translation step and, in the 14 November fix round, the B → RandomGraphs graph-event
+check of section 7), 27 in all. The checks
 of C's own statements added in the meantime are gone again (see below).
 
 | old example | reason |
@@ -160,7 +172,34 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
 
 ## Changes for the revised heads
 
-### 12 November conformance pass (this run)
+### 14 November fix round (this run)
+
+* **E** removes its relational `isLω₁ωSmall_iff_exists_isCompleteSentence` from the draft
+  (8e3245ab; it stays a README requirement, 5.4). The E 5.6 example applied it to the graph
+  language; it now takes that equivalence as the hypothesis `h54`, named and documented as E's
+  README 5.4 requirement (the relational statement with its hypotheses as instance binders, at
+  `L.graphLanguage`), and still checks that Tau Ceti's instances meet 5.4's hypotheses on the
+  graph language and that `backTranslate` and `realize_backTranslate` carry the complete `θ` to
+  the sentence `σ` of E 5.6 in the original language.
+* **B** moves `internalScottRank_le_succ_scottHeight`, `orbitRank_le_scottHeight` and
+  `exists_uniform_bfSeparation_prod` out of its draft (27ba43a7, 067dda28); they are appended,
+  proved, to `checks/CountableStructureSpaces.lean`. B adds the Layer 0 target
+  `toStructure_toRelationalConfiguration` and restores `measurableSet_setOf_realize_graph` (an
+  Lω₁ω sentence event on `SimpleGraph ℕ`) as a Layer 2 target proved from it (52c32254).
+* **RandomGraphs** consumes B's `toStructure_toRelationalConfiguration` for its own
+  fixed-assignment graph events; section 7 is added to check that use, and `Integration.lean` now
+  imports RandomGraphs' draft (it compiles together with A–E). RandomGraphs drops
+  `StrongAmalgamation`, `satisfies_iso` and other unused declarations from its draft and renames
+  `GraphAlphabet` to `FormulaAlphabet`; `checks/RandomGraphs.lean` is replaced by its new set of
+  checks, which spells `StrongAmalgamation` itself.
+* **A**, **D** and **E** otherwise change their drafts only by removing or adding targets no
+  example uses (A declares `Fragment.slice`; D removes its admitted acceptance block). **C** is
+  unchanged.
+
+The E 5.6 example changed as above and one example was added (section 7); none was dropped, and
+none needed a change to a draft.
+
+### 12 November conformance pass
 
 Each draft keeps its targets and moves its proved boundary checks into a check file (see "What is
 checked"); no statement that `Integration.lean` uses changed.
@@ -278,10 +317,10 @@ The result at these heads:
 |---|---|---|
 | InfinitaryModelExistence | 0 | 7 |
 | BorelEquivalenceRelations | 0 | 2 |
-| CountableStructureSpaces | 0 | 38 |
-| CountableModelCounting | 0 | 36 |
-| HanfNumbers | 0 | 29 |
-| RandomGraphs | 0 | 74 |
+| CountableStructureSpaces | 0 | 35 |
+| CountableModelCounting | 0 | 33 |
+| HanfNumbers | 0 | 24 |
+| RandomGraphs | 0 | 75 |
 | checks/InfinitaryModelExistence | 0 | 0 |
 | checks/BorelEquivalenceRelations | 0 | 0 |
 | checks/CountableStructureSpaces | 0 | 0 |
