@@ -92,8 +92,9 @@ theorem mem_stabilizer_iff [L.IsRelational] (σ : Equiv.Perm α) (c : Relational
   sorry
 
 /-- **Layer 1 milestone.** The saturation of an analytic class is analytic, for every language.
-The library proves the relational case (`RelationalConfiguration.analyticSet_iUnion_smul`). -/
-theorem analyticSet_iUnion_smul [∀ n, Countable (L.Relations n)]
+The library proves the relational case with countably many relation symbols
+(`RelationalConfiguration.analyticSet_iUnion_smul`). -/
+theorem analyticSet_iUnion_smul
     {A : Set (RelationalConfiguration L ℕ)} (hA : AnalyticSet A) :
     AnalyticSet (⋃ σ : Equiv.Perm ℕ, σ • A) := by
   sorry
@@ -117,12 +118,6 @@ intersection. -/
 theorem isGδ_modelsOf_toInf_alls [L.IsRelational] {n : ℕ} (ψ : L.BoundedFormula Empty n)
     (hψ : ψ.IsExistential) :
     IsGδ (modelsOf (ψ.alls.toInf (ι := ℕ)) : Set (RelationalConfiguration L ℕ)) := by
-  sorry
-
-/-- **Layer 2 graph example.** Satisfaction of an `Lω₁ω` sentence is a measurable event on
-graphs on `ℕ`. -/
-theorem measurableSet_setOf_realize_graph (φ : Language.graph.Sentenceω) :
-    MeasurableSet {G : SimpleGraph ℕ | @SentenceInf.Realize Language.graph ℕ φ ℕ G.structure} := by
   sorry
 
 /-! ## Layer 3: trees, the analytic tree representation and boundedness -/
@@ -305,6 +300,16 @@ theorem exists_uniform_bfSeparation [L.IsRelational]
       ¬ @BFEquiv L _ ℕ ℕ p.1.toStructure p.2.toStructure β 0 Fin.elim0 Fin.elim0 := by
   sorry
 
+/-- **Layer 4 milestone, uniform separation of two classes.** If no element of the analytic class
+`B` is isomorphic to an element of the analytic class `C`, one countable back-and-forth level
+separates every pair from `B × C`: `exists_uniform_bfSeparation` applied to `B ×ˢ C`. -/
+theorem exists_uniform_bfSeparation_prod [L.IsRelational]
+    {B C : Set (RelationalConfiguration L ℕ)} (hB : AnalyticSet B) (hC : AnalyticSet C)
+    (hBC : ∀ c ∈ B, ∀ d ∈ C, ¬ (isoSetoid L ℕ) c d) :
+    ∃ β < (Ordinal.omega 1 : Ordinal.{0}), ∀ c ∈ B, ∀ d ∈ C,
+      ¬ @BFEquiv L _ ℕ ℕ c.toStructure d.toStructure β 0 Fin.elim0 Fin.elim0 := by
+  sorry
+
 /-- **Layer 4 milestone.** Isomorphism on a model class is Borel exactly when one countable
 back-and-forth level decides it there. -/
 theorem measurableSet_iso_inter_iff_exists_bfLevel [L.IsRelational]
@@ -461,7 +466,7 @@ def descTree [L.IsRelational] (lt : L.Relations 2) (c : RelationalConfiguration 
   prefixTree fun s => ∀ (i : ℕ) (h : i + 1 < s.length), codeRel lt c s[i + 1] s[i]
 
 /-- **Layer 6 milestone, boundedness for analytic classes of well-orders.** -/
-theorem analytic_type_bounded [L.IsRelational] [∀ n, Countable (L.Relations n)]
+theorem analytic_type_bounded [L.IsRelational]
     (lt : L.Relations 2) {A : Set (RelationalConfiguration L ℕ)} (hA : AnalyticSet A)
     (hAW : A ⊆ wellOrderClass lt) :
     ∃ β < (Ordinal.omega 1 : Ordinal.{0}), ∀ c (hc : c ∈ A),
@@ -469,8 +474,8 @@ theorem analytic_type_bounded [L.IsRelational] [∀ n, Countable (L.Relations n)
   sorry
 
 /-- **Layer 6 headline.** `WO` is not analytic. -/
-theorem not_analyticSet_wellOrderClass [L.IsRelational] [∀ n, Countable (L.Relations n)]
-    (lt : L.Relations 2) : ¬ AnalyticSet (wellOrderClass lt) := by
+theorem not_analyticSet_wellOrderClass [L.IsRelational] (lt : L.Relations 2) :
+    ¬ AnalyticSet (wellOrderClass lt) := by
   sorry
 
 /-- **Layer 6 headline.** `WO` is not Borel. -/

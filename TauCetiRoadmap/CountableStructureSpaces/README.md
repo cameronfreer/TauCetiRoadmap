@@ -338,10 +338,11 @@ restriction (`continuous_uncurry_restrict`), from which joint continuity of the 
 `Equiv.Perm.continuous_inv_apply`, `isoSetoid_eq_orbitRel`,
 `isomorphismInvariant_iff_isInvariantBlock`, the closure properties of `IsomorphismInvariant`
 (`IsomorphismInvariant.compl`, `inter`, `union`, `isomorphismInvariant_iUnion`, `_iInter`,
-`_empty`, `_univ`) and, for relational `L`, `analyticSet_iUnion_smul`. Mathlib's
-`MeasurableSpace.measurableSet_iInf` and `measurableSet_invariants` give the invariant σ-algebra.
-Still to build: `mem_stabilizer_iff` and closedness of stabilizers, and the two saturation results
-for languages with function symbols.
+`_empty`, `_univ`) and, for relational `L` with countably many relation symbols,
+`analyticSet_iUnion_smul`. Mathlib's `MeasurableSpace.measurableSet_iInf` and
+`measurableSet_invariants` give the invariant σ-algebra. Still to build: `mem_stabilizer_iff` and
+closedness of stabilizers, the two saturation results for languages with function symbols, and
+`analyticSet_iUnion_smul` for uncountably many relation symbols.
 
 - The relabelling action of `Equiv.Perm α` on `RelationalConfiguration L α` (Tau Ceti's), with
   `eval_perm_smul`, which with `Atom.map_atom` reads
@@ -362,13 +363,15 @@ for languages with function symbols.
   measurability together with action invariance, for every language and carrier, by
   `MeasurableSpace.measurableSet_iInf` and `MeasurableSpace.measurableSet_invariants`. It is
   coarser than the product σ-algebra.
-- **Saturations**: for countable relation symbols, the saturation `⋃ σ, σ • A` of an analytic
-  set is analytic (`analyticSet_iUnion_smul`, for every language; Tau Ceti proves the relational
-  case), as the image of `univ ×ˢ A` under the continuous
-  action, using `AnalyticSet.prod` (BorelEquivalenceRelations). The isomorphism relation, as a
-  subset of the square, is analytic for the same reason, for every language with countably many
-  relation symbols: it is the image of `Perm ℕ × RelationalConfiguration L ℕ` under
-  `(σ, c) ↦ (σ • c, c)` (Tau Ceti's `analyticSet_setOf_isoSetoid` is the relational case).
+- **Saturations**: for every language, the saturation `⋃ σ, σ • A` of an analytic set is
+  analytic (`analyticSet_iUnion_smul`; Tau Ceti proves the relational case with countably many
+  relation symbols), as the image of `univ ×ˢ A` under the continuous action, using
+  `AnalyticSet.prod` (BorelEquivalenceRelations). No countability enters: `A` is analytic by
+  hypothesis and `Equiv.Perm ℕ` is Polish. The isomorphism relation, as a subset of the square, is
+  analytic for every language with countably many relation symbols: it is the image of
+  `Perm ℕ × RelationalConfiguration L ℕ` under `(σ, c) ↦ (σ • c, c)` (Tau Ceti's
+  `analyticSet_setOf_isoSetoid` is the relational case). Here countability is used, since the
+  whole coding space is analytic only when it is Polish.
 
 ⚠ **API warning.** The action needs no countability and no relational hypothesis; only the
 orbit–isomorphism correspondence needs `[L.IsRelational]`, and only Polishness needs countability.
@@ -399,7 +402,7 @@ and the constructor equations, measurability of satisfaction (`measurableSet_set
 `measurableSet_modelsOf`) and `standardBorelSpace_modelsOf`, all on every countable carrier, and
 `Language.Equiv.mem_modelsOf_iff` across carriers, from which `isomorphismInvariant_modelsOf`
 follows in one step; clopenability is Mathlib's `MeasurableSet.isClopenable` applied to
-`measurableSet_modelsOf`. Still to build: locality, the Gδ model classes and the graph events.
+`measurableSet_modelsOf`. Still to build: locality and the Gδ model classes.
 
 The specification, for relational `L`:
 
@@ -425,8 +428,11 @@ The specification, for relational `L`:
   property under finite and countable conjunction. For a first-order sentence embedded by `toInf`:
   a quantifier-free matrix gives clopen sets, a universal sentence (`IsUniversal`) a closed set,
   and a `∀∃` sentence (`ψ.alls` with `ψ.IsExistential`) a Gδ set (`isGδ_modelsOf_toInf_alls`);
-- **graph events**: `measurableSet_setOf_realize_graph`, satisfaction of every Lω₁ω sentence is a
-  measurable event on `SimpleGraph ℕ`, through `SimpleGraph.toRelationalConfiguration`.
+- **graph events**: satisfaction of every Lω₁ω sentence is a measurable event on `SimpleGraph ℕ`.
+  This is Tau Ceti's `measurableSet_modelsOf` (or `measurableSet_setOf_realize`, for fixed
+  assignments) pulled back along the measurable graph coding
+  `SimpleGraph.toRelationalConfiguration` (`measurable_toRelationalConfiguration`), whose decoded
+  structure is `G.structure`; it is the library's result, not a separate target here.
 
 ⚠ **API warning.** A model class need not be Gδ, so do not install a `PolishSpace` instance on
 `modelsOf φ` in its subspace topology. In the language of one unary predicate `P`, the codes with
@@ -620,8 +626,12 @@ Still to build: `stabilizesCompletely_iff_univ`, `selfStabilizationOrdinal_le_sc
   `β < treeHeight (bfTree c d)`, a node's rank being at least the back-and-forth level of its
   tuples.
 - `exists_uniform_bfSeparation`: an analytic set of non-isomorphic pairs of codes is separated at
-  one level `β < ω₁`, by the boundedness theorem applied to the forced trees. Its form for two
-  analytic classes `B`, `C` with no element of `B` isomorphic to an element of `C`.
+  one level `β < ω₁`, by the boundedness theorem applied to the forced trees.
+- `exists_uniform_bfSeparation_prod`, the form for two classes: if `B` and `C` are analytic and
+  no element of `B` is isomorphic to an element of `C`, some `β < ω₁` makes no `c ∈ B` and
+  `d ∈ C` back-and-forth equivalent at `β`, that is, `BFEquiv β` fails for their empty tuples.
+  This is `exists_uniform_bfSeparation` applied to `B ×ˢ C`, which is analytic by
+  `AnalyticSet.prod`.
 - `measurableSet_iso_inter_iff_exists_bfLevel`: isomorphism restricted to `modelsOf φ` is Borel
   exactly when some `β < ω₁` makes `bfEquivSetoid L ℕ β` agree with isomorphism on `modelsOf φ`. The
   forward direction applies uniform separation to the complement, which is Borel and hence
@@ -637,7 +647,7 @@ yet `BFEquiv k` relates it to a finite pure set of size `k` for every finite `k`
 height is the right parameter for the height comparison.
 
 *Needs:* L3 (`treeHeight`, `analytic_treeHeight_bounded`); L4.1; TC `SameAtomicType`, `BFEquiv`; M
-`MeasurableSet.analyticSet`.
+`MeasurableSet.analyticSet`; BorelEquivalenceRelations `AnalyticSet.prod`.
 
 ### Examples
 
@@ -842,11 +852,11 @@ well-order of `ℕ`. Prove:
   node sets, `body (descTree lt c) = ∅` exactly when `codeRel lt c` is well-founded, and, for a
   well-order, its order type at most `treeHeight (descTree lt c)` (a node ending at `x` has rank
   the order type of the predecessors of `x`);
-- `analytic_type_bounded`: an analytic class of coded well-orders has order types bounded below
-  `ω₁`, by `analytic_treeHeight_bounded` applied to `descTree`;
-- `not_analyticSet_wellOrderClass`, from `analytic_type_bounded` and
-  `exists_mem_wellOrderClass_type_eq`, and `not_measurableSet_wellOrderClass`, since Borel sets
-  are analytic;
+- `analytic_type_bounded`, for every relational `L`: an analytic class of coded well-orders has
+  order types bounded below `ω₁`, by `analytic_treeHeight_bounded` applied to `descTree`;
+- `not_analyticSet_wellOrderClass`, for every relational `L`, from `analytic_type_bounded` and
+  `exists_mem_wellOrderClass_type_eq`, and, with countably many relation symbols,
+  `not_measurableSet_wellOrderClass`, since Borel sets are then analytic;
 - `not_exists_modelsOf_eq_wellOrderClass`: no Lω₁ω sentence has exactly the coded well-orders as
   its coded models, from the easy direction of López–Escobar.
 

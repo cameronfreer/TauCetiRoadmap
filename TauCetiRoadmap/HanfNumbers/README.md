@@ -231,20 +231,20 @@ chooses witnesses inside one structure without changing the language, while the 
 language by function symbols so that witnesses become terms, which a term model over an arbitrary
 index order needs. Its elementarity statement is an application of IME's Tarski–Vaught test.
 
-The following Mathlib proposals fix the shape of corresponding objects. They are built in Tau
-Ceti now, named and stated as these proposals do, and replaced by Mathlib's declarations when
-equivalents land.
+The following Mathlib proposals fix the shape of corresponding objects. Tau Ceti builds those
+objects named and stated as these proposals do, and Mathlib's declarations replace them wherever
+Mathlib has equivalents.
 
 - [Mathlib #42758](https://github.com/leanprover-community/mathlib4/pull/42758): infinitary syntax
-  and semantics, already followed by the parent roadmap.
+  and semantics, followed by the parent roadmap.
 - [Mathlib #42189](https://github.com/leanprover-community/mathlib4/pull/42189): languages with
   countably many symbols, relating `Language.card ≤ ℵ₀` to the unbundled countability instances
   used here.
 
 Mathlib has no infinite Ramsey theorem, no Erdős–Rado theorem and no partition-relation
-vocabulary at the pinned revision. The closed proposal
+vocabulary at the pinned revision. The proposals
 [Mathlib #43488](https://github.com/leanprover-community/mathlib4/pull/43488) (finite Ramsey for
-graphs and the infinite Ramsey theorem for pairs) and the open
+graphs and the infinite Ramsey theorem for pairs) and
 [Mathlib #40782](https://github.com/leanprover-community/mathlib4/pull/40782) (monochromatic
 subsets for edge labellings) concern finite and pair colourings of graphs; Layer 0 colours
 increasing tuples of a linear order of arbitrary arity and cardinality and does not depend on them.
@@ -952,10 +952,12 @@ Using IME's `infinitaryType` and `realizedTypes` (IME 4.1):
 - `IsLω₁ωSmall M`: for every `n`, `(realizedTypes M n).Countable`, i.e. `M` realizes countably many
   complete Lω₁ω-types in `n` variables (smallness in Marker's notes, Definition 6.11, p. 77).
 - API: invariance under isomorphism; every countable structure is small; smallness descends to
-  reducts along a language map (types of the reduct are determined by types in the expansion);
-  potentially isomorphic structures realize the same complete types, so smallness transfers along
-  `PotentialIso`; if every tuple's complete type is determined by its orbit under a group of
-  automorphisms with countably many orbits on `n`-tuples for each `n`, the structure is small.
+  reducts along a language map (types of the reduct are determined by types in the expansion); for
+  relational `L`, potentially isomorphic structures realize the same complete types (through a
+  tuple back-and-forth system, `TauCeti.potentialIso_iff_exists_isTupleBFSystem`), so smallness
+  transfers along `PotentialIso`; if every tuple's complete type is determined by its orbit under a
+  group of automorphisms with countably many orbits on `n`-tuples for each `n`, the structure is
+  small.
 
 **Checks.**
 

@@ -9,6 +9,8 @@ public import TauCeti.Combinatorics.DenseGraphLimits.ExchangeableGraphLaw.Infini
 public import TauCeti.Combinatorics.DenseGraphLimits.ExchangeableGraphLaw.Relational.Ergodic
 public import TauCeti.Combinatorics.SimpleGraph.Connectivity.VertexConnectivity
 public import TauCeti.Combinatorics.SimpleGraph.ExtensionProperty
+public import TauCeti.Combinatorics.SimpleGraph.RelationalConfiguration
+public import TauCeti.ModelTheory.RelationalConfiguration.ModelsOf
 public import TauCeti.ModelTheory.Scott.AtomicDiagram
 public import TauCeti.ModelTheory.Scott.RandomGraph
 public import TauCeti.ModelTheory.Infinitary.Semantics
@@ -123,8 +125,16 @@ theorem foRank_eq_zero_iff_isQF
     foRank φ = 0 ↔ φ.IsQF := by
   sorry
 
-theorem measurableSet_satisfies [Countable V] (φ : Language.graph.Sentence) :
-    MeasurableSet {G : SimpleGraph V | Satisfies G φ} := by
+/-- **Joint measurability of realization.** For a fixed graph formula with finitely many free
+variables on a countable discrete carrier, realization is measurable jointly in the graph, the
+free-variable assignment and the bound-variable tuple. At fixed assignments, sentences included,
+the event is the pullback of Tau Ceti's `TauCeti.RelationalConfiguration.measurableSet_setOf_realize`
+(applied to `BoundedFormula.toInf φ`) along `SimpleGraph.toRelationalConfiguration`; the joint
+statement is a countable union of rectangles over the assignments. -/
+theorem measurableSet_realize_jointly [Countable V] [MeasurableSpace V] [DiscreteMeasurableSpace V]
+    {α : Type w} [Finite α] {n : ℕ} (φ : Language.graph.BoundedFormula α n) :
+    MeasurableSet {x : SimpleGraph V × (α → V) × (Fin n → V) |
+      @BoundedFormula.Realize _ V x.1.structure _ _ φ x.2.1 x.2.2} := by
   sorry
 
 theorem satisfies_iso {G : SimpleGraph V} {H : SimpleGraph W}
@@ -226,6 +236,48 @@ theorem isFraisseLimit_radoGraph :
     @IsFraisseLimit Language.graph finiteGraphs.{0} ℕ TauCeti.radoGraph.structure _ _ := by
   sorry
 
+/-! ### Declarations named by the Mathlib proposals
+
+The graph-characterization proposal (mathlib4#20649) and the quantifier-elimination proposal
+(mathlib4#41113) fix these names and statements under `FirstOrder.Language`; they are declared here
+under the same paths relative to this namespace. -/
+
+/-- The graph-language extension property of the graph-characterization proposal: for disjoint
+finite sets `A` and `B` of vertices, some vertex outside `A ∪ B` is adjacent to every vertex of `A`
+and to none of `B`. -/
+def Language.graph.ExtensionProperty (M : Type w) [Language.graph.Structure M] [DecidableEq M] :
+    Prop :=
+  ∀ {A B : Finset M}, Disjoint A B → ∃ x ∉ A ∪ B,
+    (∀ a ∈ A, Structure.RelMap Language.adj ![x, a]) ∧
+      ∀ b ∈ B, ¬ Structure.RelMap Language.adj ![x, b]
+
+/-- Every countable simple-graph structure embeds into a simple-graph structure with the extension
+property, of any cardinality. -/
+theorem Language.graph.ExtensionProperty.embedding_from_countable {M : Type w} {N : Type w'}
+    [Language.graph.Structure M] [M ⊨ Language.Theory.simpleGraph] [DecidableEq M]
+    [Language.graph.Structure N] [N ⊨ Language.Theory.simpleGraph] [Countable N]
+    (h : Language.graph.ExtensionProperty M) : Nonempty (N ↪[Language.graph] M) := by
+  sorry
+
+/-- A countable simple-graph structure with the extension property is the Fraïssé limit of the
+finite simple graphs (the proposal's class, with its two conditions in the other order). -/
+theorem Language.graph.ExtensionProperty.isFraisseLimit_finite_graphs {M : Type w}
+    [Language.graph.Structure M] [M ⊨ Language.Theory.simpleGraph] [DecidableEq M] [Countable M]
+    (h : Language.graph.ExtensionProperty M) : IsFraisseLimit finiteGraphs.{w} M := by
+  sorry
+
+/-- A formula is quantifier-free equivalent modulo `T` when some quantifier-free formula in the same
+free variables has the same realizations in every model of `T`. -/
+def Language.Theory.IsQFEquivalent {L : FirstOrder.Language.{u, v}} (T : L.Theory) {α : Type w}
+    (φ : L.Formula α) : Prop :=
+  ∃ ψ : L.Formula α, ψ.IsQF ∧ φ ⇔[T] ψ
+
+/-- A theory has quantifier elimination when every formula is quantifier-free equivalent modulo
+it. -/
+def Language.Theory.HasQuantifierElimination {L : FirstOrder.Language.{u, v}} (T : L.Theory) :
+    Prop :=
+  ∀ {α : Type} (φ : L.Formula α), Language.Theory.IsQFEquivalent T φ
+
 /-! ## Finite-rank agreement and genuine QE targets (Milestone 5) -/
 
 /-- `T_R` is complete. -/
@@ -296,7 +348,9 @@ Computable quantifier elimination and decidability are stated over a fixed struc
 graph formulas by natural numbers: Mathlib's list encoding `BoundedFormula.encoding`, followed by
 an explicit numbering of its symbol alphabet. The coding is not `Encodable.ofCountable`, whose
 classical enumeration carries no effective content. The context type is a parameter; for
-`Fin m` the code does not depend on `m`, which the maps receive separately. -/
+`Fin m` the code does not depend on `m`, which the maps receive separately. The README proposes a
+coding interface for a general language, shared with FreeGroupsAndLimitGroups, of which these
+graph statements are an instance. -/
 
 instance : IsEmpty (Σ l, Language.graph.Functions l) :=
   ⟨fun ⟨_, f⟩ => (f : Empty).elim⟩
@@ -390,6 +444,13 @@ theorem exists_computable_quantifierElimination :
         ∃ ψ : Language.graph.Formula (Fin m), Q m (boundedCode φ) = boundedCode ψ ∧ ψ.IsQF ∧
           ∀ (M : Type w) [Language.graph.Structure M], M ⊨ radoAxioms →
             ∀ a : Fin m → M, ψ.Realize a ↔ φ.Realize a := by
+  sorry
+
+/-- **Theory-level quantifier elimination** for `T_R`, in the quantifier-elimination proposal's
+vocabulary, for formulas in any type of free variables. It follows from the computable map by the
+proposal's reduction to finite variable types, and does not replace that map. -/
+theorem radoAxioms_hasQuantifierElimination :
+    Language.Theory.HasQuantifierElimination radoAxioms := by
   sorry
 
 /-- **Decidability of the Rado theory.** A computable test on codes of sentences that answers
@@ -679,11 +740,14 @@ theorem ae_windowEdgeDensity (p : I) :
       Tendsto (windowEdgeDensity G) atTop (𝓝 (p : ℝ)) := by
   sorry
 
-/-- A concrete measurable separator, not an isomorphism-invariant event. -/
-theorem binomialRandom_singular_separator (p q : I) (hpq : p ≠ q) :
-    ∃ S : Set (SimpleGraph ℕ), MeasurableSet S ∧
-      SimpleGraph.binomialRandom ℕ p S = 1 ∧
-      SimpleGraph.binomialRandom ℕ q S = 0 := by
+/-- **Mutual singularity.** For `p ≠ q` the labeled laws `G(ℕ, p)` and `G(ℕ, q)` are mutually
+singular, in Mathlib's `MeasureTheory.Measure.MutuallySingular`, although for `p, q ∈ (0, 1)` both
+are concentrated on the Rado isomorphism class. The witness is the edge-density separator
+`{G | windowEdgeDensity G → p}`: it is measurable, has `G(ℕ, p)`-probability one by
+`ae_windowEdgeDensity` at `p` and `G(ℕ, q)`-probability zero by the same theorem at `q`. It is
+invariant under finitely supported permutations but is not an isomorphism-invariant event. -/
+theorem binomialRandom_mutuallySingular (p q : I) (hpq : p ≠ q) :
+    SimpleGraph.binomialRandom ℕ p ⟂ₘ SimpleGraph.binomialRandom ℕ q := by
   sorry
 
 /-! ## Infinitary distinctions (Milestone 10)

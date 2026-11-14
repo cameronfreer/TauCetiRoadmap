@@ -105,6 +105,7 @@ The following are suppliers, not requests to rebuild their objects.
 | [InfinitaryLogic, Layer 1](../../Completed/InfinitaryLogic/README.md) | Finite EF strategies, ordinal back-and-forth and selected-family potential isomorphism |
 | [InfinitaryLogic, random-graph worked example](../../Completed/InfinitaryLogic/README.md) | The canonical full extension predicate `SimpleGraph.HasExtensionProperty` with `SimpleGraph.HasExtensionProperty.exists_adj_iff` (a witness outside a listed tuple realizing any adjacency pattern compatible with its repetitions); the Rado graph `TauCeti.radoGraph` with `TauCeti.hasExtensionProperty_radoGraph` (`Combinatorics/SimpleGraph/ExtensionProperty.lean`); the extension-pair bridge `SimpleGraph.HasExtensionProperty.isExtensionPair`, countable uniqueness `SimpleGraph.HasExtensionProperty.nonempty_iso`, the characterization `TauCeti.nonempty_iso_radoGraph_iff` of the countable graphs isomorphic to the Rado graph, and the infinitary characterization `SimpleGraph.HasExtensionProperty.realize_scottSentence_iff`: for a countable graph with the extension property, its Scott sentence holds in a graph of any cardinality exactly when that graph has the extension property (`ModelTheory/Scott/RandomGraph.lean`); files at Tau Ceti `2fd255d99` |
 | [Tau Ceti `ModelTheory/Scott/AtomicDiagram.lean`](https://github.com/TauCetiProject/TauCeti/blob/2fd255d997f47c0b5d834ee416c7015d55444ce5/TauCeti/ModelTheory/Scott/AtomicDiagram.lean) at `2fd255d99` (the finite companion of the parent's infinitary `atomicDiagram`) | `TauCeti.AtomicIdx.toFormula : AtomicIdx L n → L.BoundedFormula Empty n`; for `[Finite (Σ k, L.Relations k)]`, `TauCeti.firstOrderAtomicDiagram (a : Fin n → M) : L.BoundedFormula Empty n`, the finite conjunction `BoundedFormula.iInf` over `AtomicIdx L n` of the tests true of `a` and the negations of those false of it (`firstOrderAtomicDiagram_def`); and, for relational `L`, `realize_firstOrderAtomicDiagram_iff_sameAtomicType : (firstOrderAtomicDiagram a).Realize v b ↔ SameAtomicType a b` for `b : Fin n → N` in any structure. The tuple occupies bound positions |
+| [Tau Ceti `ModelTheory/RelationalConfiguration/ModelsOf.lean`](https://github.com/TauCetiProject/TauCeti/blob/2fd255d997f47c0b5d834ee416c7015d55444ce5/TauCeti/ModelTheory/RelationalConfiguration/ModelsOf.lean) and [`Combinatorics/SimpleGraph/RelationalConfiguration.lean`](https://github.com/TauCetiProject/TauCeti/blob/2fd255d997f47c0b5d834ee416c7015d55444ce5/TauCeti/Combinatorics/SimpleGraph/RelationalConfiguration.lean) at `2fd255d99` | `TauCeti.RelationalConfiguration.measurableSet_setOf_realize`: on a countable carrier, the configurations realizing an infinitary formula with countable branching, at fixed free- and bound-variable assignments, form a measurable set; `RelationalConfiguration.toStructure_ofStructure`; the graph coding `SimpleGraph.toRelationalConfiguration` with `SimpleGraph.measurable_toRelationalConfiguration` and, on a countable carrier, `SimpleGraph.measurableEmbedding_toRelationalConfiguration`. Their pullback is the fixed-assignment graph event of 0.3 |
 | [DenseGraphLimits, Layers 9a–c](../../Completed/DenseGraphLimits/README.md) | Finite and infinite graphon sampling, finite restrictions, exchangeable graph laws, dissociation, mixtures and sampling convergence |
 | [Exchangeability, array layers](../../Completed/Exchangeability/README.md) | Generic array exchangeability, dissociation and ergodic/extreme-measure machinery |
 | [GraphConnectivityAndFlows](../GraphConnectivityAndFlows/README.md) | Vertex connectivity `SimpleGraph.IsVertexConnected` (Tau Ceti `Combinatorics/SimpleGraph/Connectivity/VertexConnectivity.lean`; `k : ℕ∞`, more than `k` vertices and connected after deleting fewer than `k`), deletion, separators and their graph interfaces |
@@ -130,9 +131,12 @@ The common logical modules are
 `TauCeti.ModelTheory.BackAndForth.Equivalence`, and
 `TauCeti.ModelTheory.Infinitary.QuantifierRank`.
 Use `TauCeti.EFStrategy`, `TauCeti.BFEquiv`,
-`SimpleGraph.sameAtomicType_iff` and `SimpleGraph.Iso.toLanguageEquiv`.
-Milestone 5 adds the natural-valued first-order rank and its finite-rank realization bridge to
-these shared APIs; it does not introduce another game or back-and-forth relation.
+`SimpleGraph.sameAtomicType_iff` and `SimpleGraph.Iso.toLanguageEquiv`, and the finite-round
+soundness of `TauCeti.EFStrategy.bfEquiv` with `TauCeti.BFEquiv.realize_iff_of_qrank_le`
+(`TauCeti.ModelTheory.BackAndForth.Karp`).
+Milestone 5 adds the natural-valued first-order rank and its identification with the ordinal
+rank of `BoundedFormula.toInf` to these shared APIs; it does not introduce another game,
+back-and-forth relation or soundness theorem.
 
 The full extension predicate and the Rado graph belong to the InfinitaryLogic worked example;
 this roadmap consumes them and does not maintain a second extension predicate or Rado graph.
@@ -142,15 +146,16 @@ rooted consequences, computable quantifier elimination, and the probabilistic th
 
 The following Mathlib proposals fix the shape of corresponding targets here. They are built in
 Tau Ceti now, named and stated as these proposals do, and replaced by Mathlib's declarations
-when equivalents land.
+when equivalents land. The proposals place them under `FirstOrder.Language`; `Suggested.lean`
+declares them with the proposals' statements, under the same paths relative to its namespace.
 
 - The [graph-characterization proposal](https://github.com/leanprover-community/mathlib4/pull/20649):
-  the graph-language extension property `FirstOrder.Language.graph.ExtensionProperty`,
-  `ExtensionProperty.embedding_from_countable`, and
-  `ExtensionProperty.isFraisseLimit_finite_graphs`, identifying a countable structure with the
+  the graph-language extension property `Language.graph.ExtensionProperty`,
+  `Language.graph.ExtensionProperty.embedding_from_countable`, and
+  `Language.graph.ExtensionProperty.isFraisseLimit_finite_graphs`, identifying a countable structure with the
   property as the Fraïssé limit of finite simple graphs (Milestone 4).
 - The [quantifier-elimination proposal](https://github.com/leanprover-community/mathlib4/pull/41113):
-  `FirstOrder.Language.Theory.IsQFEquivalent` and `Theory.HasQuantifierElimination`, with the
+  `Language.Theory.IsQFEquivalent` and `Language.Theory.HasQuantifierElimination`, with the
   reduction to finite variable types; its
   [extension-pair companion](https://github.com/leanprover-community/mathlib4/pull/41115)
   derives quantifier elimination from extension pairs (Milestone 5).
@@ -163,8 +168,9 @@ Each implementation consumes the narrow supplier it needs, not an entire supplie
 
 *Needs:* Mathlib `SimpleGraph.binomialRandom` with its Bernoulli-product presentation, the graph
 language and structure adapters, bounded formulas and realization; Tau Ceti
-`SimpleGraph.Iso.toLanguageEquiv` and the measurable structure of
-`TauCeti.Combinatorics.SimpleGraph.Measurable`.
+`SimpleGraph.Iso.toLanguageEquiv`, the measurable structure of
+`TauCeti.Combinatorics.SimpleGraph.Measurable`, `TauCeti.RelationalConfiguration.measurableSet_setOf_realize`,
+`SimpleGraph.measurableEmbedding_toRelationalConfiguration` and `BoundedFormula.realize_toInf`.
 
 ### 0.1 Graph/language transport
 
@@ -200,12 +206,28 @@ Do not introduce a second random-graph measure.
 ### 0.3 Satisfaction as an event
 
 Give the countable vertex carrier its discrete measurable structure and the finite
-assignment spaces their product measurable structures. For each fixed first-order bounded
-formula with finitely many free variables, prove joint measurability of realization in
-the graph and its free- and bound-variable assignments. Prove the sentence specialization
-and invariance under graph isomorphism and relabeling. The quantifier step is a countable
-union or intersection over actual vertices. Countability alone is not a substitute for
-the stated measurable structure on an assignment carrier.
+assignment spaces their product measurable structures.
+
+At fixed assignments the graph event belongs to Tau Ceti and is not restated here. For a
+countable carrier `V`, a graph formula `φ` and fixed free- and bound-variable assignments, the
+set of graphs `G` whose structure `G.structure` realizes `φ` there is the preimage, under the
+measurable map `SimpleGraph.toRelationalConfiguration` (`SimpleGraph.measurable_toRelationalConfiguration`;
+a measurable embedding by `SimpleGraph.measurableEmbedding_toRelationalConfiguration`), of the
+configuration event of `BoundedFormula.toInf φ`. That event is measurable by
+`TauCeti.RelationalConfiguration.measurableSet_setOf_realize`, which covers every infinitary
+formula with countable branching, and `BoundedFormula.realize_toInf` with
+`RelationalConfiguration.toStructure_ofStructure` identifies the two realizations. The sentence
+events used by the satisfaction probabilities below are the case of empty assignments. On `ℕ`,
+the event of `∃x∃y Adj(x,y)` is the countable union over pairs `u ≠ v` of the cylinders
+`{G | G.Adj u v}`.
+
+The target here is joint measurability. For a fixed graph formula with finitely many free
+variables, prove that realization is measurable on the product of the graph space with the
+free- and bound-variable assignment spaces (`measurableSet_realize_jointly`). From the
+fixed-assignment events this is a countable union over the assignments, each term a measurable
+rectangle with a singleton; it needs measurable singletons in the product structure on the
+assignment spaces, and countability of the carrier alone is not a substitute for that
+structure. Prove invariance of the events under graph isomorphism and relabeling.
 
 Define the finite satisfaction probability directly by evaluating
 `binomialRandom (Fin n) p` on the native realization event. Expose real and `ℝ≥0∞`
@@ -372,9 +394,9 @@ Prove that full extension supplies arbitrarily many distinct witnesses for every
 
 Prove the adapter between the graph-facing and graph-language forms: under
 `SimpleGraph.structure`, `G.HasExtensionProperty` holds exactly when the graph-language
-extension property holds, stated as `FirstOrder.Language.graph.ExtensionProperty` in the
+extension property holds, stated as `Language.graph.ExtensionProperty` in the
 graph-characterization proposal (a witness outside $`A\cup B`$ related by the adjacency symbol to all of $`A`$
-and none of $`B`$). Give `FirstOrder.Language.Equiv.toSimpleGraphIso`, the converse of Tau Ceti's
+and none of $`B`$). Give `Language.Equiv.toSimpleGraphIso`, the converse of Tau Ceti's
 `SimpleGraph.Iso.toLanguageEquiv`, and transport both across it.
 
 Construct an actual first-order sentence $`E_{r,s}`$ asserting extension for every
@@ -402,8 +424,9 @@ because the witness must differ from the listed vertex.
 Prove that the class of all finite simple graph structures is Fraïssé using Milestone 1.
 Construct its limit using Milestone 2 and prove that it satisfies $`\mathrm{EP}`$. Conversely,
 a countable graph with $`\mathrm{EP}`$ has this age and is ultrahomogeneous, hence is the same
-Fraïssé limit. State this converse as `ExtensionProperty.isFraisseLimit_finite_graphs` of the
-graph-characterization proposal, together with `ExtensionProperty.embedding_from_countable`, and
+Fraïssé limit. State this converse as `Language.graph.ExtensionProperty.isFraisseLimit_finite_graphs`
+of the graph-characterization proposal, together with
+`Language.graph.ExtensionProperty.embedding_from_countable`, and
 transfer both to `SimpleGraph` through the adapter of 4.1.
 
 Cameron (*The random graph*, Theorem 3 and the paragraph after it, p. 8) states that the finite
@@ -445,19 +468,34 @@ is outside its age.
 ### 5.1 Shared finite-logic foundations
 
 *Needs:* Milestone 0; 4.1 for the extension strategy; Tau Ceti `EFStrategy`, `BFEquiv`,
-`SimpleGraph.sameAtomicType_iff` and the infinitary quantifier rank.
+`TauCeti.EFStrategy.bfEquiv`, `TauCeti.BFEquiv.realize_iff_of_qrank_le`,
+`TauCeti.BFEquiv.elementarilyEquivalent`, `BoundedFormula.realize_toInf`,
+`SimpleGraph.sameAtomicType_iff` and the infinitary quantifier rank with
+`BoundedFormulaInf.qrank_toInf`.
 
 Define natural-valued quantifier rank by structural recursion on Mathlib bounded formulas.
 Prove constructor and renaming laws, the appropriate substitution laws, and compatibility
 with the ordinal rank of the existing infinitary embedding. Identify rank zero with
 Mathlib's native `BoundedFormula.IsQF` predicate.
 
-Extend the existing `EFStrategy`/`BFEquiv` API with truth preservation for native
-first-order formulas of bounded rank. The theorem must retain the actual assignments and
-handle tuple repetitions. Prove finite-round soundness for an arbitrary relational
-language, without a finite- or countable-signature hypothesis; the graph specialization
-then uses `sameAtomicType_iff`. The finite graph signature enters the later enumeration
-of diagrams for quantifier elimination.
+Finite-round soundness is already in Tau Ceti, for an arbitrary relational language and without
+a finite- or countable-signature hypothesis, and is cited rather than restated. A winning
+`k`-round strategy gives back-and-forth equivalence at level `k` (`TauCeti.EFStrategy.bfEquiv`,
+`ModelTheory/BackAndForth/Game/Finite.lean`). Back-and-forth equivalence at level `α` gives
+agreement of the two tuples, repetitions allowed, on every infinitary formula of quantifier rank
+at most `α`, with the tuples in bound positions (`TauCeti.BFEquiv.realize_iff_of_qrank_le`,
+`ModelTheory/BackAndForth/Karp.lean`). `TauCeti.BFEquiv.elementarilyEquivalent` already applies
+these to first-order sentences through `BoundedFormula.toInf`, whose realization is
+`BoundedFormula.realize_toInf`.
+
+What remains here is the rank bridge. Prove that the ordinal rank of the embedding is the natural
+rank, `(BoundedFormula.toInf φ).qrank = foRank φ`, by induction on `φ`
+(`BoundedFormulaInf.qrank_toInf` makes the left side independent of the branching carrier).
+With the declarations above it gives the first-order form directly: tuples joined by a `k`-round
+strategy agree on every native formula of `foRank` at most `k`. Formulas over `Fin m` are moved to
+the bound-position presentation explicitly. The graph specialization then uses
+`sameAtomicType_iff`. The finite graph signature enters the later enumeration of diagrams for
+quantifier elimination. Check: `∀x∃y Adj(x,y)` has `foRank` 2 and ordinal rank 2.
 
 For graphs satisfying $`\mathrm{EP}_{\le d}`$, construct the finite-round extension
 strategy starting at two tuples with the same equality and adjacency pattern. If the
@@ -521,8 +559,10 @@ through finite patterns; build:
   that accepts exactly the formula codes (Mathlib's list decoder ignores trailing symbols, so
   this needs a re-encoding check) and its round-trip law, and computability on codes of the syntax operations the maps
   use: the constructors (`⊥`, equality and adjacency atoms between variables, implication,
-  universal quantification) and case analysis on the outermost constructor. These are supporting
-  targets for the two theorems, not a general computability library;
+  universal quantification) and case analysis on the outermost constructor. They are stated here
+  for the graph language as supporting targets for the two theorems; a coding interface for a
+  general language, shared with FreeGroupsAndLimitGroups, is proposed under
+  [Coordination and provenance](#coordination-and-provenance);
 - a computable representation of finite equality-and-adjacency patterns on `Fin m`, with
   its consistency test;
 - a correctness bridge proving that the formula of each consistent pattern and
@@ -535,7 +575,8 @@ through finite patterns; build:
   and on sentences the decision map.
 
 Export also the theory-level property in the vocabulary of the quantifier-elimination proposal,
-`T_R.HasQuantifierElimination`: every formula is `IsQFEquivalent` modulo $`T_R`$,
+`Language.Theory.HasQuantifierElimination radoAxioms` (`radoAxioms_hasQuantifierElimination`):
+every formula is `Language.Theory.IsQFEquivalent` modulo $`T_R`$,
 using that proposal's reduction to finite variable types. The theory-level property is a
 consequence of the computable QE map and does not replace it.
 
@@ -901,10 +942,16 @@ normalization, to prove
 
 Set the displayed density to $`0`$ at $`n=0,1`$. The limit holds for every $`p\in[0,1]`$,
 the endpoints included ($`G(\mathbb N,0)`$ and $`G(\mathbb N,1)`$ are the empty and complete graphs).
-For distinct $`p,q\in[0,1]`$ derive mutual singularity of the labeled infinite laws.
-For $`p,q\in(0,1)`$ this holds although each gives probability one to the Rado isomorphism class.
-The separating initial-window density events are measurable and invariant under
-finitely supported permutations; do not claim invariance under all relabelings.
+For distinct $`p,q\in[0,1]`$ derive mutual singularity of the labeled infinite laws, stated
+with Mathlib's `MeasureTheory.Measure.MutuallySingular` as
+`SimpleGraph.binomialRandom ℕ p ⟂ₘ SimpleGraph.binomialRandom ℕ q`
+(`binomialRandom_mutuallySingular`). For $`p,q\in(0,1)`$ this holds although each gives
+probability one to the Rado isomorphism class. The witness is the edge-density separator
+`{G | windowEdgeDensity G → p}`: it is measurable,
+has probability one under `G(ℕ, p)` and, since the densities converge to `q ≠ p` almost surely
+under `G(ℕ, q)`, probability zero there. At `p = 0`, `q = 1` its masses are `1` and `0`. The
+separating initial-window density events are invariant under finitely supported permutations;
+do not claim invariance under all relabelings.
 
 ## Milestone 10 — Infinitary distinctions with actual sentences
 
@@ -1096,6 +1143,32 @@ Coordinate the theory-level quantifier-elimination endpoint with the
 [quantifier-elimination proposal](https://github.com/leanprover-community/mathlib4/pull/41113) and
 its [extension-pair companion](https://github.com/leanprover-community/mathlib4/pull/41115).
 These are design and provenance references, not assumptions that their code is in Mathlib.
+
+**A shared formula coding.** [FreeGroupsAndLimitGroups §3.1](../FreeGroupsAndLimitGroups/README.md#31-the-language-of-groups-and-its-coefficient-extensions)
+builds the same kind of structure on Mathlib's `BoundedFormula.listEncode` for the group language
+with coefficient constants: validity of codes, connectives and quantifiers, claimed primitive
+recursive, with codes that carry the number of bound variables. Neither roadmap states its
+coding for a general language. The proposal is one interface for a general `L`, owned where it
+first lands and consumed by the other roadmap, with the graph coding of 5.2 as an instance. The
+round trip carries over unchanged, since `boundedDecode_boundedCode` uses only
+`BoundedFormula.encoding.decode_encode`. The effective claims do not: `Encodable` instances on
+`Σ n, L.Functions n` and `Σ n, L.Relations n` are not presumed sufficient, because an encoding
+such as `Encodable.ofCountable` has no effective content. The interface needs:
+
+- an effective presentation of the language: computably decodable (for the group roadmap,
+  `Primcodable`) symbol families, with the arity of a symbol computable from its code;
+- the arity operations of the encoding: building and taking apart a function or relation
+  application from a symbol code and a list of argument codes of the matching length (the graph
+  language has no function symbols, so its terms are variables; the group language's are not);
+- exact decoding at a given number of bound variables, with a computable validity test, since
+  Mathlib's list decoder ignores trailing symbols, and the round-trip law;
+- uniformity in the free-variable context, given its own effective presentation;
+- computability of the constructors and of case analysis on codes, and primitive recursiveness
+  where FreeGroupsAndLimitGroups claims it.
+
+The graph-specific pattern representation, quantifier-elimination map and decision procedure of
+5.2 stay in this roadmap and do not depend on how that interface is settled.
+
 On the Tau Ceti side, the extension predicate and Rado graph come from the InfinitaryLogic
 random-graph worked example (`Combinatorics/SimpleGraph/ExtensionProperty.lean` and
 `ModelTheory/Scott/RandomGraph.lean`);

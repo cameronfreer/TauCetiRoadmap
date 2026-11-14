@@ -55,7 +55,7 @@ counts countable models through the interface of Layer 4.
 
 Every layer below is required.
 
-| Layer | Builds | Consumes | Example (compiles without later layers) |
+| Layer | Covers | Consumes | Example (compiles without later layers) |
 | --- | --- | --- | --- |
 | 0 | Word cylinders and the coordinate flip; functional Borel graphs; the cardinality bound for standard Borel spaces; perfect and Cantor antichains with transport; countable splits | Mathlib Polish, perfect-set, Cantor-scheme, analytic-set and standard-Borel APIs; Tau Ceti's Cantor-space instances, Gδ subspaces, analytic-set closure and saturation, Borel graph theorem, Borel perfect set theorem and cardinality of perfect sets | an uncountable Borel subset of ℝ contains a Cantor copy |
 | 1 | Baire-measurable maps continuous on comeagre Gδ sets; Cantor subcopies; the graphs G_S, dense and sparse word sets, the canonical words, Miller's independence lemma | 0; Mathlib Baire-category API; Tau Ceti's Kuratowski–Ulam and Mycielski | every Borel equivalence relation on Cantor space with countable classes is meagre in the square |
@@ -63,6 +63,12 @@ Every layer below is required.
 | 3 | The fusion construction and the G₀ dichotomy, oriented and symmetric | 1, 2 | G₀ has no countable Borel coloring, and a non-dense word set can give a 2-colorable G_S |
 | 4 | Silver's theorem (Polish, standard Borel, cardinal and relative forms); the perfect set theorem for analytic sets; the consumer interface | 0, 1, 3 | Silver for equality on an uncountable Polish space recovers the perfect set theorem |
 | 5 | Borel reducibility; smoothness and its characterizations; closed relations are smooth; Silver in reducibility form; E₀, its generic ergodicity and non-smoothness | 0–4 | E₀ is Borel, has a continuous Cantor antichain, and is not smooth |
+
+The table specifies what each layer covers, not what remains to be written. At the pin, Tau
+Ceti implements every item of the *Covers* column except the perfect set theorem for analytic
+sets (4.2) and the smoothness of closed relations (5.2); those two theorems and worked examples
+3, 5 and 8 are the remaining work. Everything else is consumed from Tau Ceti, not rebuilt; see
+[How to read the build](#how-to-read-the-build).
 
 The ordering is the dependency order. Layers 1 and 2 can proceed in parallel once Layer 0
 exists; Layer 3 needs both; Layer 4 needs Layer 3 and Layer 1; Layer 5 needs Layer 4 only for
@@ -621,9 +627,12 @@ for the last, from Mathlib.
   of topology, and nothing needs to: only the Cantor form is moved.
 - `MeasureTheory.AnalyticSet.exists_nat_bool_injection_of_not_countable` (perfect set theorem for
   analytic sets), not in Tau Ceti at the pin and a target of `Suggested.lean`: an uncountable
-  analytic subset of a Hausdorff space contains the range of a continuous injection of Cantor
-  space. Write it as the range of a continuous `g` on a Polish space; the relation `g a = g b` is
-  closed; Silver's theorem gives a Cantor antichain `h` for it, and `g ∘ h` is the injection.
+  analytic subset of a Hausdorff space contains the range of a continuous injection of Cantor space
+  (B. D. Miller, *Forceless, ineffective, powerless proofs*, Lecture I, Exercise 16 (Souslin), p. 8,
+  stated as a dichotomy for an analytic Hausdorff space `X` itself; the target is its nontrivial
+  half for the subspace `A`). Write it as the range of a continuous `g` on a Polish space; the
+  relation `g a = g b` is closed; Silver's theorem gives a Cantor antichain `h` for it, and `g ∘ h`
+  is the injection.
 
   *Needs:* Mathlib `MeasureTheory.analyticSet_iff_exists_polishSpace_range`, `isClosed_diagonal`;
   Tau Ceti `Setoid.silver_dichotomy`, `Setoid.HasCantorAntichainOn.exists_injective`.
@@ -690,10 +699,11 @@ All but `isSmooth_of_isClosed` is consumed from Tau Ceti (`BorelReducibility.lea
   Such a relation is bireducible with equality on `Quotient E`, whose quotient σ-algebra is then
   discrete (`Setoid.borelBireducible_bot_quotient`).
 - `isSmooth_of_isClosed`, not in Tau Ceti at the pin and a target of `Suggested.lean`: a closed
-  equivalence relation on a Polish space is smooth. For basic open sets `U` and `V` with
-  `U ×ˢ V` disjoint from the graph of `E`, the saturations of `U` and `V` are disjoint invariant
-  analytic sets; invariant Lusin separation (Layer 2.2) separates them by an invariant Borel set;
-  the countably many separators separate the classes.
+  equivalence relation on a Polish space is smooth (Harrington–Kechris–Louveau 1990, Corollary 1.2,
+  p. 905, for Gδ relations, derived there from their dichotomy; the Gδ form is not a target here).
+  For basic open sets `U` and `V` with `U ×ˢ V` disjoint from the graph of `E`, the saturations of
+  `U` and `V` are disjoint invariant analytic sets; invariant Lusin separation (Layer 2.2) separates
+  them by an invariant Borel set; the countably many separators separate the classes.
 
   *Needs:* Mathlib `IsClosed.analyticSet`, `MeasurableSet.analyticSet`,
   `TopologicalSpace.exists_countable_basis`; Tau Ceti
@@ -790,10 +800,11 @@ Discharge these alongside the layers; they check that the API describes real rel
 
 ## Completion criteria
 
-Each introduced definition comes with its basic rewriting, monotonicity and transport API and
-the stated examples. The headline theorems are assembled from these APIs, without hypotheses
-asserting a homomorphism, a meagre pullback, a Cantor antichain or a separating family that the
-roadmap is meant to prove.
+Each definition of the layers comes with its basic rewriting, monotonicity and transport API and
+the stated examples; at the pin the definitions are Tau Ceti's, and the open targets of kind 3
+under [How to read the build](#how-to-read-the-build) are proved on Tau Ceti's carriers. The
+headline theorems are assembled from these APIs, without hypotheses asserting a homomorphism, a
+meagre pullback, a Cantor antichain or a separating family that the roadmap is meant to prove.
 
 The following chains must be visible in the exported results:
 
@@ -912,7 +923,8 @@ is the proof map of the Silver and G₀ formalization.
   Logic* 18 (2012), no. 4, 554–575. The classical proof of the G₀ dichotomy, the independence
   lemma for G_S and Silver's theorem from it.
 - B. D. Miller, *Forceless, ineffective, powerless proofs of descriptive dichotomy theorems*,
-  lecture notes; Lecture I is Silver's theorem by the category route.
+  lecture notes; Lecture I is Silver's theorem by the category route,
+  <https://glimmeffros.github.io/unpublished/parisone.pdf>.
 - K. Kuratowski and S. Ulam, "Quelques propriétés topologiques du produit combinatoire",
   *Fundamenta Mathematicae* 19 (1932), 247–251.
 - J. Mycielski, "Independent sets in topological algebras", *Fundamenta Mathematicae* 55 (1964),
@@ -928,6 +940,6 @@ is the proof map of the Silver and G₀ formalization.
   analytic equivalence relations.
 - L. A. Harrington, A. S. Kechris and A. Louveau, "A Glimm–Effros dichotomy for Borel equivalence
   relations", *Journal of the American Mathematical Society* 3 (1990), 903–928. Cited for the
-  out-of-scope general dichotomy.
+  out-of-scope general dichotomy and, by Corollary 1.2, for 5.2.
 - `cameronfreer/infinitary-logic`, Lean 4 formalization of infinitary logic and the descriptive
   set theory above, revision `518a366`.
