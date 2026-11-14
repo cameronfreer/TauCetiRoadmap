@@ -127,23 +127,13 @@ theorem foRank_eq_zero_iff_isQF
     foRank φ = 0 ↔ φ.IsQF := by
   sorry
 
-/-- **Fixed-assignment graph events.** On a countable carrier, for a graph formula and fixed free-
-and bound-variable assignments, the graphs whose structure realizes the formula form a measurable
-set. It is the preimage, under `SimpleGraph.measurable_toRelationalConfiguration`, of the
-configuration event of `BoundedFormula.toInf φ`, which is measurable by
-`TauCeti.RelationalConfiguration.measurableSet_setOf_realize`; `BoundedFormula.realize_toInf` and
-the identity `G.toRelationalConfiguration.toStructure = G.structure` identify the two
-realizations. -/
-theorem measurableSet_setOf_realize_graph [Countable V] {α : Type w} {n : ℕ}
-    (φ : Language.graph.BoundedFormula α n) (v : α → V) (xs : Fin n → V) :
-    MeasurableSet {G : SimpleGraph V | @BoundedFormula.Realize _ V G.structure _ _ φ v xs} := by
-  sorry
-
 /-- **Joint measurability of realization.** For a fixed graph formula with finitely many free
 variables on a countable discrete carrier, realization is measurable jointly in the graph, the
 free-variable assignment and the bound-variable tuple: a countable union over the assignments of
-the rectangles formed by the fixed-assignment events `measurableSet_setOf_realize_graph` and
-singletons. -/
+the rectangles formed by singletons and the fixed-assignment graph events. Those events are
+CountableStructureSpaces' (Layer 2), the pullback along the graph coding of
+`TauCeti.RelationalConfiguration.measurableSet_setOf_realize` at `BoundedFormula.toInf φ`; this
+file does not restate them. -/
 theorem measurableSet_realize_jointly [Countable V] [MeasurableSpace V] [DiscreteMeasurableSpace V]
     {α : Type w} [Finite α] {n : ℕ} (φ : Language.graph.BoundedFormula α n) :
     MeasurableSet {x : SimpleGraph V × (α → V) × (Fin n → V) |
@@ -610,6 +600,14 @@ tends to its truth value in the Rado graph. -/
 theorem firstOrder_zero_one (p : I) (hp0 : 0 < (p : ℝ))
     (hp1 : (p : ℝ) < 1) (φ : Language.graph.Sentence) :
     Tendsto (fun n => sentenceProbability p n φ) atTop (𝓝 (radoTruth φ)) := by
+  sorry
+
+/-- **Finite models.** A sentence true in the Rado graph has a finite simple-graph model of every
+sufficiently large size. The size bound is needed: `∀x∃y Adj(x, y)` holds in the Rado graph and in
+`Kₙ` for `n ≥ 2`, but not in `K₁`. -/
+theorem eventually_exists_finite_model (φ : Language.graph.Sentence)
+    (hφ : Satisfies TauCeti.radoGraph φ) :
+    ∀ᶠ n in atTop, ∃ G : SimpleGraph (Fin n), Satisfies G φ := by
   sorry
 
 /-- **Bounded-rank varying parameters.** For `d ≥ 1`, if `(n - d) δ_n^d - d log(n + 2) → ∞` with

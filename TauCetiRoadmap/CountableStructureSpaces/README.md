@@ -46,8 +46,8 @@ milestones and an acceptance check that compiles without later layers.
 | 2 | Satisfaction and model classes `modelsOf φ`: Borel, invariant, standard Borel; Gδ model classes | 0–1; InfinitaryLogic Layer 0; BorelEquivalenceRelations (Gδ subspaces) |
 | 3 | Trees: bodies, well-foundedness, heights, Kleene–Brouwer, the boundedness theorem, tree representations of analytic sets | 0; Mathlib analytic sets and `Descriptive.tree` |
 | 4 | Borel back-and-forth equivalence, the isomorphism relation, Borel isomorphism classes, the external Scott height, Borel isomorphism under bounded height, forced back-and-forth trees and uniform separation | 1–3; InfinitaryLogic Layers 1–3; BorelEquivalenceRelations (products of analytic sets) |
-| 5 | López–Escobar: PC sentences of trees, both directions, the action form, the invariant σ-algebra, invariant analytic classes as PC classes | 2–4; InfinitaryModelExistence PC-separation |
-| 6 | Invariant analytic separation; the well-order class: boundedness, not analytic, not Borel, coded undefinability | 1–5; BorelEquivalenceRelations (invariant Lusin separation) |
+| 5 | López–Escobar: PC sentences of trees, both directions, the action form, the invariant σ-algebra, invariant analytic classes as PC classes | 0–4; InfinitaryModelExistence PC-separation |
+| 6 | Invariant analytic separation; the well-order class: boundedness, not analytic, not Borel, coded undefinability | 0–5; BorelEquivalenceRelations (invariant Lusin separation) |
 
 Besides Mathlib and Tau Ceti, the layers consume four general lemmas of the sibling roadmap
 [BorelEquivalenceRelations](../BorelEquivalenceRelations/README.md) (Layers 1, 2, 4 and 6) and one theorem of the sibling roadmap
@@ -639,13 +639,14 @@ where Tau Ceti's `orbitRank a` asks for agreement at every level.
 
 ### 4.3 Borel isomorphism and strata
 
-- `measurableSet_iso_inter_of_scottHeight_le`: if every code in `modelsOf φ` has Scott height at
-  most `β < ω₁`, then isomorphism restricted to `modelsOf φ` is Borel, namely
-  `bfEquivSetoid L ℕ β` restricted to `modelsOf φ`.
-- `measurableSet_setOf_selfStabilizationOrdinal_le`: for `β < ω₁` the codes with
-  `s(c) ≤ β` form a Borel set, because `s(c) ≤ β` is self-stabilization at `β` (attainment and
-  upward propagation), a countable intersection over pairs of tuples of conditions read off
-  back-and-forth equivalence of tuples (`measurableSet_setOf_bfEquiv`) along the diagonal.
+- `measurableSet_iso_inter_of_scottHeight_le`: for relational `L` with countably many relation
+  symbols, if every code in `modelsOf φ` has Scott height at most `β < ω₁`, then isomorphism
+  restricted to `modelsOf φ` is Borel, namely `bfEquivSetoid L ℕ β` restricted to `modelsOf φ`.
+- `measurableSet_setOf_selfStabilizationOrdinal_le`: for relational `L` with countably many
+  relation symbols and `β < ω₁`, the codes with `s(c) ≤ β` form a Borel set, because
+  `s(c) ≤ β` is self-stabilization at `β` (attainment and upward propagation), a countable
+  intersection over pairs of tuples of conditions read off back-and-forth equivalence of tuples
+  (`measurableSet_setOf_bfEquiv`) along the diagonal.
 
 *Needs:* L2 (`modelsOf`); L4.1; L4.2 (the height comparison); TC `measurableSet_setOf_bfEquiv`.
 
@@ -668,10 +669,11 @@ where Tau Ceti's `orbitRank a` asks for agreement at every level.
   isomorphic to an element of `C`, some `β < ω₁` makes no `c ∈ B` and `d ∈ C` back-and-forth
   equivalent at `β`, that is, `BFEquiv β` fails for their empty tuples. This is
   `exists_uniform_bfSeparation` applied to `B ×ˢ C`, which is analytic by `AnalyticSet.prod`.
-- `measurableSet_iso_inter_iff_exists_bfLevel`: isomorphism restricted to `modelsOf φ` is Borel
-  exactly when some `β < ω₁` makes `bfEquivSetoid L ℕ β` agree with isomorphism on `modelsOf φ`. The
-  forward direction applies uniform separation to the complement, which is Borel and hence
-  analytic; the converse is `measurableSet_setOf_bfEquivSetoid`.
+- `measurableSet_iso_inter_iff_exists_bfLevel`: for relational `L` with countably many relation
+  symbols, isomorphism restricted to `modelsOf φ` is Borel exactly when some `β < ω₁` makes
+  `bfEquivSetoid L ℕ β` agree with isomorphism on `modelsOf φ`. The forward direction applies
+  uniform separation to the complement, which is Borel and hence analytic; the converse is
+  `measurableSet_setOf_bfEquivSetoid`.
 
 ⚠ **API warning.** Borelness of the external strata `{c | scottHeight c ≤ β}` is not claimed: the
 definition quantifies over all countable structures. Stratify by the internal ordinal `s(c)`,
@@ -871,16 +873,17 @@ reducts.
 
 ### 6.1 Invariant separation
 
-- `invariant_analytic_separation`: if `A` and `B` are analytic, `B` is action invariant and `A`
-  and `B` are disjoint, there is an invariant Borel `C ⊇ A` disjoint from `B`. This is
+- `invariant_analytic_separation`: for a language with countably many relation symbols, if `A`
+  and `B` are analytic, `B` is action invariant and `A` and `B` are disjoint, there is an
+  invariant Borel `C ⊇ A` disjoint from `B`. This is
   `Setoid.exists_invariant_measurableSet_separating` (BorelEquivalenceRelations, implemented in
   Tau Ceti) for the orbit relation,
   whose graph is analytic (Layer 1.2), once action invariance is identified with saturation for
   the orbit relation (the saturation of `B` under the quotient map is `B` exactly when `B` is a
   fixed block, for every language; Tau Ceti's
   `isomorphismInvariant_iff_preimage_image_quotientMk` is the relational case).
-- `exists_sentence_separating`: by López–Escobar, the separator is `modelsOf θ` for a single
-  sentence `θ`.
+- `exists_sentence_separating`: for relational `L` with countably many relation symbols, by
+  López–Escobar, the separator is `modelsOf θ` for a single sentence `θ`.
 
 Vaught 1974, statement (10), p. 281, and Marker's notes, Corollary 4.25, p. 51, separate two
 disjoint invariant analytic sets by an invariant Borel set. Here only `B` need be invariant:
