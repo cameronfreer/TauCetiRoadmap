@@ -13,17 +13,18 @@ supplier's theorem, applied to the consumer's own objects, gives what the consum
 The tree is TauCetiRoadmap `main` at 35884a8c, octopus-merged (540f108f) with the six heads as
 revised after the second round of reviews, then merged (c9c13c3b) with A, C, B and D as revised
 after the 10 November reviews, (b3b9502b) with the B and C follow-ups, and (73e23254) with the
-six heads as revised in the 12 November conformance pass, so `TauCetiRoadmap/<Dir>/` here is what
+six heads as revised in the 12 November conformance pass, and (da6e0abc) with the heads corrected
+for the 13 November reviews, so `TauCetiRoadmap/<Dir>/` here is what
 was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
-| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | fc7a5158 (README change only since bb883e0b) |
-| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | 6ca8a4f0 |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 65a7a7ea |
-| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 1c8987f5 |
-| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | c61d6445 |
-| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | 2210a669 |
+| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 9aefeae0 |
+| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | b4d6f21d |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 3e1ae1f0 |
+| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | c49f63f6 |
+| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | c0ccdae6 |
+| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | fe9b305a |
 
 RandomGraphs is compiled with the others, with its moved checks, but supplies and consumes no
 cross-roadmap use.
