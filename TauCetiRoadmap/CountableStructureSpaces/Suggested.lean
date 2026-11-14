@@ -34,7 +34,8 @@ equivalence and the Scott analysis (`TauCeti.BFEquiv`, `TauCeti.scottSentence`,
 isomorphism and back-and-forth setoids, the permutation-group topology, and projective classes
 (`FirstOrder.Language.LHom.PCMem`). The library's theorems are cited, not restated. Two targets
 are proved in place: `isomorphismInvariant_modelsOf`, which CountableModelCounting consumes by
-name, and `orbitRank_le_scottHeight`, from the target `selfStabilizationOrdinal_le_scottHeight`.
+name, and the graph events `measurableSet_setOf_realize_graph`, from the target
+`toStructure_toRelationalConfiguration` and the library.
 The PC sentence of a tree is recorded by its specification (`exists_pcSentence`); the
 README gives its explicit construction.
 -/
@@ -72,6 +73,15 @@ noncomputable def queryCode [∀ n, Countable (L.Relations n)] (c : RelationalCo
 /-- **Layer 0 milestone.** The query code is a closed embedding into Cantor space. -/
 theorem isClosedEmbedding_queryCode [∀ n, Countable (L.Relations n)] :
     IsClosedEmbedding (queryCode (L := L)) := by
+  sorry
+
+/-- **Layer 0, the graph coding decodes to the graph's structure.** The coding
+`SimpleGraph.toRelationalConfiguration` is `ofStructure` of `G.structure`, so decoding it gives back
+`G.structure`. In Tau Ceti's file, where the coding's body is visible, this is
+`toStructure_ofStructure`; the body is not exposed to importing modules, and the pin states no such
+lemma. -/
+theorem toStructure_toRelationalConfiguration {V : Type*} (G : SimpleGraph V) :
+    G.toRelationalConfiguration.toStructure = G.structure := by
   sorry
 
 /-! ## Layer 1: the logic action of `S∞`
@@ -119,6 +129,18 @@ theorem isGδ_modelsOf_toInf_alls [L.IsRelational] {n : ℕ} (ψ : L.BoundedForm
     (hψ : ψ.IsExistential) :
     IsGδ (modelsOf (ψ.alls.toInf (ι := ℕ)) : Set (RelationalConfiguration L ℕ)) := by
   sorry
+
+/-- **Layer 2, graph events.** Satisfaction of an `Lω₁ω` sentence is a measurable event on graphs
+on `ℕ`: the preimage of the model class (`measurableSet_modelsOf`) under the measurable graph coding
+(`SimpleGraph.measurable_toRelationalConfiguration`), whose decoded structure is `G.structure`
+(`toStructure_toRelationalConfiguration`). -/
+theorem measurableSet_setOf_realize_graph (φ : Language.graph.Sentenceω) :
+    MeasurableSet {G : SimpleGraph ℕ | @SentenceInf.Realize Language.graph ℕ φ ℕ G.structure} := by
+  convert (measurableSet_modelsOf (V := ℕ) φ).preimage
+    SimpleGraph.measurable_toRelationalConfiguration using 1
+  ext G
+  rw [Set.mem_preimage, mem_modelsOf, toStructure_toRelationalConfiguration]
+  rfl
 
 /-! ## Layer 3: trees, the analytic tree representation and boundedness -/
 
@@ -218,20 +240,6 @@ theorem selfStabilizationOrdinal_le_scottHeight [L.IsRelational] (M : Type w) [L
     selfStabilizationOrdinal (L := L) M ≤ scottHeight (L := L) M := by
   sorry
 
-/-- **Layer 4 milestone, comparison with `internalScottRank`.** -/
-theorem internalScottRank_le_succ_scottHeight [L.IsRelational] (M : Type w) [L.Structure M]
-    [Countable M] :
-    internalScottRank (L := L) M ≤ Order.succ (scottHeight (L := L) M) := by
-  sorry
-
-/-- **Layer 4 milestone, comparison with orbit ranks.** In a countable structure every tuple has
-orbit rank at most the Scott height: the library's `orbitRank_le_selfStabilizationOrdinal` with
-`selfStabilizationOrdinal_le_scottHeight`. -/
-theorem orbitRank_le_scottHeight [L.IsRelational] {M : Type w} [L.Structure M] [Countable M]
-    {n : ℕ} (a : Fin n → M) :
-    orbitRank (L := L) a ≤ scottHeight (L := L) M :=
-  (orbitRank_le_selfStabilizationOrdinal a).trans (selfStabilizationOrdinal_le_scottHeight M)
-
 /-- **Layer 4 milestone, isomorphism is Borel under bounded Scott height.** -/
 theorem measurableSet_iso_inter_of_scottHeight_le [L.IsRelational]
     [∀ n, Countable (L.Relations n)] {φ : L.Sentenceω} {β : Ordinal.{0}}
@@ -298,16 +306,6 @@ theorem exists_uniform_bfSeparation [L.IsRelational]
     (hiso : ∀ p ∈ A, ¬ (isoSetoid L ℕ) p.1 p.2) :
     ∃ β < (Ordinal.omega 1 : Ordinal.{0}), ∀ p ∈ A,
       ¬ @BFEquiv L _ ℕ ℕ p.1.toStructure p.2.toStructure β 0 Fin.elim0 Fin.elim0 := by
-  sorry
-
-/-- **Layer 4 milestone, uniform separation of two classes.** If no element of the analytic class
-`B` is isomorphic to an element of the analytic class `C`, one countable back-and-forth level
-separates every pair from `B × C`: `exists_uniform_bfSeparation` applied to `B ×ˢ C`. -/
-theorem exists_uniform_bfSeparation_prod [L.IsRelational]
-    {B C : Set (RelationalConfiguration L ℕ)} (hB : AnalyticSet B) (hC : AnalyticSet C)
-    (hBC : ∀ c ∈ B, ∀ d ∈ C, ¬ (isoSetoid L ℕ) c d) :
-    ∃ β < (Ordinal.omega 1 : Ordinal.{0}), ∀ c ∈ B, ∀ d ∈ C,
-      ¬ @BFEquiv L _ ℕ ℕ c.toStructure d.toStructure β 0 Fin.elim0 Fin.elim0 := by
   sorry
 
 /-- **Layer 4 milestone.** Isomorphism on a model class is Borel exactly when one countable
@@ -460,11 +458,6 @@ theorem analyticSet_compl_wellOrderClass [L.IsRelational] [∀ n, Countable (L.R
     (lt : L.Relations 2) : AnalyticSet (wellOrderClass lt)ᶜ := by
   sorry
 
-/-- **Layer 6, the tree of descending sequences** of a code: the finite sequences strictly
-decreasing for the distinguished relation. -/
-def descTree [L.IsRelational] (lt : L.Relations 2) (c : RelationalConfiguration L ℕ) : tree ℕ :=
-  prefixTree fun s => ∀ (i : ℕ) (h : i + 1 < s.length), codeRel lt c s[i + 1] s[i]
-
 /-- **Layer 6 milestone, boundedness for analytic classes of well-orders.** -/
 theorem analytic_type_bounded [L.IsRelational]
     (lt : L.Relations 2) {A : Set (RelationalConfiguration L ℕ)} (hA : AnalyticSet A)
@@ -487,20 +480,6 @@ theorem not_measurableSet_wellOrderClass [L.IsRelational] [∀ n, Countable (L.R
 well-orders as its coded models. -/
 theorem not_exists_modelsOf_eq_wellOrderClass [L.IsRelational] [∀ n, Countable (L.Relations n)]
     (lt : L.Relations 2) : ¬ ∃ φ : L.Sentenceω, modelsOf φ = wellOrderClass lt := by
-  sorry
-
-/-! ## Worked examples -/
-
-/-- **Worked example.** A pure set of `m` elements has Scott height `m + 1`, although its internal
-Scott rank is `1`. -/
-theorem scottHeight_fin_pureSet (m : ℕ) :
-    @scottHeight Language.empty _ (Fin m) Language.emptyStructure = (m : Ordinal.{0}) + 1 := by
-  sorry
-
-/-- **Worked example.** The countably infinite pure set has Scott height `ω`, so the `+ ω` in
-`scottHeight_le_internalScottRank_add_omega0` is attained. -/
-theorem scottHeight_nat_pureSet :
-    @scottHeight Language.empty _ ℕ Language.emptyStructure = Ordinal.omega0 := by
   sorry
 
 end TauCetiRoadmap.CountableStructureSpaces

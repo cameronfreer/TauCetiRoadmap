@@ -134,6 +134,23 @@ only through the upper bound and the existence of a global Hanf bound.
    the comparison, code a colouring of the increasing `n`-tuples of a well-ordered carrier, for
    each `n`, by an `n`-ary relation symbol of a countable language with an order symbol.)
 
+**Checks** (the iterated exponential, Convention 4).
+
+- At `κ = 2` the first three values are `2`, `4` and `16`.
+- At `κ = 0` they are `0`, `1` and `2`: the recursion is meaningful for finite `κ`, although the
+  partition theorems use it only for infinite `κ`.
+- The exponents nest rather than multiply: `ℶ₂(3) = 2^(2^3) = 256`, not `(2^3)^2 = 64`.
+
+**Checks** (categoricity, Convention 7).
+
+- Over the empty language, "there are infinitely many elements" is `κ`-categorical for every
+  infinite `κ`: two pure sets of the same cardinality are isomorphic.
+- The Scott sentence of `(ℚ, <)` is `ℵ₀`-categorical but not `ℵ₁`-categorical: its models are the
+  dense linear orders without endpoints, and the lexicographic product of `ω₁` copies of `ℚ` and
+  its reverse are two of cardinality `ℵ₁` with cofinalities `ℵ₁` and `ℵ₀`.
+- "There are exactly two elements" is `2`-categorical and also `ℵ₀`-categorical, vacuously:
+  categoricity in `κ` does not ask for a model of cardinality `κ`.
+
 ## Exact supplier contracts
 
 The following are suppliers, not requests to rebuild their objects.
@@ -231,34 +248,21 @@ chooses witnesses inside one structure without changing the language, while the 
 language by function symbols so that witnesses become terms, which a term model over an arbitrary
 index order needs. Its elementarity statement is an application of IME's Tarski–Vaught test.
 
-The following Mathlib proposals fix the shape of corresponding objects. Tau Ceti builds those
-objects named and stated as these proposals do, and Mathlib's declarations replace them wherever
-Mathlib has equivalents.
-
-- [Mathlib #42758](https://github.com/leanprover-community/mathlib4/pull/42758): infinitary syntax
-  and semantics, followed by the parent roadmap.
-- [Mathlib #42189](https://github.com/leanprover-community/mathlib4/pull/42189): languages with
-  countably many symbols, relating `Language.card ≤ ℵ₀` to the unbundled countability instances
-  used here.
-
-Mathlib has no infinite Ramsey theorem, no Erdős–Rado theorem and no partition-relation
-vocabulary at the pinned revision. The proposals
-[Mathlib #43488](https://github.com/leanprover-community/mathlib4/pull/43488) (finite Ramsey for
-graphs and the infinite Ramsey theorem for pairs) and
-[Mathlib #40782](https://github.com/leanprover-community/mathlib4/pull/40782) (monochromatic
-subsets for edge labellings) concern finite and pair colourings of graphs; Layer 0 colours
-increasing tuples of a linear order of arbitrary arity and cardinality and does not depend on them.
+Neither pinned library has an infinite Ramsey theorem, an Erdős–Rado theorem or partition-relation
+vocabulary; Layer 0 colours increasing tuples of a linear order of every arity and cardinality.
 
 ## Layer 0 — The partition calculus of the Morley–Hanf proof
 
 Suggested home: `TauCeti/SetTheory/Cardinal/Partition/{Basic, EndHomogeneous, ErdosRado}.lean`.
 
-This layer is pure combinatorics with no logic in it. It owns exactly the partition results that
-the Morley–Hanf construction uses: the pigeonhole principle for successor cardinals, end-homogeneous
-sets, the finite-exponent Erdős–Rado theorem with the colour bound `κ`, and the `ω₁`-pigeonhole
-principle. The infinite Ramsey theorem is built in
-[BanachSpaceTheory](../BanachSpaceTheory/README.md) §B4.1, the rest of the partition calculus is
-[out of scope](#out-of-scope), and this roadmap uses neither.
+This layer is pure combinatorics with no logic in it. Mathlib supplies cardinal pigeonhole
+(`Cardinal.infinite_pigeonhole_card`) and the regularity of successor cardinals and of `ℵ₁`; this
+layer introduces the partition-relation vocabulary and owns exactly the partition results that the
+Morley–Hanf construction uses: the pigeonhole principle for successor cardinals restated as a
+partition relation (0.2, from those Mathlib theorems), end-homogeneous sets, the finite-exponent
+Erdős–Rado theorem with the colour bound `κ`, and the `ω₁`-pigeonhole principle. The infinite Ramsey
+theorem is built in [BanachSpaceTheory](../BanachSpaceTheory/README.md) §B4.1, the rest of the
+partition calculus is [out of scope](#out-of-scope), and this roadmap uses neither.
 
 ### 0.1 Vocabulary
 
@@ -281,19 +285,35 @@ For a linear order `I` and a colour type `C`:
   `μ = 0`, since `Fin 0 ↪o J` is inhabited and admits no colouring by an empty type. The partition
   theorems of this layer all have an infinite colour bound.
 
-**Checks.**
+**Checks** (the partition relation).
 
 - `0 → (0)¹_0` holds: the empty order is its own homogeneous set (Erdős and Rado's form fails).
 - `3 → (2)¹_2` holds: two colours on three points leave a fibre with two points.
 - `2 → (2)¹_2` fails: colouring the two points of a two-element order differently leaves no
   homogeneous set with two points.
 
+**Checks** (homogeneity and end-homogeneity).
+
+- For the colouring `(x + y) mod 2` of the increasing pairs of `ℕ`, the even numbers form a
+  homogeneous set, all of whose pairs have colour `0`; `{0, 1, 2}` does not, since the pair `(0, 1)`
+  has colour `1` and `(0, 2)` colour `0`.
+- For `n = 1` a set is homogeneous exactly when the colouring is constant on its points, and for
+  `n = 0` every set, `∅` included, is homogeneous for every colouring, since there is exactly one
+  increasing `0`-tuple.
+- The pair colouring `x mod 2` (the smaller point) makes `ℕ` end-homogeneous but not homogeneous:
+  `(0, 1)` has colour `0` and `(1, 2)` colour `1`. The pair colouring `y mod 2` (the larger point)
+  makes `{0, 1, 2}` not end-homogeneous: `(0, 1)` and `(0, 2)` agree on their first point and have
+  colours `1` and `0`.
+- A set with at most `n + 2` points is end-homogeneous for every colouring of increasing
+  `(n + 2)`-tuples, since it has at most one such tuple; `{0, 1, 2}` above is the smallest set that
+  a pair colouring can make fail.
+
 API: homogeneity is inherited by subsets and transported along order embeddings and order
 isomorphisms; the restriction of a colouring along an order embedding has the pulled-back
-homogeneous sets; `IsHomogeneousOn` implies `IsEndHomogeneousOn`; `PartitionRel.mono` (larger
-source, smaller target, fewer colours); and `partitionRel_iff_finset`, the order-free form with
-colourings of `n`-element subsets `{s : Finset X // s.card = n}`. The order-free form shows that
-`PartitionRel` does not depend on the linear order chosen on a set of cardinality `κ`, so a
+homogeneous sets; `IsHomogeneousOn` implies `IsEndHomogeneousOn`; monotonicity of `PartitionRel`
+(larger source, smaller target, fewer colours); and the order-free form, the same relation stated
+with colourings of `n`-element subsets `{s : Finset X // s.card = n}`. The order-free form shows
+that `PartitionRel` does not depend on the linear order chosen on a set of cardinality `κ`, so a
 statement proved for well-orders (`κ.ord.ToType`) holds for every linear order of that cardinality.
 
 ### 0.2 Pigeonhole
@@ -321,6 +341,15 @@ statement proved for well-orders (`κ.ord.ToType`) holds for every linear order 
 **`exists_isEndHomogeneousOn`.** Let `λ` be infinite, `I` well-ordered with `(2^λ)⁺ ≤ #I`, and
 `c : (Fin (n + 2) ↪o I) → C` with `#C ≤ λ`. Then some `H ⊆ I` with `λ⁺ ≤ #H` is end-homogeneous
 for `c`.
+
+This statement and the tree route below are this roadmap's formulation. The closest checked source
+is the inductive step of Marker's notes, proof of Theorem 5.5, p. 56: for a colouring of the
+`(m + 1)`-element subsets of `ℶₘ(κ)⁺` by `κ` colours it builds a set `Y = {y_β : β < ℶₘ₋₁(κ)⁺}` on
+which the colour of a subset depends only on the subset without its last-chosen element. So `Y` is
+end-homogeneous for the order of construction, not for the order of the source, with
+`λ = ℶₘ₋₁(κ)` and `κ ≤ λ` colours. Instead of a tree, that proof takes a subset of the source of
+cardinality `ℶₘ(κ)` that realizes, for every subset `Z` of it of cardinality at most `ℶₘ₋₁(κ)`,
+each restriction to the `m`-element subsets of `Z` of the colour function of a point of the source.
 
 The proof is the Erdős–Rado tree argument. Build, by transfinite recursion along the well-order of
 `I`, a tree whose nodes at level `β` record, for a branch of length `β`, the colour of a new point
@@ -404,6 +433,21 @@ operations that preserve it: negation, implication, the countable connectives `i
 reindexing of bound positions along an order embedding `Fin n ↪o Fin m` (the parent's `mapBound`).
 Quantifiers do not preserve indiscernibility, and the docstring says so.
 
+`IsIndiscernibleOn` is this roadmap's interface. Its classical counterpart is the set `Γ` in the
+proof of Theorem 5.2 in Marker's notes, p. 57: the disequalities `dᵢ ≠ dⱼ` for `i < j` and the
+sentences `θ(d_{i₁}, …, d_{iₙ}) ↔ θ(d_{j₁}, …, d_{jₙ})` for `θ` in a countable fragment and
+increasing index tuples, so that in a model of `Γ` the constants `dᵢ` form an infinite set of
+indiscernibles.
+
+**Checks** (indiscernibility).
+
+- In `(ℕ, <)`, the identity sequence is indiscernible for `x₀ < x₁`: the formula holds at every
+  increasing pair.
+- In `(ℤ, <)`, the sequence `n ↦ (−1)ⁿ n` (values `0, −1, 2, −3, …`) is not: `x₀ < x₁` holds at the
+  index pair `(0, 2)` and fails at `(0, 1)`.
+- Every sequence, over every index order, is indiscernible for any set of sentences (arity `0`):
+  there is exactly one increasing `0`-tuple.
+
 Indiscernibility of an injective sequence for the equality formulas is automatic, and the
 sequence's increasing tuples realize the same equality pattern.
 
@@ -427,15 +471,40 @@ indiscernibility this fails: `P(a n) ↔ n ≥ 1` along `succ : ℕ ↪o ℕ` pu
 template of the subsequence and not in that of `a`); and if `b : K → N` realizes the template of `a` on `Δ` then `b` is
 indiscernible on `Δ`.
 
+**Checks** (templates, realization and coherence).
+
+- Over a one-point index order the template of any sequence contains every formula of arity `2`,
+  `⊥` included, since there are no increasing pairs.
+- For an injective sequence indexed by `ℕ` in a pure set, the template contains `¬(x₀ = x₁)` and
+  `x₀ = x₀` and omits `x₀ = x₁` and `⊥`; it is coherent: the reindexing `x₀ = x₂` of `x₀ = x₁` along
+  `0 ↦ 0, 1 ↦ 2` is omitted too, and the sequence realizes its own template.
+- A template declaring `x₀ = x₁` true at arity `2` and `x₀ = x₂` false at arity `3` is not coherent,
+  and no sequence over an infinite index order realizes it on these two formulas.
+
+Templates are this roadmap's interface: they record, as data, the truth values that an
+indiscernible sequence gives its increasing tuples. Marker's notes leave this object unnamed and
+obtain the indiscernibles as constants in a model of the theory `T ∪ Γ` of the proof of
+Theorem 5.2, p. 57, built by model existence.
+
 ### 1.3 The Morley seed
 
 *Needs:* 1.1, 1.2.
 
 `disEq : L.BoundedFormulaω Empty 2` is `¬(x₀ = x₁)`, and `morleySeed φ = {⟨0, φ⟩, ⟨2, disEq⟩}`.
 Every injective sequence in a model of `φ` is indiscernible for the Morley seed, since the sentence
-ignores the tuple and `x₀ ≠ x₁` holds at every increasing pair.
-If `b : J → N` realizes the template of such a sequence on the seed, then `N ⊨ φ` and `b` is
-injective, so `#J ≤ #N`.
+ignores the tuple and `x₀ ≠ x₁` holds at every increasing pair. If `b : J → N` realizes the template
+of such a sequence on the seed, then `N ⊨ φ` and `b` is injective, so `#J ≤ #N`. The seed is this
+roadmap's name for the part of the starting data of the proof of Theorem 5.2 in Marker's notes
+(p. 57) that concerns the indiscernibles: `φ ∈ T` and the disequalities `dᵢ ≠ dⱼ` for `i < j`.
+
+**Checks** (the Morley seed).
+
+- For `φ = ⊤`, an injective sequence in any structure is indiscernible for the seed, with both
+  members true at every increasing tuple.
+- A constant sequence over an index order with two points is indiscernible for the seed too, but
+  with `x₀ ≠ x₁` false, so it does not realize the template of an injective sequence.
+- Over a one-point index order every sequence in a model of `φ` realizes that template: there are no
+  increasing pairs, so the disequality constrains only orders with at least two points.
 
 **Acceptance check:** every injective sequence in a model of `φ` is indiscernible for the Morley
 seed, compiled on the parent's Layer 0 alone.
@@ -472,10 +541,10 @@ Fix a countable language `L₀ : Language.{0, 0}` and a countable set `Γ₀` of
 positions containing `x₀ = x₁` and the atomic formula `R(x₀, …, x_{l-1})` for every relation symbol
 `R` of `L₀`. Build, by recursion on `k : ℕ`, languages `L_k` and countable formula sets `Γ_k`:
 
-- `L_{k+1} = L_k.sum (skolemSymbols Γ_k)`, where `skolemSymbols Γ_k` has one `n`-ary function
-  symbol `f_ψ` for each `ψ ∈ Γ_k` of arity `n + 1` (the `n + 1`-st position is the witnessed
-  variable) and no relation symbols. This is the shape of Mathlib's `Language.skolem₁`, restricted
-  to `Γ_k`.
+- `L_{k+1}` is the sum (`Language.sum`) of `L_k` and the language of Skolem symbols for `Γ_k`, which
+  has one `n`-ary function symbol `f_ψ` for each `ψ ∈ Γ_k` of arity `n + 1` (the `n + 1`-st position
+  is the witnessed variable) and no relation symbols. This is the shape of Mathlib's
+  `Language.skolem₁`, restricted to `Γ_k`.
 - `Γ_{k+1}` is the closure of the image of `Γ_k` in `L_{k+1}` (under `onBoundedFormulaInf` of the
   inclusion, which commutes with term substitution by `onBoundedFormulaInf_substBounds`), together
   with the Skolem formulas `∀-closure of (∃y ψ(x̄, y) → ψ(x̄, f_ψ(x̄)))` for `ψ ∈ Γ_k`, under
@@ -498,6 +567,14 @@ universal closures of `∃y ψ(x̄, y) → ψ(x̄, f_ψ(x̄))`, coded into the c
 `aElementary_of_tarskiVaught` with the values of the Skolem functions as the required witnesses,
 and the substructure generated by a set `X` has cardinality at most `max ℵ₀ #X` (Mathlib's
 `Substructure.closure` bounds, `L*` being countable).
+
+These three properties are the countable case of Marker's notes, Exercise 1.24 (a)–(c), p. 10: an
+expansion with one function symbol `f_φ` for each formula `φ(v̄, w)` of a fragment `A*` with
+`|A*| = |A|`, satisfying `∀v̄ (∃w φ(v̄, w) → φ(v̄, f_φ(v̄)))`, every substructure of which is
+`A*`-elementary, with substructures containing `X` of cardinality at most `max(|A*|, |X|)`. The
+expansion to built-in Skolem functions in a countable fragment is the first step of the proof of
+Theorem 5.2 there (outline, p. 55; proof, p. 57). The staged tower is this roadmap's construction
+of that expansion.
 
 ### 2.2 Ehrenfeucht–Mostowski sources and Skolem templates
 
@@ -549,9 +626,28 @@ the one term model of 2.3:
   `sk(Γ₀)` obeys this `w`, and since `Γ*` is closed under substitution of terms, the template is
   read on instances through its values on members (`isSkolemTemplate_of_approximated`, 3.4).
 
+Ehrenfeucht–Mostowski sources and Skolem templates are this roadmap's interfaces. The classical
+statement they serve is Marker's notes, Exercise 5.7, p. 57: if `T` is a theory with built-in
+Skolem functions in a countable fragment `A` and a model of `T` contains an infinite set of
+indiscernibles for `A`, then `T` has arbitrarily large models.
+
+**Checks** (Ehrenfeucht–Mostowski sources). Over the empty language take `Γ = {x₀ = x₁}`, a
+fragment with no compound or universal members, so that conditions (1)–(3) hold and terms are
+variables.
+
+- The identity `ℕ → ℕ` is a source: `x₀ = x₁` is false at every increasing pair.
+- `n ↦ n mod 2` is not: `x₀ = x₁` is false at the index pair `(0, 1)` and true at `(0, 2)`.
+- A constant sequence is a source, with `x₀ = x₁` true at every pair; it is not injective, and the
+  Ehrenfeucht–Mostowski model of its template over any nonempty `J` has exactly one element.
+
 ### 2.3 The Ehrenfeucht–Mostowski term model
 
 *Needs:* 2.2; IME 2.2 (`AElementary`).
+
+The term model built directly from a Skolem template is this roadmap's construction. Classically
+one stretches the indiscernibles and takes the Skolem hull of the stretched set (Marker's notes,
+outline of the proof of Theorem 5.2, p. 55, and proof of Theorem 5.11, p. 59, where every order
+automorphism of the index order extends to an automorphism of the hull).
 
 For a Skolem template `Φ` for `(Γ, w)` and any linear order `J : Type w'`, define `EM(J, Φ)`:
 
@@ -657,22 +753,25 @@ Suggested home: `TauCeti/ModelTheory/Infinitary/Hanf/{Defs, Approximation, Morle
 
 *Needs:* Convention 6; IME 0.1.
 
-`HasArbLargeModels φ`, `IsHanfBound φ κ`, `hanfNumber φ` (Convention 6), with:
-`IsHanfBound.mono`; every sentence has a Hanf bound (if `φ` lacks arbitrarily large models, some
-cardinal bounds all its models; Keisler–Knight, Theorem 1.6.1, for any set of sentences);
-`hanfNumber_isHanfBound`, so the Hanf number is a Hanf bound; the Hanf number lies below every Hanf
-bound, `κ` is a Hanf bound exactly when the Hanf number is at most `κ`, and `κ` lies below the Hanf
-number exactly when it is not a Hanf bound; invariance of all three notions under sentence
-equivalence and under `onBoundedFormulaInf` along an injective language map (IME 0.1). The
-invariance uses that the Hanf predicates count only nonempty models (Convention 6): a nonempty
-model of `φ` expands to a model of its image, interpreting the new symbols arbitrarily, and a model
-of the image restricts to a model of `φ` on the same carrier.
+`HasArbLargeModels φ`, `IsHanfBound φ κ`, `hanfNumber φ` (Convention 6), with: monotonicity of Hanf
+bounds (a cardinal at least a Hanf bound is a Hanf bound); every sentence has a Hanf bound (if `φ`
+lacks arbitrarily large models, some cardinal bounds all its models; Keisler–Knight, Theorem 1.6.1,
+for any set of sentences); the infimum is attained, so the Hanf number is a Hanf bound; the Hanf
+number lies below every Hanf bound, `κ` is a Hanf bound exactly when the Hanf number is at most `κ`,
+and `κ` lies below the Hanf number exactly when it is not a Hanf bound; invariance of all three
+notions under sentence equivalence and under `onBoundedFormulaInf` along an injective language map
+(IME 0.1). The invariance uses that the Hanf predicates count only nonempty models (Convention 6): a
+nonempty model of `φ` expands to a model of its image, interpreting the new symbols arbitrarily, and
+a model of the image restricts to a model of `φ` on the same carrier.
 
 **Checks.**
 
 - `∀x ⊥` has Hanf number `0`: it has no nonempty model, so every cardinal is a Hanf bound.
 - The ladder sentence at `α = 0` (4.2) has Hanf number `(2^ℵ₀)⁺`: it has a model of cardinality
   `2^ℵ₀` and none larger, so exactly the cardinals above `2^ℵ₀` are Hanf bounds.
+- Over the empty language "there are exactly two elements" has Hanf number `3`: `2` is not a Hanf
+  bound, since there is a model of cardinality `2` and none arbitrarily large, and `3` is one, since
+  there is no model of cardinality at least `3`.
 
 ### 3.2 Reduction to a countable Skolemized setting
 
@@ -733,6 +832,15 @@ indiscernibles are new constants. Targets:
 - **`IsCofinallyApproximated.exists_iInf_witness`.** Dually, `p (iInf ψs) = false` gives some `i` with
   `p ∪ {ψs i ↦ false}` cofinally approximated.
 
+**Checks** (approximation).
+
+- For `σ = ⊤`, `pos = {x₀ ≠ x₁}` and `neg = ∅`, the condition is cofinally approximated: a set of
+  cardinality `ℶ_α` with any linear order has `x₀ ≠ x₁` at every increasing pair.
+- With `x₀ ≠ x₁` in both `pos` and `neg`, the condition is approximated at `1`, where `H` has no
+  increasing pair, and not at `2`, so it is not cofinally approximated.
+- With `pos = neg = ∅`, approximation at `κ` says only that `σ` has a model of cardinality at least
+  `κ`: for "there are exactly two elements" it holds at `2`, fails at `3`, and is not cofinal.
+
 ### 3.4 The template and the theorem
 
 *Needs:* 2.2–2.4, 3.1–3.3; IME 0.1, 1.1; InfinitaryLogic Layer 0 (`BoundedFormula.toOmega`,
@@ -781,9 +889,9 @@ Targets:
   arbitrarily large models (`HasArbLargeModels φ`), and `ℶ_ω₁` is a Hanf bound for every Lω₁ω
   sentence, over any language.
 - The Hanf number of every Lω₁ω sentence is at most `ℶ_ω₁`.
-- **`morley_hanf_theory`**: a countable `T : Theoryω L` (IME 1.1), through `Theoryω.conjunction`,
-  satisfying the Morley–Hanf hypothesis
-  has models of every infinite cardinality.
+- **The countable-theory form**: a countable `T : Theoryω L` (IME 1.1), through
+  `Theoryω.conjunction`, satisfying the Morley–Hanf hypothesis has models of every infinite
+  cardinality.
 - **`morley_omitting_types`** (Morley 1965; Marker's notes, Corollary 5.8, p. 58, for a countable
   signature, models of cardinality exactly `ℶ_α` and the conclusion of arbitrarily large models):
   over any language, let `T` be a first-order theory and
@@ -836,12 +944,27 @@ Suggested home: `TauCeti/ModelTheory/Infinitary/Hanf/{Global, Ladder, VonNeumann
 *Needs:* 3.1, 3.4.
 
 `IsLω₁ωHanfBound κ`: `κ : Cardinal.{w}` is a Hanf bound for every sentence of every language in
-`Language.{u, v}`. `lomega1omegaHanfNumber` is the least such cardinal. Targets:
-`beth_omega_one_isLω₁ωHanfBound` (from `morley_hanf`), the attained infimum, the universal property
-(the global Hanf number is at most `κ` exactly when `κ` is a global Hanf bound), and the
-bounded-spectrum criterion
-`lt_lomega1omegaHanfNumber_of_maximal_model`: a sentence with a nonempty model of cardinality at
-least `κ` and no model of cardinality greater than `κ` shows `κ < lomega1omegaHanfNumber`.
+`Language.{u, v}`. `lomega1omegaHanfNumber` is the least such cardinal. Targets: the global
+bound, that `ℶ_ω₁` is a global Hanf bound (from `morley_hanf`); the attained infimum; the universal
+property (the global Hanf number is at most `κ` exactly when `κ` is a global Hanf bound); and the
+bounded-spectrum criterion: a sentence with a nonempty model of cardinality at least `κ` and no
+model of cardinality greater than `κ` shows `κ < lomega1omegaHanfNumber`.
+
+Marker's notes, p. 54, define the Hanf number of Lω₁ω as the least `κ` such that every sentence
+with a model of cardinality `κ` has arbitrarily large models; Exercise 5.1 there shows that any
+set-indexed family of classes of structures has such a cardinal. Here a bound is triggered by a
+nonempty model of cardinality at least `κ` (Convention 6), and `lomega1omegaHanfNumber` ranges
+over the sentences of all languages in `Language.{u, v}`.
+
+**Checks** (global Hanf bounds).
+
+- `2` is not a global Hanf bound: over the empty language "there are exactly two elements" has a
+  nonempty model of cardinality `2` and no arbitrarily large models.
+- Every cardinal is a Hanf bound for `∃x (x = x)` over the empty language, which has arbitrarily
+  large models; a global bound is constrained only by sentences with bounded spectra.
+- The bounded-spectrum criterion applies to "there are exactly two elements" at `κ = 2`, giving
+  `2 < lomega1omegaHanfNumber`, and not at `κ = 3`, where the sentence has no model of cardinality
+  at least `3`.
 
 ### 4.2 The beth ladder
 
@@ -863,9 +986,9 @@ conjunction of:
 Index sets are countable because `α + 2 < ω₁`, so the conjunctions and disjunctions are coded into
 `ℕ` with `iInfAlong`/`iSupAlong`. Targets:
 
-- **`realize_ladderSentence_iff`**: satisfaction is the conjunction of the six semantic clauses,
-  as a structure `IsLadderModel`.
-- **Upper bound**, `card_le_beth_of_isLadderModel`: in a model, `#U_i ≤ ℶ_i` by well-founded
+- **Ladder satisfaction**: satisfaction of the ladder sentence is the conjunction of the six
+  semantic clauses above, read in the structure; a structure satisfying them is a **ladder model**.
+- **Ladder cardinal bound**: in a ladder model, `#U_i ≤ ℶ_i` by well-founded
   induction on `i`. At `⊥`, `U_⊥` is covered by the countably many constants. At a successor `i +
   1`, sending `x` to its set of `E`-predecessors is injective (extensionality) into the powerset of
   `U_i`, giving `#U_{i+1} ≤ 2^{ℶ_i} = ℶ_{i+1}`. At a limit, `U_j` is a countable union of smaller
@@ -883,8 +1006,8 @@ Index sets are countable because `α + 2 < ω₁`, so the conjunctions and disju
 
 *Needs:* 4.1, 4.2; Mathlib `Cardinal.beth_limit`.
 
-- **`beth_succ_lt_lomega1omegaHanfNumber`**: `ℶ_(α+1) < lomega1omegaHanfNumber` for every `α < ω₁`.
-- **`iSup_beth_succ_omega_one`**: `⨆_{α < ω₁} ℶ_(α+1) = ℶ_ω₁`, from `Cardinal.beth_limit` and
+- **Successor-beth lower bound**: `ℶ_(α+1) < lomega1omegaHanfNumber` for every `α < ω₁`.
+- **Cofinal beth supremum**: `⨆_{α < ω₁} ℶ_(α+1) = ℶ_ω₁`, from `Cardinal.beth_limit` and
   cofinality of the successors in the limit `ω₁`.
 - **`lomega1omegaHanfNumber_eq_beth_omega_one`** (headline): `Hanf(Lω₁ω) = ℶ_ω₁` (Keisler–Knight,
   Theorem 1.6.2, where the Hanf number has the cofinal form of Convention 5; both forms have the
@@ -965,6 +1088,9 @@ Using IME's `infinitaryType` and `realizedTypes` (IME 4.1):
   automorphisms act transitively on increasing tuples.
 - The ordered field `ℝ` is not small: every rational is definable, so distinct reals have distinct
   complete `1`-types, and there are `2^ℵ₀` of them.
+- `(ω₁, <)` is not small: each countable ordinal `α` is defined by an Lω₁ω formula `φ_α(x)`, namely
+  `¬∃y (y < x)` at `α = 0` and `∀y (y < x ↔ ⋁_{β<α} φ_β(y))`, a countable disjunction, otherwise;
+  so its `ℵ₁` elements have `ℵ₁` distinct complete `1`-types.
 
 ### 5.3 Small models of every infinite cardinality
 
@@ -994,28 +1120,32 @@ reduct, and 5.2 gives smallness. The cardinality is `κ` by the cardinality clau
 systems, Karp's forward direction).
 
 In 5.4 and 5.5 `L` is relational with countably many relation symbols, as the parent's Scott
-sentences require; 5.6 extends both headlines to languages with countably many function and
+sentences require; 5.6 extends both statements to languages with countably many function and
 relation symbols.
 
-**Checks** (`IsCompleteSentence`, Convention 7).
+**Checks** (complete sentences, Convention 7).
 
 - `⊥` is not complete: it has no model.
-- The Scott sentence of `(ℚ, <)` is complete (`isCompleteSentence_scottSentence`).
+- Over the empty language "there is exactly one element" is complete, since its models are the
+  one-point structures, all isomorphic; "there is at least one element" is not, since it holds in
+  structures with one and with two elements, which disagree on `∃x ∃y ¬(x = y)`.
+- The Scott sentence of `(ℚ, <)` is complete: each of its models, of any cardinality, is potentially
+  isomorphic to `(ℚ, <)` and so satisfies the same Lω₁ω sentences.
 
-- **`exists_countable_potentialIso_of_isLω₁ωSmall`** (countable companion): a small structure `M` is
-  potentially isomorphic to a countable structure (Marker's notes, the remark after Definition 6.11,
-  p. 77, as `L∞ω`-equivalence, which Karp's theorem identifies with potential isomorphism; the
-  Exercise 2.34, p. 22, that it cites assumes `M` countable). Let `F` be the fragment generated by
-  isolating formulas `χ_p` of `exists_isolatingFormula` for all realized types `p` of all arities,
-  together with their one-variable existential closures (the isolator seed of IME 4.1); it is
-  countable by `Fragment.generated_countable`. Take `M₀ ⊆ M` countable with
-  `AElementary F M₀.subtype` by `exists_countable_aElementary_substructure` with `X = ∅` (IME 2.3; a
-  relational language has no function symbols). The pairs of tuples of `M₀` and `M` with the same
-  complete type in `M` form a tuple back-and-forth system. Going back, let `ā` from `M₀` and `b̄`
-  from `M` have the same type and `d ∈ M`, and put `q = tp(b̄ d)`. Then `M ⊨ ∃y χ_q(b̄, y)`, so
-  `M ⊨ ∃y χ_q(ā, y)`, so `M₀ ⊨ ∃y χ_q(ā, y)` by `F`-elementarity, and a witness `c ∈ M₀` has
-  `tp(ā c) = q` in `M`. Going forth, the witness is found in `M` directly. Conclude with the
-  parent's `potentialIso_iff_exists_isTupleBFSystem`.
+- **Countable companion**: a small structure `M` is potentially isomorphic to a countable structure
+  (Marker's notes, the remark after Definition 6.11, p. 77, as `L∞ω`-equivalence, which Karp's
+  theorem identifies with potential isomorphism; the Exercise 2.34, p. 22, that it cites assumes `M`
+  countable). Let `F` be the fragment generated by isolating formulas `χ_p` of
+  `exists_isolatingFormula` for all realized types `p` of all arities, together with their
+  one-variable existential closures (the isolator seed of IME 4.1); it is countable by
+  `Fragment.generated_countable`. Take `M₀ ⊆ M` countable with `AElementary F M₀.subtype` by
+  `exists_countable_aElementary_substructure` with `X = ∅` (IME 2.3; a relational language has no
+  function symbols). The pairs of tuples of `M₀` and `M` with the same complete type in `M` form a
+  tuple back-and-forth system. Going back, let `ā` from `M₀` and `b̄` from `M` have the same type
+  and `d ∈ M`, and put `q = tp(b̄ d)`. Then `M ⊨ ∃y χ_q(b̄, y)`, so `M ⊨ ∃y χ_q(ā, y)`, so
+  `M₀ ⊨ ∃y χ_q(ā, y)` by `F`-elementarity, and a witness `c ∈ M₀` has `tp(ā c) = q` in `M`. Going
+  forth, the witness is found in `M` directly. Conclude with the parent's
+  `potentialIso_iff_exists_isTupleBFSystem`.
 - **`isCompleteSentence_scottSentence`**: the Scott sentence of a countable structure `M₀` is
   complete. A model `N` of it, of any cardinality, satisfies `BFEquiv β` with `M₀` at every level
   (`TauCeti.bfEquiv_of_realize_scottSentence`, from the parent's
@@ -1024,22 +1154,21 @@ relation symbols.
   `potentialIso_iff_exists_isTupleBFSystem`), hence agrees with `M₀` on every Lω₁ω sentence
   (`TauCeti.PotentialIso.infEquivAt` at the carrier `ℕ`, the forward direction of the parent's
   `karp_theorem`). All three are Tau Ceti declarations at the pin.
-- **`isLω₁ωSmall_iff_exists_isCompleteSentence`** (headline): `M` is small exactly when it satisfies
-  a complete sentence. Forward: the Scott sentence of a countable companion. Backward: a complete
+- **Small structures and complete sentences.** `M` is small exactly when it satisfies a complete
+  sentence. Forward: the Scott sentence of a countable companion. Backward: a complete
   `σ` has a countable model `M₀ ⊆ M`, a countable substructure that is `AElementary` for
   `Fragment.generated {⟨0, σ⟩}` (IME 1.2, 2.3); `σ` decides `scottSentence M₀`, which `M₀`
   satisfies, so every model of `σ`, `M` included, is potentially isomorphic to `M₀` and realizes
   only its countably many types.
-- **`exists_isCompleteSentence_entails`**: if a small `M` satisfies `φ`, a complete `σ` with
-  `M ⊨ σ` entails `φ` on all models.
+- **Complete strengthening**: if a small `M` satisfies `φ`, a complete `σ` with `M ⊨ σ` entails
+  `φ` on all models.
 
 ### 5.5 Categorical completions
 
 *Needs:* 5.3, 5.4.
 
-**`exists_isCompleteSentence_isCategorical`** (headline; Marker's notes, Corollary 5.13, p. 59,
-under arbitrarily large models and without the restriction to infinite `κ`, which it needs). Let `L`
-be countable relational, `φ`
+**Categorical completions** (Marker's notes, Corollary 5.13, p. 59, under arbitrarily large models
+and without the restriction to infinite `κ`, which it needs). Let `L` be countable relational, `φ`
 satisfy the Morley–Hanf hypothesis, `κ` be infinite and `φ` be `κ`-categorical. Then there is a
 complete `σ` entailing `φ`, with a model of cardinality `κ`, and `σ` is `κ`-categorical. Take a
 small model of cardinality `κ` (5.3) and the complete sentence it satisfies (5.4). Models of `σ` are
@@ -1049,9 +1178,13 @@ models of `φ`, so `κ`-categoricity passes to `σ`.
 
 *Needs:* 5.3–5.5; IME 1.1, 6.
 
-Let `L` have countably many function and relation symbols. Write `G = graphLanguage L` and `M^G`
-for the graph expansion of an `L`-structure `M` (IME Layer 6). `G` is relational with countably
-many relation symbols, so 5.4 and 5.5 apply to it. Targets:
+Let `L` have countably many function and relation symbols. Write `G = graphLanguage L` and `M^G` for
+the graph expansion of an `L`-structure `M` (IME Layer 6). `G` is relational with countably many
+relation symbols, so 5.4 and 5.5 apply to it. This transfer is this roadmap's interface. The
+classical statement is Marker's notes, Corollary 5.13, p. 59, whose statement carries no relational
+hypothesis, with its small model from Theorem 5.11, p. 59, which 5.3 states over any language; here
+the relational case (5.4, 5.5) is proved first and carried to `L` by the graph translation of IME
+Layer 6. Targets:
 
 - **Type transfer.** For tuples `a`, `b` from `M`, `infinitaryType M a = infinitaryType M b` in `L`
   iff the same holds in `M^G`: `realize_relationalize` gives one direction and
@@ -1154,8 +1287,8 @@ results:
   `lomega1omegaHanfNumber_eq_beth_omega_one`;
 - highly order-transitive orders → equivariant EM model → countably many codes →
   `exists_small_model_card_eq`;
-- isolation → countable companion → complete Scott sentence →
-  `isLω₁ωSmall_iff_exists_isCompleteSentence` → `exists_isCompleteSentence_isCategorical` →
+- isolation → countable companion → complete Scott sentence → small structures and complete
+  sentences for relational `L` (5.4) → categorical completions for relational `L` (5.5) →
   graph translation → `isLω₁ωSmall_iff_exists_isCompleteSentence_of_countable` and
   `exists_isCompleteSentence_isCategorical_of_countable`.
 
@@ -1172,9 +1305,7 @@ results:
   ownership section records.
 - **Mathlib.** Layer 0 follows Mathlib's cardinal vocabulary (`Cardinal.beth`, `Order.succ`,
   `Cardinal.ord`) and adds the partition-relation vocabulary, which Mathlib lacks. The Skolem
-  functions of Layer 2 follow the shape of `Language.skolem₁`. The Mathlib proposals listed under
-  [Exact supplier contracts](#exact-supplier-contracts) fix shapes and are not
-  dependencies.
+  functions of Layer 2 follow the shape of `Language.skolem₁`.
 
 ## Downstream consumers
 

@@ -24,8 +24,7 @@ perfect set of pairwise non-isomorphic ones.
 The roadmap is downstream of four others. The parent
 [InfinitaryLogic](../../Completed/InfinitaryLogic/README.md) roadmap supplies the infinitary syntax,
 back-and-forth equivalence and Scott analysis. Three sibling roadmaps supply the descriptive set
-theory: **[CountableStructureSpaces](../CountableStructureSpaces/README.md)**
-([#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316)) (the coded space of
+theory: **[CountableStructureSpaces](../CountableStructureSpaces/README.md)** (the coded space of
 structures, model classes, Borelness of back-and-forth equivalence, Scott height, López–Escobar,
 uniform back-and-forth separation),
 **[BorelEquivalenceRelations](../BorelEquivalenceRelations/README.md)** (perfect and Cantor
@@ -73,8 +72,7 @@ coanalytic form of Silver's theorem. The descriptive dichotomies themselves belo
 BorelEquivalenceRelations; the space of structures, López–Escobar and external Scott height to
 CountableStructureSpaces; fragments, model existence and Morleyization to InfinitaryModelExistence;
 Ehrenfeucht–Mostowski models, Hanf numbers, small models and complete sentences to
-[HanfNumbers](../HanfNumbers/README.md)
-([#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319)).
+[HanfNumbers](../HanfNumbers/README.md).
 
 ## Standing conventions
 
@@ -157,18 +155,15 @@ Ehrenfeucht–Mostowski models, Hanf numbers, small models and complete sentence
 ### Tau Ceti and the parent roadmap
 
 The parent [InfinitaryLogic](../../Completed/InfinitaryLogic/README.md) roadmap is implemented in
-Tau Ceti (Scott's theorem in
-[Tau Ceti #18977](https://github.com/TauCetiProject/TauCeti/pull/18977); the modules
-`TauCeti/ModelTheory/Infinitary/`, `BackAndForth/` and `Scott/`), and `Suggested.lean` imports it at
-this repository's Tau Ceti pin (2fd255d99). Syntax and semantics are in the namespace
-`FirstOrder.Language`, everything else in `TauCeti`. This roadmap consumes:
+Tau Ceti (the modules `TauCeti/ModelTheory/Infinitary/`, `BackAndForth/` and `Scott/`), and
+`Suggested.lean` imports it at this repository's Tau Ceti pin (2fd255d99). Syntax and semantics
+are in the namespace `FirstOrder.Language`, everything else in `TauCeti`. This roadmap consumes:
 
 * the syntax `BoundedFormulaInf`, `BoundedFormulaω`, `Sentenceω`, the coded connectives
   `BoundedFormulaInf.iInfAlong`/`iSupAlong`, `IndexCoding.ofEncodableWith`, the finitary embedding
   `BoundedFormula.toInf`, and realization (`SentenceInf.Realize φ M` for sentences), with its
   invariance under isomorphism (`StrongHomClass.realize_boundedFormulaInf` and
-  `StrongHomClass.realize_sentenceInf`,
-  [Tau Ceti #18035](https://github.com/TauCetiProject/TauCeti/pull/18035));
+  `StrongHomClass.realize_sentenceInf`);
 * `BFEquiv` with `BFEquiv.add_one` (the successor step), `BFEquiv.limit`, monotonicity
   (`BFEquiv.mono`), reflexivity, symmetry, transitivity, re-indexing of both tuples along a map
   `Fin m → Fin n`, and invariance under isomorphism (`TauCeti.BFEquiv`, `BFEquiv.refl`,
@@ -182,10 +177,7 @@ this repository's Tau Ceti pin (2fd255d99). Syntax and semantics are in the name
 
 Tau Ceti defines `BFEquiv`, the stabilization notions, the Scott height and the internal Scott
 rank only for relational languages (`[L.IsRelational]`), which every statement here that uses them
-already assumes. Free-variable support
-([Tau Ceti #17547](https://github.com/TauCetiProject/TauCeti/pull/17547)) and the random-graph
-worked example ([Tau Ceti #18726](https://github.com/TauCetiProject/TauCeti/pull/18726)) are not
-needed here.
+already assumes.
 
 ### Targets of this roadmap in Tau Ceti
 
@@ -217,9 +209,9 @@ cites its theorems. Files are under `TauCeti/ModelTheory/`.
   `TauCeti.RelationalConfiguration.modelsOf_scottSentenceAtLevel`; `IsIsolatingRank` with
   `TauCeti.IsIsolatingRank.isolates_of_le`, `TauCeti.IsIsolatingRank.of_le`,
   `TauCeti.IsIsolatingRank.exists_unbounded_of_not_countable` and
-  `exists_rank_bound_of_countable_isoClasses` (the target `exists_bound_of_countable`, for any
-  invariant map below `ω₁`); `TauCeti.isIsolatingRank_scottHeight` and `TauCeti.exists_isIsolatingRank`,
-  which need no countability of `L`; `mk_isoClasses_le_aleph_one_of_countable_levels`, also without
+  `exists_rank_bound_of_countable_isoClasses` (for any invariant map below `ω₁`);
+  `TauCeti.isIsolatingRank_scottHeight` and `TauCeti.exists_isIsolatingRank`, which need no
+  countability of `L`; `mk_isoClasses_le_aleph_one_of_countable_levels`, also without
   countability of `L`; `Setoid.IsolatedBy`, written `R.IsolatedBy E`, with
   `Setoid.IsolatedBy.countable_quotient` and `Setoid.IsolatedBy.lift_mk_quotient_le`; and the
   level-by-level transfer `bfTupleSetoid`, `bfExtensionSpectra`, `bfTupleSetoid_add_one_iff`,
@@ -250,7 +242,7 @@ most of it at this repository's pin (2fd255d99); each item names the Tau Ceti de
 files (paths under `TauCeti/`), and `Suggested.lean` imports them. An item with no Tau Ceti
 declaration is a target of the supplying roadmap, and its statement here is what is required.
 
-**From [CountableStructureSpaces](../CountableStructureSpaces/README.md)** ([#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316)).
+**From [CountableStructureSpaces](../CountableStructureSpaces/README.md)**.
 
 * **(S1) Code spaces.** For a carrier `α`, the coding space `TauCeti.RelationalConfiguration L α`
   (`ModelTheory/RelationalConfiguration/Basic.lean`: one bit for each atom `atom R x`, a relation
@@ -399,6 +391,15 @@ Build:
   `HasPerfectlyManyCountableModels φ` (a perfect set at the tier `ℕ` or at some `Fin n`). With (E0),
   a perfect set gives `𝔠 ≤ #(Quotient (isoSetoidOn α φ))`, hence
   `HasPerfectlyManyCountableModels.countableModelCount_eq : countableModelCount φ = 𝔠`.
+
+  **Checks.**
+  * True for `∃ x ∀ y, y = x` with countably many unary predicates at `Fin 1` (the Layer 0
+    acceptance check).
+  * False for `⊤` in the empty language at `ℕ`: there is exactly one code, and a single point is
+    not perfect.
+  * At `Fin 0`, for `⊤`: true with infinitely many nullary relation symbols (countably many), since
+    the codes are then the points of `ℕ → Bool` and isomorphism is equality; false with none, since
+    there is then exactly one code.
 * **The finite-tier dichotomy.** `countable_or_hasPerfectSetOfNonisoModelsOn_fin`: (E1), relative
   form, on the Borel set `modelsOf φ` of codes on `Fin n`, with `R` and `F` both isomorphism (Borel
   by `RelationalConfiguration.measurableSet_setOf_isoSetoid`). Its second alternative is a
@@ -460,7 +461,7 @@ Build:
   below `ω₁` lying above an isolating rank is one, so the contract does not determine the rank and
   no least isolating rank is asserted); `exists_unbounded_of_not_countable` (on a set meeting
   uncountably many classes, every isolating rank lies below one that is unbounded there);
-  `exists_bound_of_countable` (countably many classes give a bound).
+  `TauCeti.exists_rank_bound_of_countable_isoClasses` (countably many classes give a bound).
 * **The instance.** Tau Ceti's `TauCeti.isIsolatingRank_scottHeight`: `c ↦ scottHeight ℕ` of the decoded structure is
   an isolating rank (S5). In (S5)'s convention the Scott height of `M : Type w` lies in
   `Ordinal.{w}` and external stabilization quantifies over all countable `N : Type`, finite ones
@@ -527,7 +528,7 @@ down to `ρ c` and isolation), hence has Borel graph. Build:
 * The internal form: if `internalScottRank` of every model on `ℕ` is at most `β < ω₁`, the same
   conclusions, via (S5)'s comparison (the external height is then at most `β + ω < ω₁`).
 * The converse direction, for sentences: if `φ` has countably many countable models then every
-  isolating rank is bounded on `modelsOf φ` (`exists_bound_of_countable`).
+  isolating rank is bounded on `modelsOf φ` (`TauCeti.exists_rank_bound_of_countable_isoClasses`).
 
 **Acceptance check.** Let `φ` say that `E` is an equivalence relation all of whose classes are
 infinite. Every countable model is homogeneous (a finite partial isomorphism extends to an
@@ -558,6 +559,14 @@ Build:
 * **Thin sentences.** `IsThinOnNatModels φ` (no perfect set of pairwise non-isomorphic models on
   `ℕ`); a thin sentence has at most `ℵ₁` models on `ℕ`, and countably many classes at every level;
   fewer than `𝔠` models on `ℕ` implies thin.
+
+  **Checks.**
+  * `∃ x ∀ y, y = x` with countably many unary predicates is thin, since it has no models on `ℕ`,
+    although it has a perfect set of pairwise non-isomorphic countable models (at `Fin 1`).
+  * "`E` is an equivalence relation" is not thin: the acceptance check below gives a perfect set.
+  * "`E` is an equivalence relation with all classes infinite" is thin: its models on `ℕ` fall into
+    `ℵ₀` isomorphism classes (Layer 2 acceptance check), while a perfect set of pairwise
+    non-isomorphic models would give `𝔠`.
 
 **Acceptance check.** For `φ` saying that `E` is an equivalence relation, give the explicit perfect
 set: split `ℕ` into an infinite reservoir and disjoint blocks `B_k` of size `k + 2`; for
@@ -611,8 +620,29 @@ saturation at a single level implies that invariance; and **one side is small**:
 `C` and such a `B` (or `B = C ∩ D` with `D` Borel and `C` analytic), `B` or `C \ B` meets only
 countably many classes.
 
+**Checks.**
+
+* `∅` is concentrated, with any centre.
+* A set meeting countably many isomorphism classes is concentrated, with any code as centre at
+  every level.
+* The models on `ℕ` of "`E` is an equivalence relation" are not concentrated. In the family `f` of
+  the Layer 3 acceptance check, "some class has exactly `k + 2` elements" is a first-order sentence
+  of quantifier depth `k + 3`, true in `f z` exactly when `z k = true`; so `f z` and `f z′` are not
+  `bfEquivSetoid (k + 3)`-equivalent when `z k ≠ z′ k`. At level `ω` a centre is therefore
+  equivalent to at most one `f z`, and the codes outside its level-`ω` class meet `𝔠` isomorphism
+  classes.
+
 **4e. Sentence spectra and Borel observables.** `sentenceTheory θ c : ℕ → Bool`, the truth sequence
-of a countable list of sentences, measurable and isomorphism invariant. Build:
+of a countable list of sentences, measurable and isomorphism invariant.
+
+**Checks.**
+
+* `θ n = ⊤` for every `n` gives the constant sequence `true` at every code.
+* With unary `P_n` (`n ∈ ℕ`) and `θ n = ∃ x, P_n x`, the code in which `P_0` holds only at `0` and
+  every other `P_n` is empty gives `true` exactly at `n = 0`.
+* Isomorphic codes give equal sequences.
+
+Build:
 
 * *relative López–Escobar*: for a standard Borel `X`, a Borel `f : X → RelationalConfiguration L ℕ`
   and a Borel `U ⊆ X` with `x ∈ U ↔ y ∈ U` whenever `f x ≈ f y`, some sentence `θ` has
@@ -636,10 +666,10 @@ of a countable list of sentences, measurable and isomorphism invariant. Build:
   classes.
 
 **4f. Fragment spectra.** For a countable fragment `F` (M1) and arity `n`, with (M2)'s slice
-`Fragment.slice F n` and realized truth assignment: the coded type `F.pointedType c a`, the realized
+`Fragment.slice F n` and realized truth assignment: the coded type of `a` at `c`, the realized
 truth assignment of `a` in the decoded structure, jointly measurable in the code and the tuple,
-and transported along isomorphisms of codes by (M2); the spectrum `F.typeSpectrum n C`, the types
-realized by `n`-tuples of members of `C`, counted across `C`;
+and transported along isomorphisms of codes by (M2); the type spectrum of `C` at arity `n`, the
+types realized by `n`-tuples of members of `C`, counted across `C`;
 spectrum equivalence ("same realized `F`-types at arity `n`") has Borel graph and is refined by
 isomorphism. Prove, for Borel `C`, thin iff every countable fragment has a countable spectrum at
 every arity ((E1), relative form, for spectrum equivalence in one direction, its Cantor-family
@@ -659,6 +689,14 @@ The targets, against (M3)'s objects:
   `φ` at `v` in the decoded structure;
 * `morleyBase`, reading off the base bits (the reduct `(lhomMorleyize Φ).reductConfiguration`), a
   left inverse of `morleyCode Φ`, which is therefore injective;
+
+  **Checks.** For `morleyCode` and `morleyBase`:
+  * For `Φ = ∅`, `L.morleyize ∅` has only the symbols of `L`, and `morleyCode ∅` and
+    `morleyBase ∅` are mutually inverse relabellings.
+  * For `Φ = {⟨1, ⊤⟩}`, the bit of the new unary symbol is `true` at every element in every code
+    `morleyCode Φ c`.
+  * Two codes of `L.morleyize Φ` that differ only in that bit have the same `morleyBase`, so
+    `morleyBase` is not injective.
 * decoding agreement: `(morleyCode Φ c).toStructure` is (M3)'s `morleyExpansion Φ` of
   `c.toStructure`;
 * `measurableEmbedding_morleyCode`: Borel because satisfaction is Borel in the code, injective,
@@ -671,13 +709,13 @@ The targets, against (M3)'s objects:
   two previous items, a class of base codes carries a Cantor antichain, or is thin, exactly when its
   image does.
 
-**4h. Rank analyses of thinness.** `ThinRankAnalysis r A`, the evidence for the standard route to
-thinness (a rank below `ω₁`, countable fixed-rank antichains, and a bound on the rank over a
-continuously embedded Cantor subcopy of any Cantor antichain), with `no_cantorAntichain` and
-`isThinOn` derived from it, not stored in it. The tail lemma: if for every list `θ` some threshold
-`b < ω₁` makes the spectrum of `θ` on `{c ∈ C | b ≤ r c}` countable, then `r` is bounded below `ω₁`
-on the range of every Borel `f : (ℕ → Bool) → RelationalConfiguration L ℕ` into `C` with pairwise
-non-isomorphic values.
+**4h. Rank analyses of thinness.** A rank analysis of thinness for `r` on `A`, the evidence for the
+standard route to thinness (a rank below `ω₁`, countable fixed-rank antichains, and a bound on the
+rank over a continuously embedded Cantor subcopy of any Cantor antichain), with the absence of a
+Cantor antichain and thinness derived from it, not stored in it. The tail lemma: if for every list
+`θ` some threshold `b < ω₁` makes the spectrum of `θ` on `{c ∈ C | b ≤ r c}` countable, then `r` is
+bounded below `ω₁` on the range of every Borel `f : (ℕ → Bool) → RelationalConfiguration L ℕ` into
+`C` with pairwise non-isomorphic values.
 
 **Acceptance check.** In a countable relational language, a concentrated class is back-and-forth
 scattered (4d), hence thin (4a), with no analyticity hypothesis.
@@ -693,6 +731,14 @@ apart.
 
 * `HasVaughtDichotomy φ := countableModelCount φ ≤ ℵ₀ ∨ HasPerfectlyManyCountableModels φ`;
 * `HasVaughtCount φ := countableModelCount φ ≤ ℵ₀ ∨ countableModelCount φ = 𝔠`.
+
+**Checks.**
+
+* `∃ x ∀ y, y = x` with countably many unary predicates satisfies both, with count `𝔠`; its
+  dichotomy holds only through the perfect set at `Fin 1`.
+* `⊤` in the empty language (pure sets) satisfies both, with count `ℵ₀`, and so does Ehrenfeucht's
+  example (Worked examples), with count `3`.
+* The first implies the second, by `HasPerfectlyManyCountableModels.countableModelCount_eq`.
 
 **The conjectures.** Each quantifies over relational `L : Language.{0, 0}` with
 `[Countable (Σ l, L.Relations l)]`, because a countable language can always be presented in
@@ -743,6 +789,12 @@ Prove, with exactly the hypotheses shown:
   transferring the count of countable models across InfinitaryModelExistence's graph translation;
   that transfer is outside this series of roadmaps and must reuse that roadmap's translation and
   its semantic API;
+
+  **Checks.** For `modelsOfTheory`:
+  * `T = ∅` gives every code on `ℕ`.
+  * `T = {∃ x ∀ y, y = x}` gives `∅`.
+  * In the language of one unary `P`, `T = {∀ x, P x}` gives exactly one code, the one with `P`
+    true everywhere.
 * universes: `vaughtConjecture_iff_forall_universe`, the conjecture over `Language.{0, 0}` equals
   the conjecture over countable relational languages in any universe, by the transport results of
   Layer 0 ((M4)'s `smallPresentationEquiv`, `LEquiv.lift_countableModelCount_onBoundedFormulaInf`,
@@ -753,12 +805,29 @@ Prove, with exactly the hypotheses shown:
 
 * `MinimallyUncountableOn K`: `K` meets uncountably many classes, and for every sentence `θ` one of
   `K ∩ modelsOf θ`, `K \ modelsOf θ` meets only countably many (cuts range over sentences, not
-  arbitrary invariant sets); `Sentenceω.MinimallyUncountable φ` for `K = modelsOf φ`, with the
-  literal form through `φ ⊓ θ` and `φ ⊓ θ.not`.
-* `BoundedRankOn ρ K`, `UnboundedRankOn ρ K` for an arbitrary `ρ`, with monotonicity, the empty
-  class, and countable unions (regularity of `ℵ₁`); `MinimallyUnboundedOn ρ K` (unbounded, and every
-  sentence cut has a side on which `ρ` is bounded below `ω₁`, with the strict bound `ρ c < β` of
-  `IsIsolatingRank.countable_isoClasses_iff_bounded`).
+  arbitrary invariant sets); the sentence form for `K = modelsOf φ`, with the literal form through
+  `φ ⊓ θ` and `φ ⊓ θ.not`.
+
+  **Checks.**
+  * `∅` fails: it meets no class.
+  * The models on `ℕ` of "`E` is an equivalence relation" fail: "some class has exactly `2`
+    elements" leaves `𝔠` classes on each side (the codes `f z` of the Layer 3 acceptance check with
+    `z 0 = true`, respectively `z 0 = false`).
+  * The codes on `ℕ` of well-orders fail: "there is a last element" leaves `ℵ₁` classes on each side
+    (the countable infinite successor ordinals and limit ordinals).
+* Boundedness and unboundedness of `ρ` below `ω₁` on `K`, for an arbitrary `ρ`, with monotonicity,
+  the empty class, and countable unions (regularity of `ℵ₁`); `MinimallyUnboundedOn ρ K`
+  (unbounded, and every sentence cut has a side on which `ρ` is bounded below `ω₁`, with the strict
+  bound `ρ c < β` of `IsIsolatingRank.countable_isoClasses_iff_bounded`).
+
+  **Checks.** For `MinimallyUnboundedOn`:
+  * `∅` fails: `β = 0` bounds `ρ` on it.
+  * For an isolating rank `ρ`, a nonempty set inside the isomorphism class of `c` fails: `ρ c + 1`
+    bounds `ρ` on it.
+  * On the codes on `ℕ` of well-orders it fails for the Scott height: these codes are
+    back-and-forth scattered (countably many level-`β` classes of countable ordinals for each
+    `β < ω₁`), and both sides of "there is a last element" meet `ℵ₁` classes, so by 4b every
+    isolating rank, the Scott height included, is unbounded on both sides.
 * The generic engine: for a smallness predicate closed under subsets and countable unions, if `K`
   is not small, every sentence cut has a small side, and `K` meets countably many classes at level
   `α < ω₁`, then some level-`α` class of a member of `K` is not small and its complement in `K` is.
@@ -828,8 +897,10 @@ the parent roadmap. In order:
    classes (scatteredness) and is large, so one of its classes is large; take `A_{σ0}`, `A_{σ1}`
    there.
 5. **The reduction.** `exists_minimallyUncountableOn_and_of_bfScattered`: under the hypotheses of
-   step 4 some `Θ ⊓ θ` has minimally uncountable models (the minimal counterexamples of Harnik and
-   Makkai; Montalbán's Theorem XII.7 is the minimally unbounded form). Otherwise, for each
+   step 4 some `Θ ⊓ θ` has minimally uncountable models (Montalbán, Theorem XII.7, pp. 219–220, for
+   scattered unbounded sentences, which is this statement by 4b and
+   `minimallyUncountableOn_modelsOf_iff_minimallyUnboundedOn`; Montalbán, p. 218, attributes to
+   Harnik and Makkai that a counterexample yields a minimally unbounded one). Otherwise, for each
    `X : ℕ → Bool`, step 3 applied to `A_{X↾1}, A_{X↾2}, …` with levels `α_0, α_1, …`
    (consecutive codes are equivalent at `α_{i+1} ≥ α_i + ω`) gives a code `A_X` with
    `bfEquivSetoid α_i A_X A_{X↾(i+1)}` for all `i`. Each `A_X` lies in `C_∅ ⊆ modelsOf Θ`. If `X`,
@@ -929,7 +1000,7 @@ Discharge these alongside the layers.
 * **One element, many predicates** (Layer 0 acceptance): continuum many pairwise non-isomorphic
   one-element structures, a perfect set at the tier `Fin 1`, and no models on `ℕ`. Morley's theorem
   and the bounded-rank dichotomy are witnessed here only through a finite tier
-  (`hasPerfectSetOfNonisoModelsOn_fin_one_unaryPredicates`).
+  (the Layer 0 acceptance check).
 * **Equivalence relations with infinite classes** (Layer 2 acceptance): internal Scott rank `1`,
   exactly `ℵ₀` models.
 * **Equivalence relations** (Layer 3 acceptance): an explicit perfect set;
@@ -972,10 +1043,9 @@ back-and-forth relation does not discharge its target.
 ## Coordination
 
 * **Parent roadmap.** The infinitary syntax, back-and-forth and Scott analysis are the
-  InfinitaryLogic roadmap's, implemented in Tau Ceti under `TauCeti/ModelTheory/` (Scott's theorem:
-  [Tau Ceti #18977](https://github.com/TauCetiProject/TauCeti/pull/18977)). Use those declarations;
-  in particular use `TauCeti.scottFormula` and `realize_scottFormula_iff_bfEquiv` for level classes
-  rather than a second Scott-formula construction.
+  InfinitaryLogic roadmap's, implemented in Tau Ceti under `TauCeti/ModelTheory/`. Use those
+  declarations; in particular use `TauCeti.scottFormula` and `realize_scottFormula_iff_bfEquiv` for
+  level classes rather than a second Scott-formula construction.
 * **Sibling roadmaps.** The statements consumed from CountableStructureSpaces,
   BorelEquivalenceRelations and InfinitaryModelExistence are listed in
   [Dependencies](#dependencies-on-other-roadmaps). This roadmap owns: the classes of countable
@@ -1063,9 +1133,9 @@ here.
   [draft](https://math.berkeley.edu/~antonio/CSTpart2.pdf), Chapter XII: §XII.1 (Morley's theorem
   via Silver; scattered and unbounded sentences, Definition XII.1) and §XII.2 (Definition XII.4,
   minimally unbounded sentences; Lemma XII.5, level classes are sentences; Lemma XII.6, the limit
-  model, with hypothesis `≡_{α_i + 3}` in its block-move convention; Theorem XII.7, the reduction to
-  a minimally unbounded counterexample; Lemma XII.8, the club lemma), cited from the draft
-  compiled on 22 April 2025. Lemma XII.8 (p. 220) assumes only that `Θ` is minimally unbounded,
-  but its proof (p. 221) uses that the models of `Θ` have countably many `≡_β`-classes; the
-  targets here assume back-and-forth scatteredness.
+  model, with hypothesis `≡_{α_i + 3}` in its block-move convention; Theorem XII.7, pp. 219–220,
+  the reduction to a minimally unbounded counterexample; Lemma XII.8, the club lemma), cited from
+  the draft compiled on 22 April 2025. Lemma XII.8 (p. 220) assumes only that `Θ` is minimally
+  unbounded, but its proof (p. 221) uses that the models of `Θ` have countably many
+  `≡_β`-classes; the targets here assume back-and-forth scatteredness.
 * `cameronfreer/infinitary-logic`, Lean 4 formalization, commit `518a366`.
