@@ -88,14 +88,23 @@ theorem satisfies_iso {V : Type u} {W : Type v} {G : SimpleGraph V} {H : SimpleG
   StrongHomClass.realize_sentence e.toLanguageEquiv φ
 
 /-- Library check (Layer 9.3): under a graphon mixture the probability of a sentence is the
-integral of its graphon-sample probabilities, by `Measure.bind_apply`, the fixed-assignment graph
-event `measurableSet_setOf_realize_graph` and Tau Ceti's `measurable_infiniteSampleLawOnSpace`. -/
+integral of its graphon-sample probabilities, by `Measure.bind_apply`, the section of the joint
+event `measurableSet_realize_jointly` at the empty assignments, and Tau Ceti's
+`measurable_infiniteSampleLawOnSpace`. -/
 theorem bind_infiniteSampleLawOnSpace_satisfies (P : ProbabilityMeasure GraphonSpaceI)
     (φ : Language.graph.Sentence) :
     (P : Measure GraphonSpaceI).bind infiniteSampleLawOnSpace {G | Satisfies G φ} =
       ∫⁻ x, infiniteSampleLawOnSpace x {G | Satisfies G φ} ∂(P : Measure GraphonSpaceI) :=
   Measure.bind_apply
-    (measurableSet_setOf_realize_graph φ (@default _ Unique.instInhabited) (@default _ Unique.instInhabited))
+    (by
+      have h := (measurableSet_realize_jointly (V := ℕ) φ).preimage
+        (measurable_id.prodMk (measurable_const (a := ((default : Empty → ℕ), (default : Fin 0 → ℕ)))))
+      convert h using 1
+      ext G
+      simp only [Set.mem_ofPred_eq, Set.mem_preimage, id, Satisfies, Sentence.Realize,
+        Formula.Realize]
+      -- the two `default` empty assignments agree (`Empty → ℕ` and `Fin 0 → ℕ` are subsingletons)
+      congr! 1)
     measurable_infiniteSampleLawOnSpace.aemeasurable
 
 /-- Instance check (Layer 5.2): the graph language is effectively presented, so the general

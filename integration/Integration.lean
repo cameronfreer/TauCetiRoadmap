@@ -36,8 +36,10 @@ both the owner and the consumer use; such a use is kept when it checks that the 
 statement fits the consumer's objects, and dropped (see `README.md`) when it would only restate
 one declaration.
 
-RandomGraphs is imported for section 7 only: since the 14 November fix round it consumes B's
-`toStructure_toRelationalConfiguration` (README 0.3), its one cross-roadmap use.
+RandomGraphs is imported so that a clash with the others would fail here. Its one cross-roadmap
+use (README 0.3) is B's fixed-assignment graph events, built on B's
+`toStructure_toRelationalConfiguration`; section 7 checks it. RandomGraphs' draft no longer states
+those events, so section 7 states them as RandomGraphs uses them.
 
 C now states only the two targets Tau Ceti lacks (`isSmooth_of_isClosed` and the analytic perfect
 set theorem), neither of which B or D consumes, and cites Tau Ceti for everything else. Where C
@@ -663,14 +665,15 @@ end Universes
 
 section BtoRG
 
-/-- **RandomGraphs 0.3, fixed-assignment graph events**: RandomGraphs' target
-`measurableSet_setOf_realize_graph`, with its statement taken from the draft by `type_of%`, follows
-from B's Layer 0 target `toStructure_toRelationalConfiguration` (the graph coding decodes to
-`G.structure`), Tau Ceti's `RelationalConfiguration.measurableSet_setOf_realize` at `toInf φ`,
-`SimpleGraph.measurable_toRelationalConfiguration` and `BoundedFormula.realize_toInf`, the route
-RandomGraphs' README gives. -/
-example : type_of% @TauCetiRoadmap.RandomGraphs.measurableSet_setOf_realize_graph.{u, w} := by
-  intro V _ α n φ v xs
+/-- **RandomGraphs 0.3, fixed-assignment graph events**: RandomGraphs consumes these events from
+B's Layer 2 (its README 0.3), for first-order graph formulas on every countable carrier through
+`BoundedFormula.toInf`. Stated here as RandomGraphs uses them, they follow by the route B's
+README gives: B's Layer 0 target `toStructure_toRelationalConfiguration` (the graph coding decodes
+to `G.structure`), Tau Ceti's `RelationalConfiguration.measurableSet_setOf_realize` at `toInf φ`,
+`SimpleGraph.measurable_toRelationalConfiguration` and `BoundedFormula.realize_toInf`. -/
+example {V : Type u} [Countable V] {α : Type w} {n : ℕ} (φ : Language.graph.BoundedFormula α n)
+    (v : α → V) (xs : Fin n → V) :
+    MeasurableSet {G : SimpleGraph V | @BoundedFormula.Realize _ V G.structure _ _ φ v xs} := by
   have h := (RelationalConfiguration.measurableSet_setOf_realize (ι := ℕ)
     (BoundedFormula.toInf φ) v xs).preimage SimpleGraph.measurable_toRelationalConfiguration
   convert h using 1

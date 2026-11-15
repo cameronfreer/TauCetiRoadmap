@@ -14,21 +14,22 @@ The tree is TauCetiRoadmap `main` at 35884a8c, octopus-merged (540f108f) with th
 revised after the second round of reviews, then merged (c9c13c3b) with A, C, B and D as revised
 after the 10 November reviews, (b3b9502b) with the B and C follow-ups, and (73e23254) with the
 six heads as revised in the 12 November conformance pass, (da6e0abc) with the heads corrected
-for the 13 November reviews, and (3d833598) with the heads revised in the 14 November fix round, so
+for the 13 November reviews, (3d833598) with the heads revised in the 14 November fix round, and
+(903386e6) with the heads revised for the 14 November evening reviews, so
 `TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
-| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 92ff6a6e |
+| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | bd6b3b7c |
 | BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | b4d6f21d (unchanged since the 13 November round) |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 27e4b31f |
-| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 17f7816f |
-| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 8b141bc3 |
-| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | 3a5d950a |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | b0536ea7 |
+| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 6f3a7b47 |
+| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 84bb2ec3 |
+| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | c113644d |
 
 RandomGraphs is compiled with the others, with its moved checks. It supplies no cross-roadmap use
-and, since the 14 November fix round, consumes one: B's decoding identity
-`toStructure_toRelationalConfiguration` for its fixed-assignment graph events (section 7 of
+and, since the 14 November fix round, consumes one: B's fixed-assignment graph events (B's
+Layer 2, built on B's decoding identity `toStructure_toRelationalConfiguration`; section 7 of
 `Integration.lean`).
 
 Pins (those of `main` at 35884a8c): Lean `v4.36.0-rc2`, Mathlib 1b1ccf4b0, Tau Ceti 2fd255d99.
@@ -100,9 +101,10 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
      Morley-code transport), A → D (language maps, the small presentation, fragments,
      Morleyization), A → E (reducts, isolators, countable `A`-elementary substructures, and the
      graph translation of A's Layer 6 in E 5.6);
-   * section 7, B → RandomGraphs: RandomGraphs' `measurableSet_setOf_realize_graph`, its statement
-     taken from the draft by `type_of%`, follows from B's `toStructure_toRelationalConfiguration`
-     and Tau Ceti's `RelationalConfiguration.measurableSet_setOf_realize`,
+   * section 7, B → RandomGraphs: the fixed-assignment graph event RandomGraphs consumes from B's
+     Layer 2 (a first-order graph formula on any countable carrier, at fixed assignments) follows,
+     by the route B's README gives, from B's `toStructure_toRelationalConfiguration` and Tau
+     Ceti's `RelationalConfiguration.measurableSet_setOf_realize`,
      `SimpleGraph.measurable_toRelationalConfiguration` and `BoundedFormula.realize_toInf`;
    * section 6, universe placement: B's general constant-chain bound gives the countable case D
      consumes, for `M` in any universe; E stretches a source in `Type 1` to a model in `Type`; and
@@ -172,7 +174,22 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
 
 ## Changes for the revised heads
 
-### 14 November fix round (this run)
+### 14 November evening reviews (this run)
+
+* **RandomGraphs** removes its `measurableSet_setOf_realize_graph` (417aecc9) and consumes the
+  fixed-assignment graph events from B's Layer 2. Section 7 no longer takes its statement from
+  RandomGraphs' draft by `type_of%`: it states the event as RandomGraphs uses it (a first-order
+  graph formula on any countable carrier) and proves it by B's route, with the same proof. The
+  check `bind_infiniteSampleLawOnSpace_satisfies` in `checks/RandomGraphs.lean` now takes the
+  measurability of `{G | Satisfies G φ}` from the section of RandomGraphs' joint target
+  `measurableSet_realize_jointly` at the empty assignments. RandomGraphs adds the admitted
+  target `eventually_exists_finite_model`, which no example uses.
+* **A**, **B**, **D** and **E** change only README prose, docstrings and one instance docstring
+  (D); no declaration any example uses changed. **C** is unchanged.
+
+Section 7 and the one RandomGraphs check changed as above; no example was dropped.
+
+### 14 November fix round
 
 * **E** removes its relational `isLω₁ωSmall_iff_exists_isCompleteSentence` from the draft
   (8e3245ab; it stays a README requirement, 5.4). The E 5.6 example applied it to the graph
