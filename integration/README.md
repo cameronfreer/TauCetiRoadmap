@@ -15,14 +15,15 @@ revised after the second round of reviews, then merged (c9c13c3b) with A, C, B a
 after the 10 November reviews, (b3b9502b) with the B and C follow-ups, and (73e23254) with the
 six heads as revised in the 12 November conformance pass, (da6e0abc) with the heads corrected
 for the 13 November reviews, (3d833598) with the heads revised in the 14 November fix round, and
-(903386e6) with the heads revised for the 14 November evening reviews, so
+(903386e6) with the heads revised for the 14 November evening reviews, and (3cd62208) with B's
+6.1 strengthening, so
 `TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
 | InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | bd6b3b7c |
 | BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | b4d6f21d (unchanged since the 13 November round) |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | b0536ea7 |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | f17c9478 |
 | CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 6f3a7b47 |
 | HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 84bb2ec3 |
 | RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | c113644d |
@@ -93,8 +94,9 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
      constant, for instance D's `HasPerfectSetOfNonisoModelsOn` and Tau Ceti's
      `Setoid.HasPerfectAntichainOn` (C's interface, which C now cites as Tau Ceti's), D's
      `isoSetoid_morleyCode_iff` (a moved check) and `nonempty_morleyEquiv_iff` (A's), E's
-     `IsLω₁ωSmall` and `realizedTypes` (A's), and `lopezEscobar_steps34` (below) and A's
-     `pcSeparation`;
+     `IsLω₁ωSmall` and `realizedTypes` (A's), `lopezEscobar_steps34` (below) and A's
+     `pcSeparation`, and `invariant_analytic_separation_of_sublanguage` (below) and B's
+     `exists_countable_sublanguage_separating`;
    * one `example` for each cross-roadmap use, sections 1–5: A → B (`pcSeparation` and
      `LHom.PCMem` in López–Escobar), C → B (Gδ subspaces, `AnalyticSet.prod`, invariant
      separation), B, C → D (Silver on model classes, the cardinality form, Scott height,
@@ -126,6 +128,17 @@ pre-migration prototypes, are preserved on fork branches at 8a0783a8 (first run)
    `modelsOf (g.onBoundedFormulaInf φ₀)`, by Tau Ceti's `realize_sentenceInf_reductConfiguration`
    (a guard checks that it uses that lemma); and an example applies B's `lopezEscobar_iff` at an
    arbitrary relational `L`, with no countability instance in scope, to that preimage.
+
+   Section 2 checks B 6.1 in two steps. `invariant_analytic_separation_of_countable` is the
+   countable case, from Tau Ceti's `Setoid.exists_invariant_measurableSet_separating` for the orbit
+   relation with B's `analyticSet_orbitRel_graph` and `saturated_iff_isFixedBlock`.
+   `invariant_analytic_separation_of_sublanguage` derives B's `invariant_analytic_separation` for
+   an arbitrary `L`, with no countability instance in scope: B's admitted
+   `exists_countable_sublanguage_separating` gives a countable `R` whose sublanguage
+   `symbSublang ∅ R` separates the reducts of `A` and `B`, the countable case separates them there
+   (with `countable_relations_symbSublang`), and Tau Ceti's `LHom.continuous_reductConfiguration`,
+   `measurable_reductConfiguration` and `reductConfiguration_perm_smul` carry analyticity,
+   measurability and invariance across the reduct. A guard checks that it uses B's lemma.
 
    Most suppliers are now Tau Ceti declarations that owner and consumer both use. Where a
    consumer's draft cites a Tau Ceti or Mathlib declaration directly, the example uses that
@@ -184,10 +197,21 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
   measurability of `{G | Satisfies G φ}` from the section of RandomGraphs' joint target
   `measurableSet_realize_jointly` at the empty assignments. RandomGraphs adds the admitted
   target `eventually_exists_finite_model`, which no example uses.
-* **A**, **B**, **D** and **E** change only README prose, docstrings and one instance docstring
-  (D); no declaration any example uses changed. **C** is unchanged.
+* **A**, **B** (apart from its 6.1 change below), **D** and **E** change only README prose,
+  docstrings and one instance docstring (D); no declaration any example uses changed. **C** is
+  unchanged.
+* **B** (e1083ae7–f17c9478, merged at 3cd62208) states `invariant_analytic_separation` and
+  `exists_sentence_separating` without `[∀ n, Countable (L.Relations n)]`, through the new
+  admitted target `exists_countable_sublanguage_separating` (disjoint analytic classes have
+  disjoint reducts to the sublanguage of a countable set of relation symbols); its README adds
+  two Layer 4 negative controls for uncountably many symbols and the finite and empty carriers of
+  the fixed-assignment graph events. In section 2 the countable-case example becomes the theorem
+  `invariant_analytic_separation_of_countable`, and the new theorem
+  `invariant_analytic_separation_of_sublanguage` derives B's statement for every language from
+  it, B's new lemma and Tau Ceti's reduct API, with a guard on B's lemma. B has 36 `sorry`
+  warnings (35 before).
 
-Section 7 and the one RandomGraphs check changed as above; no example was dropped.
+Sections 2 and 7 and the one RandomGraphs check changed as above; no example was dropped.
 
 ### 14 November fix round
 
@@ -334,7 +358,7 @@ The result at these heads:
 |---|---|---|
 | InfinitaryModelExistence | 0 | 7 |
 | BorelEquivalenceRelations | 0 | 2 |
-| CountableStructureSpaces | 0 | 35 |
+| CountableStructureSpaces | 0 | 36 |
 | CountableModelCounting | 0 | 33 |
 | HanfNumbers | 0 | 24 |
 | RandomGraphs | 0 | 75 |

@@ -315,10 +315,11 @@ example [∀ n, Countable (L.Relations n)] {A : Set (RelationalConfiguration L �
   ext c
   simp only [mem_iUnion, mem_image, mem_prod, mem_univ, true_and, Prod.exists, Set.mem_smul_set]
 
-/-- **B 6.1, `invariant_analytic_separation`**, from
+/-- **B 6.1, `invariant_analytic_separation`, countable case**, from
 `Setoid.exists_invariant_measurableSet_separating` on B's coding space with `E` the orbit relation
 (analytic by B's `analyticSet_orbitRel_graph`) and B's `saturated_iff_isFixedBlock`. -/
-example [∀ n, Countable (L.Relations n)] {A B : Set (RelationalConfiguration L ℕ)}
+theorem invariant_analytic_separation_of_countable [∀ n, Countable (L.Relations n)]
+    {A B : Set (RelationalConfiguration L ℕ)}
     (hA : AnalyticSet A) (hB : AnalyticSet B) (hinv : MulAction.IsFixedBlock (Equiv.Perm ℕ) B)
     (hd : Disjoint A B) :
     ∃ C, A ⊆ C ∧ Disjoint B C ∧ MeasurableSet C ∧ MulAction.IsFixedBlock (Equiv.Perm ℕ) C := by
@@ -331,6 +332,38 @@ example [∀ n, Countable (L.Relations n)] {A B : Set (RelationalConfiguration L
   obtain ⟨C, hCm, hCsat, hAC, hCB⟩ :=
     Setoid.exists_invariant_measurableSet_separating E analyticSet_orbitRel_graph hA hB hd'
   exact ⟨C, hAC, hCB.symm, hCm, saturated_iff_isFixedBlock.mp hCsat⟩
+
+/-- **B 6.1, `invariant_analytic_separation` for every language**, with no countability instance
+for `L`. B's `exists_countable_sublanguage_separating` gives a countable `R` whose sublanguage
+`L₀ := symbSublang ∅ R` separates the reducts of `A` and `B`; the countable case above separates
+them in `L₀` (whose countability instances come from `countable_relations_symbSublang`), and
+Tau Ceti's `LHom.continuous_reductConfiguration`, `measurable_reductConfiguration` and
+`reductConfiguration_perm_smul` carry analyticity, measurability and invariance across the reduct. -/
+theorem invariant_analytic_separation_of_sublanguage {A B : Set (RelationalConfiguration L ℕ)}
+    (hA : AnalyticSet A) (hB : AnalyticSet B) (hinv : MulAction.IsFixedBlock (Equiv.Perm ℕ) B)
+    (hd : Disjoint A B) :
+    ∃ C, A ⊆ C ∧ Disjoint B C ∧ MeasurableSet C ∧ MulAction.IsFixedBlock (Equiv.Perm ℕ) C := by
+  obtain ⟨R, hR, hd₀⟩ :=
+    CountableStructureSpaces.exists_countable_sublanguage_separating hA hB hd
+  set g := symbSublangIncl (∅ : Set (Σ n, L.Functions n)) R
+  have : Countable R := hR.to_subtype
+  have : ∀ n, Countable ((symbSublang (∅ : Set (Σ n, L.Functions n)) R).Relations n) :=
+    fun n => (sigma_mk_injective (i := n)).countable
+  have hinv₀ : MulAction.IsFixedBlock (Equiv.Perm ℕ) (g.reductConfiguration '' B) := by
+    intro σ
+    conv_rhs => rw [← hinv σ]
+    rw [← Set.image_smul, ← Set.image_smul, Set.image_image, Set.image_image]
+    simp only [LHom.reductConfiguration_perm_smul]
+  obtain ⟨C₀, hAC, hBC, hCm, hCinv⟩ :=
+    invariant_analytic_separation_of_countable
+      (hA.image_of_continuous g.continuous_reductConfiguration)
+      (hB.image_of_continuous g.continuous_reductConfiguration) hinv₀ hd₀
+  refine ⟨g.reductConfiguration ⁻¹' C₀, fun a ha => hAC ⟨a, ha, rfl⟩, ?_,
+    g.measurable_reductConfiguration hCm, fun σ => ?_⟩
+  · exact Set.disjoint_left.2 fun b hb hbC => Set.disjoint_left.1 hBC ⟨b, hb, rfl⟩ hbC
+  · ext c
+    rw [Set.mem_smul_set_iff_inv_smul_mem, Set.mem_preimage, Set.mem_preimage,
+      LHom.reductConfiguration_perm_smul, ← Set.mem_smul_set_iff_inv_smul_mem, hCinv σ]
 
 end CtoB
 
@@ -692,3 +725,6 @@ end TauCetiRoadmap.Integration
 -- B's step 0 transfer uses Tau Ceti's reduct lemma.
 #assert_uses TauCetiRoadmap.Integration.preimage_reductConfiguration_eq_modelsOf
   FirstOrder.Language.LHom.realize_sentenceInf_reductConfiguration
+-- B 6.1 for every language reduces to the countable case through B's sublanguage lemma.
+#assert_uses TauCetiRoadmap.Integration.invariant_analytic_separation_of_sublanguage
+  TauCetiRoadmap.CountableStructureSpaces.exists_countable_sublanguage_separating
