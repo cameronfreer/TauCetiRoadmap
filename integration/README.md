@@ -15,18 +15,18 @@ revised after the second round of reviews, then merged (c9c13c3b) with A, C, B a
 after the 10 November reviews, (b3b9502b) with the B and C follow-ups, and (73e23254) with the
 six heads as revised in the 12 November conformance pass, (da6e0abc) with the heads corrected
 for the 13 November reviews, (3d833598) with the heads revised in the 14 November fix round, and
-(903386e6) with the heads revised for the 14 November evening reviews, and (3cd62208) with B's
-6.1 strengthening, so
+(903386e6) with the heads revised for the 14 November evening reviews, (3cd62208) with B's 6.1
+strengthening, and (ed6085b4) with the heads revised for the 16 November reviews, so
 `TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
-| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | bd6b3b7c |
+| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 8c93fecf |
 | BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | b4d6f21d (unchanged since the 13 November round) |
-| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | f17c9478 |
-| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | 6f3a7b47 |
+| CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 60f81ce3 |
+| CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | b79bc76c |
 | HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 84bb2ec3 |
-| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | c113644d |
+| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | f297bb05 |
 
 RandomGraphs is compiled with the others, with its moved checks. It supplies no cross-roadmap use
 and, since the 14 November fix round, consumes one: B's fixed-assignment graph events (B's
@@ -187,7 +187,11 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
 
 ## Changes for the revised heads
 
-### 14 November evening reviews (this run)
+### 16 November reviews (this run)
+
+* **A** adds a `#check` of Tau Ceti's `Fragment.generated_countable` to its draft (8c93fecf); B, D and RandomGraphs change README prose only; C and E are unchanged. No example or check changed, and the results are those of the previous run.
+
+### 14 November evening reviews
 
 * **RandomGraphs** removes its `measurableSet_setOf_realize_graph` (417aecc9) and consumes the
   fixed-assignment graph events from B's Layer 2. Section 7 no longer takes its statement from
