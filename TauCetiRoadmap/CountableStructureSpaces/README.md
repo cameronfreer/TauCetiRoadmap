@@ -166,6 +166,7 @@ The following are suppliers, not requests to rebuild their objects.
 | [Mathlib Polish spaces](https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/MetricSpace/Polish.lean) | `PolishSpace`, `IsClosed.polishSpace`, `IsOpen.polishSpace`, `Topology.IsClosedEmbedding.polishSpace`, `PolishSpace.IsClopenable` |
 | [Mathlib analytic and standard Borel sets](https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean) | `StandardBorelSpace`, `MeasureTheory.AnalyticSet`, `analyticSet_empty`, `AnalyticSet.image_of_continuous`, `AnalyticSet.iUnion`, `AnalyticSet.iInter`, `MeasurableSet.analyticSet`, `AnalyticSet.measurablySeparable` (Lusin), `AnalyticSet.measurableSet_of_compl` (Suslin), `MeasurableSet.standardBorel`, `MeasurableSet.isClopenable`, `MeasurableSet.image_of_continuousOn_injOn` |
 | [Mathlib descriptive trees](https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/SetTheory/Descriptive/Tree.lean) | `Descriptive.tree`, its prefix-closure API and `take_mem` |
+| Mathlib second-countable spaces | `TopologicalSpace.isOpen_iUnion_countable` (in a second-countable space a union of open sets is the union of countably many of them), applied to the square of Baire space in 6.1 |
 | Mathlib group actions | `Equiv.Perm.applyMulAction`, `arrowAction`, `MulAction.orbitRel`, `MulAction.stabilizer`, `fixingSubgroup`, `IsTopologicalGroup`, `ContinuousSMul` |
 | Mathlib measurable spaces | `MeasurableSpace.pi`, `MeasureTheory.MeasurableSet.eq_preimage_restrict_countable` (a measurable set of a product depends on countably many coordinates), `MeasurableSpace.invariants`, `MeasurableSpace.measurableSet_iInf`, the measurable space on `SimpleGraph V` (`Mathlib/MeasureTheory/Constructions/SimpleGraph.lean`) |
 | Mathlib model theory | `Structure`, `Language.Equiv`, `Equiv.inducedStructure`, `Language.sum` with `sumStructure`, `BoundedFormula.IsQF`, `IsUniversal`, `IsExistential`, `BoundedFormula.alls`, `Language.graph` with `SimpleGraph.structure`, `Language.order` with `FirstOrder.Language.dlo` (for `[L.IsOrdered]`, here `Language.order.dlo`) |
@@ -927,9 +928,11 @@ need depend on countably many symbols: with uncountably many unary predicates, t
 predicate empty is an invariant analytic singleton that no single sentence defines (§5.4). For the
 same reason `analyticSet_iff_exists_pc` keeps its countability hypothesis.
 
-Vaught 1974, statement (10), p. 281, and Marker's notes, Corollary 4.25, p. 51, separate two
-disjoint invariant analytic sets by an invariant Borel set. Here only `B` need be invariant:
-the saturation of `A` is analytic (Layer 1.2) and, `B` being invariant, still disjoint from `B`.
+Vaught 1974, statement (10), p. 281, for a Polish group acting on a Polish space, and Marker's
+notes, Corollary 4.25, p. 51, for a countable vocabulary, separate two disjoint invariant
+analytic sets by an invariant Borel set. Here only `B` need be invariant: the saturation of `A` is
+analytic (Layer 1.2) and, `B` being invariant, still disjoint from `B`. The form for every
+language follows from these by the countable-sublanguage reduction above.
 
 *Needs:* L1.2; L5.4; BorelEquivalenceRelations `Setoid.exists_invariant_measurableSet_separating`;
 TC `isomorphismInvariant_iff_preimage_image_quotientMk`, `symbSublang`, `symbSublangIncl`,
