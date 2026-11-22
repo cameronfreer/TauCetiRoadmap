@@ -16,8 +16,9 @@ after the 10 November reviews, (b3b9502b) with the B and C follow-ups, and (73e2
 six heads as revised in the 12 November conformance pass, (da6e0abc) with the heads corrected
 for the 13 November reviews, (3d833598) with the heads revised in the 14 November fix round, and
 (903386e6) with the heads revised for the 14 November evening reviews, (3cd62208) with B's 6.1
-strengthening, (ed6085b4) with the heads revised for the 16 November reviews, and (ceb4b1b4) with
-RandomGraphs as revised for the 17 November review, so
+strengthening, (ed6085b4) with the heads revised for the 16 November reviews, (ceb4b1b4) with
+RandomGraphs as revised for the 17 November review, and (7d388ba4) with RandomGraphs as revised for
+the 22 November review, so
 `TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
@@ -27,7 +28,7 @@ RandomGraphs as revised for the 17 November review, so
 | CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 60f81ce3 |
 | CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | b79bc76c |
 | HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 84bb2ec3 |
-| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | 74db85ee |
+| RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | 0e446867 |
 
 RandomGraphs is compiled with the others, with its moved checks. It supplies no cross-roadmap use
 and, since the 14 November fix round, consumes one: B's fixed-assignment graph events (B's
@@ -188,7 +189,13 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
 
 ## Changes for the revised heads
 
-### 17 November review of RandomGraphs (this run)
+### 22 November review of RandomGraphs (this run)
+
+* **RandomGraphs** puts the sections of its draft in README layer order and marks three
+  declarations as sanity checks in their docstrings (77f8426b, 6b952b15); no declaration was
+  renamed or restated, and its README changes are prose. The results are those of the previous run.
+
+### 17 November review of RandomGraphs
 
 * **RandomGraphs** names its construction targets `radoQE` and `decideRado` in the README and rewrites two docstrings and its module docstring (4798017b, 74db85ee); no declaration changed. The results are those of the previous run.
 
