@@ -11,7 +11,8 @@ public import TauCeti.ModelTheory.Scott.Sentence
 
 **This file is not the roadmap.** The roadmap is README.md. This file states the roadmap's
 headline theorems against the pinned Mathlib and Tau Ceti, each with sorry, with the definitions
-they need.
+they need. Three interface definitions occur in no statement here: `IsIndiscernibleOn`,
+`morleySeed` and `hanfNumber`, which the README uses in 1.1, 1.3 and 3.1 and in their Checks.
 
 Everything is stated over the pinned Tau Ceti library: the infinitary syntax and satisfaction of
 the InfinitaryLogic roadmap (`FirstOrder.Language.BoundedFormulaω`, `Sentenceω`,
@@ -66,7 +67,8 @@ noncomputable def iteratedTwoPow (κ : Cardinal.{u}) : ℕ → Cardinal.{u}
   | n + 1 => 2 ^ iteratedTwoPow κ n
 
 /-- **Layer 0, the pigeonhole principle** `κ⁺ → (κ⁺)¹_κ`, from the regularity of successor
-cardinals. -/
+cardinals. It is the `n = 0` case of `erdos_rado`, kept as the base of the README's Erdős–Rado
+induction. -/
 theorem partitionRel_succ_one {κ : Cardinal.{u}} (hκ : ℵ₀ ≤ κ) :
     PartitionRel (Order.succ κ) (Order.succ κ) 1 κ := by
   sorry
@@ -225,12 +227,16 @@ def IsCofinallyApproximated (σ : L'.Sentenceω) (pos neg : Set (Σ n, L'.Bounde
     Prop :=
   ∀ α : Ordinal.{w}, α < Ordinal.omega.{w} 1 → IsApproximatedAt σ pos neg (ℶ_ α)
 
-/-- **Layer 3 milestone, the start condition.** Under the cofinal hypothesis, the sentence and
-`x₀ ≠ x₁` are cofinally approximated. -/
-theorem isCofinallyApproximated_start {σ : L'.Sentenceω}
+/-- **Layer 3 milestone, the start condition.** If, for every `α < ω₁`, some model of the ambient
+sentence `σ` that also satisfies `ψ` has size at least `ℶ_α`, then `ψ` and `x₀ ≠ x₁` are cofinally
+approximated in models of `σ`. README 3.3 applies it with `σ := σ*` and `ψ := φ'`: the models of
+`σ*` are the approximating structures, and `φ'` is the member of `Γ*` that the construction of 3.4
+needs in `pos`. -/
+theorem isCofinallyApproximated_start {σ ψ : L'.Sentenceω}
     (h : ∀ α : Ordinal.{w}, α < Ordinal.omega.{w} 1 →
-      ∃ (N : Type w) (_ : L'.Structure N), SentenceInf.Realize σ N ∧ ℶ_ α ≤ #N) :
-    IsCofinallyApproximated.{w} σ {⟨0, σ⟩, ⟨2, disEq⟩} ∅ := by
+      ∃ (N : Type w) (_ : L'.Structure N), SentenceInf.Realize σ N ∧ SentenceInf.Realize ψ N ∧
+        ℶ_ α ≤ #N) :
+    IsCofinallyApproximated.{w} σ {⟨0, ψ⟩, ⟨2, disEq⟩} ∅ := by
   sorry
 
 /-- **Layer 3 milestone, decision.** A cofinally approximated condition can be extended by either
@@ -335,7 +341,8 @@ theorem morley_omitting_types (T : L.Theory) (S : Set (Σ n, Set (L.BoundedFormu
   sorry
 
 /-- **Layer 3.** Over a language with countably many symbols, only the family of types needs to be
-countable. -/
+countable. It is the countable-language specialization of `morley_omitting_types`, kept as the
+README's corollary of 3.4. -/
 theorem morley_omitting_types_of_countable [Countable (Σ n, L.Functions n)]
     [Countable (Σ n, L.Relations n)] (T : L.Theory)
     (S : Set (Σ n, Set (L.BoundedFormula Empty n))) (hS : S.Countable)
