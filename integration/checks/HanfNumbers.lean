@@ -55,4 +55,15 @@ example {L : FirstOrder.Language.{u, v}} (M : Type w) [L.Structure M] [Countable
     IsLω₁ωSmall (L := L) M :=
   fun _ => (Set.countable_range (infinitaryType M)).mono fun _ hp => mem_realizedTypes.1 hp
 
+-- `isCofinallyApproximated_start` at README 3.3's instance: the ambient sentence is
+-- `σ* = φ' ⊓ sk(Γ₀)` and the sentence put into `pos` is `φ'`; the hypothesis follows from large
+-- models of `σ*` alone (the earlier one-sentence signature could not give this condition).
+example {L' : FirstOrder.Language.{u, v}} {φ' sk : L'.Sentenceω}
+    (h : ∀ α : Ordinal.{w}, α < Ordinal.omega.{w} 1 →
+      ∃ (N : Type w) (_ : L'.Structure N), SentenceInf.Realize (φ' ⊓ sk) N ∧ ℶ_ α ≤ #N) :
+    IsCofinallyApproximated.{w} (φ' ⊓ sk) {⟨0, φ'⟩, ⟨2, disEq⟩} ∅ :=
+  isCofinallyApproximated_start fun α hα => by
+    obtain ⟨N, S, hN, hc⟩ := h α hα
+    exact ⟨N, S, hN, (SentenceInf.realize_inf.1 hN).1, hc⟩
+
 end TauCetiRoadmap.HanfNumbers

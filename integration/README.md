@@ -17,17 +17,17 @@ six heads as revised in the 12 November conformance pass, (da6e0abc) with the he
 for the 13 November reviews, (3d833598) with the heads revised in the 14 November fix round, and
 (903386e6) with the heads revised for the 14 November evening reviews, (3cd62208) with B's 6.1
 strengthening, (ed6085b4) with the heads revised for the 16 November reviews, (ceb4b1b4) with
-RandomGraphs as revised for the 17 November review, and (7d388ba4) with RandomGraphs as revised for
-the 22 November review, so
+RandomGraphs as revised for the 17 November review, (7d388ba4) with RandomGraphs as revised for
+the 22 November review, and (f8ad74c7) with A, C and E as revised for their 22 November reviews, so
 `TauCetiRoadmap/<Dir>/` here is what was checked.
 
 | roadmap | pull request | head checked |
 |---|---|---|
-| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 8c93fecf |
-| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | b4d6f21d (unchanged since the 13 November round) |
+| InfinitaryModelExistence (A) | follow-up [#1615](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1615) to [#1315](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1315) | 050522d5 |
+| BorelEquivalenceRelations (C) | follow-up [#1616](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1616) to [#1317](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1317) | 6577aa7c |
 | CountableStructureSpaces (B) | [#1316](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1316) | 60f81ce3 |
 | CountableModelCounting (D) | follow-up [#2012](https://github.com/TauCetiProject/TauCetiRoadmap/pull/2012) to [#1318](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1318) | b79bc76c |
-| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 84bb2ec3 |
+| HanfNumbers (E) | [#1319](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1319) | 774a18b8 |
 | RandomGraphs | [#1223](https://github.com/TauCetiProject/TauCetiRoadmap/pull/1223) | 0e446867 |
 
 RandomGraphs is compiled with the others, with its moved checks. It supplies no cross-roadmap use
@@ -189,7 +189,14 @@ sets with a saturated `B` to disjoint saturations, which Tau Ceti's
 
 ## Changes for the revised heads
 
-### 22 November review of RandomGraphs (this run)
+### 22 November reviews of A, C and E (this run)
+
+* **E** gives `isCofinallyApproximated_start` a second sentence `ψ`: the ambient sentence and the
+  sentence put into `pos` are now separate (2471ca57). `checks/HanfNumbers.lean` adds the README's
+  application, at `σ := φ' ⊓ sk` and `ψ := φ'`, with the hypothesis derived from large models of
+  `σ*` alone. **A** and **C** change README prose and docstrings only.
+
+### 22 November review of RandomGraphs
 
 * **RandomGraphs** puts the sections of its draft in README layer order and marks three
   declarations as sanity checks in their docstrings (77f8426b, 6b952b15); no declaration was
